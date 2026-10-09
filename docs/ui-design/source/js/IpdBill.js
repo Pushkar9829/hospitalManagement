@@ -9,7 +9,7 @@
     return {
       nav: this.navItems('IpdBill'),
       kpis: [{ l: 'In-patients on cash or corporate', v: '65', n: '38 more on insurance' }, { l: 'Deposit below 20%', v: '4', n: 'top-up SMS sent' }, { l: 'Discharges to bill today', v: '6', n: '1 final, 2 drafts' }, { l: 'Final bill time', v: '38 min', n: 'median this week · target 45' }, { l: 'Refunds due', v: '₹22,600', n: '3 patients' }],
-      pts: [['K. Nair', 'W2-205-A', 'Cash', fin ? 'Final' : 'Final draft', fin ? 'bg' : 'ba', true], ['A. Joshi', 'W1-108-A', 'Cash', 'Dues ₹18,400', 'br'], ['F. Ali', 'W2-204-A', 'Cash (claim denied)', 'Deposit 85% used', 'bo'], ['L. Das', 'PVT-05', 'ICICI Lombard', 'Insurer final pending', 'ba'], ['Ravi Kumar', 'W2-204-B', 'Self', 'Running', 'bn'], ['J. Dsouza', 'W2-205-B', 'HDFC Ergo', 'Enhancement due', 'bo']]
+      pts: [['K. Nair', 'W2-205-A', 'Cash', fin ? 'Final' : 'Final draft', fin ? 'bg' : 'ba', true], ['A. Joshi', 'W2-202-A', 'Cash', 'Dues ₹18,400', 'br'], ['F. Ali', 'W2-204-A', 'Cash (claim denied)', 'Deposit 85% used', 'bo'], ['L. Das', 'PVT-05', 'ICICI Lombard', 'Insurer final pending', 'ba'], ['Ravi Kumar', 'W2-204-B', 'Self', 'Running', 'bn'], ['J. Dsouza', 'W2-205-B', 'HDFC Ergo', 'Enhancement due', 'bo']]
         .map(function (p) { return { n: p[0], bed: p[1], payer: p[2], s: p[3], c: p[4], bg: p[5] ? '#E6EEF9' : 'transparent' }; }),
       stl: fin ? 'Final bill made' : 'Final draft', stc: fin ? 'bg' : 'ba',
       cred: credited ? '₹1,240' : '₹0', bal: credited ? '₹17,410' : '₹18,650',

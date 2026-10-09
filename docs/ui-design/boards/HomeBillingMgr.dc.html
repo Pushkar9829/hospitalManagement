@@ -78,18 +78,23 @@ summary::-webkit-details-marker{display:none}
 <a class="nvl" href="HomeAdmin.dc.html">Hospital Admin</a>
 <a class="nvl" href="HomeMedSupt.dc.html">Medical Superintendent</a>
 <a class="nvl" href="HomeDoctor.dc.html">Doctor</a>
+<a class="nvl" href="HomeHod.dc.html">Head of Department</a>
+<a class="nvl" href="ClinicDesk.dc.html">Clinic (one-screen mode)</a>
 <a class="nvl" href="HomeNurse.dc.html">Staff Nurse</a>
 <a class="nvl" href="HomeWardIncharge.dc.html">Ward In-charge</a>
 <a class="nvl" href="HomeFrontOffice.dc.html">Front Office</a>
+<a class="nvl" href="HomeSecurity.dc.html">Security Desk</a>
 <a class="nvl" href="HomeCashier.dc.html">Cashier</a>
 <a class="nvlA" href="HomeBillingMgr.dc.html">Billing Manager</a>
 <a class="nvl" href="HomeLab.dc.html">Laboratory</a>
+<a class="nvl" href="HomePhlebo.dc.html">Home Collection</a>
 <a class="nvl" href="HomeRadiology.dc.html">Radiology</a>
 <a class="nvl" href="HomePharmacy.dc.html">Pharmacy</a>
 <a class="nvl" href="HomeStore.dc.html">Store and Purchase</a>
 <a class="nvl" href="HomeHr.dc.html">HR</a>
 <a class="nvl" href="HomePayroll.dc.html">Payroll</a>
 <a class="nvl" href="HomeAccounts.dc.html">Accounts</a>
+<a class="nvl" href="HomeAuditor.dc.html">Auditor</a>
 <a class="nvl" href="HomeMrd.dc.html">Medical Records</a>
 <a class="nvl" href="HomeKitchen.dc.html">Kitchen</a>
 <a class="nvl" href="HomeFacility.dc.html">Facility</a>
@@ -169,7 +174,7 @@ class Component extends DCLogic {
     });
   }
   renderVals() {
-    return Object.assign({ nav: this.navItems('HomeBillingMgr') }, this.home({"greet": "Good morning, Rahul", "sub": "Billing, discounts, refunds and IPD final bills", "quick": [["Approvals", "Approvals"], ["Final bills", "Discharge"], ["Collection report", "Reports"]], "kpis": [["Collection today", "₹4.82 L", "all counters", "Reports"], ["Discounts to approve", "2", "₹2,760", "Approvals"], ["Refunds pending", "1", "₹650", "Billing"], ["Final bills due", "6", "discharges today", "Discharge"], ["Credit outstanding", "₹6.8 L", "corporate", "Billing"]], "q": ["Approval queue", "Discounts, refunds and cancellations", "Approvals"], "head": ["Request", "Bill", "Amount", "Maker", "Status"], "rows": [["Discount 15%", "#OP/26-27/000155", "₹360", "Neha", "~ba:L1 you"], ["Refund, test not done", "#OP/26-27/000140", "₹650", "Neha", "~ba:L1 you"], ["Discharge with dues", "#IP/26-27/000836", "₹18,400", "Billing desk", "~bb:With Med. Supt."]], "alerts": [["Low deposit", "K. Nair balance - ₹12,300", "IPD", "br"], ["Duplicate prints", "7 receipts reprinted today", "Audit", "ba"], ["Card settlement short", "₹424 fee on 8 Oct", "Bank", "bn"]]}));
+    return Object.assign({ nav: this.navItems('HomeBillingMgr') }, this.home({"greet": "Good morning, Rahul", "sub": "Billing, discounts, refunds and IPD final bills", "quick": [["Approvals", "Approvals"], ["Final bills", "Discharge"], ["Collection report", "Reports"]], "kpis": [["Collection today", "₹4.82 L", "all counters", "Reports"], ["Discounts to approve", "2", "₹2,760", "Approvals"], ["Refunds pending", "1", "₹650", "Billing"], ["Final bills due", "6", "discharges today", "Discharge"], ["Credit outstanding", "₹6.8 L", "corporate", "Billing"]], "q": ["Approval queue", "Discounts, refunds and cancellations", "Approvals"], "head": ["Request", "Bill", "Amount", "Maker", "Status"], "rows": [["Discount 15%", "#OP/26-27/000155", "₹360", "Neha", "~ba:L1 you"], ["Refund, test not done", "#OP/26-27/000140", "₹650", "Neha", "~ba:L1 you"], ["Discharge with dues", "#IP/26-27/000836", "₹18,400", "Billing desk", "~bb:With Med. Supt."]], "alerts": [["Low deposit", "K. Nair balance - ₹18,650", "IPD", "br"], ["Duplicate prints", "7 receipts reprinted today", "Audit", "ba"], ["Card settlement short", "₹424 fee on 8 Oct", "Bank", "bn"]]}));
   }
 }
 </script>

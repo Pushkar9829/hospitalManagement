@@ -366,14 +366,14 @@ def plan():
                      "registration; billing engine and printing",
          "Register a patient and print a bill on staging"],
         ["2", "8-14", "OPD scheduling, queue, consultation, e-prescription, specialty "
-                      "templates; IPD admission, transfer, discharge, live bed board; "
+                      "templates; IPD admission, transfer, discharge, live bed board, insurance and TPA desk, packages and day care; "
                       "nursing station; laboratory; radiology; pharmacy with FEFO; "
                       "inventory and purchase",
          "Full OPD and IPD patient journey on staging"],
         ["3", "15-21", "HR, rosters, attendance, leave; payroll with statutory outputs; "
                        "finance auto-posting and statements; medical records; diet; "
                        "housekeeping and facility; quality; CRM; patient portal; "
-                       "subscription billing; all module reports",
+                       "subscription billing; all module reports; OPD and IPD analytics",
          "Feature complete; demo to hospital; masters loaded"],
         ["4", "22-30", "UAT with hospital super users; bug fixing; performance and "
                        "security tests; production setup and restore drill; training; data "

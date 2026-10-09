@@ -78,18 +78,23 @@ summary::-webkit-details-marker{display:none}
 <a class="nvl" href="HomeAdmin.dc.html">Hospital Admin</a>
 <a class="nvl" href="HomeMedSupt.dc.html">Medical Superintendent</a>
 <a class="nvl" href="HomeDoctor.dc.html">Doctor</a>
+<a class="nvl" href="HomeHod.dc.html">Head of Department</a>
+<a class="nvl" href="ClinicDesk.dc.html">Clinic (one-screen mode)</a>
 <a class="nvl" href="HomeNurse.dc.html">Staff Nurse</a>
 <a class="nvlA" href="HomeWardIncharge.dc.html">Ward In-charge</a>
 <a class="nvl" href="HomeFrontOffice.dc.html">Front Office</a>
+<a class="nvl" href="HomeSecurity.dc.html">Security Desk</a>
 <a class="nvl" href="HomeCashier.dc.html">Cashier</a>
 <a class="nvl" href="HomeBillingMgr.dc.html">Billing Manager</a>
 <a class="nvl" href="HomeLab.dc.html">Laboratory</a>
+<a class="nvl" href="HomePhlebo.dc.html">Home Collection</a>
 <a class="nvl" href="HomeRadiology.dc.html">Radiology</a>
 <a class="nvl" href="HomePharmacy.dc.html">Pharmacy</a>
 <a class="nvl" href="HomeStore.dc.html">Store and Purchase</a>
 <a class="nvl" href="HomeHr.dc.html">HR</a>
 <a class="nvl" href="HomePayroll.dc.html">Payroll</a>
 <a class="nvl" href="HomeAccounts.dc.html">Accounts</a>
+<a class="nvl" href="HomeAuditor.dc.html">Auditor</a>
 <a class="nvl" href="HomeMrd.dc.html">Medical Records</a>
 <a class="nvl" href="HomeKitchen.dc.html">Kitchen</a>
 <a class="nvl" href="HomeFacility.dc.html">Facility</a>
@@ -169,7 +174,7 @@ class Component extends DCLogic {
     });
   }
   renderVals() {
-    return Object.assign({ nav: this.navItems('HomeWardIncharge') }, this.home({"greet": "Good morning, Lata", "sub": "Ward 2 · 10 of 12 beds · 4 nurses on shift", "quick": [["Roster", "Roster"], ["Nursing station", "Nursing"], ["Indent to store", "Inventory"]], "kpis": [["Occupied", "10 / 12", "1 discharge today", "Beds"], ["Staff on shift", "4", "minimum 3", "Roster"], ["Overdue tasks", "3", "across ward", "Nursing"], ["Swap requests", "2", "to approve", "Approvals"], ["Linen below par", "1", "bedsheets", "Facility"]], "q": ["Ward overview", "Patients needing attention", "Nursing"], "head": ["Bed", "Patient", "Concern", "Nurse", "Status"], "rows": [["#W2-204-A", "F. Ali", "Platelets critical", "Anjali", "~br:Watch"], ["#W2-206-B", "P. Rao", "Nil by mouth until 14:00", "Joseph", "~ba:NBM"], ["#W2-202-A", "A. Joshi", "Fall risk, post-op", "Meera", "~ba:Fall risk"], ["#W2-205-A", "K. Nair", "Discharge 14:00", "Anjali", "~bg:Discharge"]], "alerts": [["Night cover short", "Sat 18 Oct below 2", "Roster", "br"], ["Incident open", "Fall INC-0192", "Quality", "ba"], ["Indent partly issued", "SI-1399", "Store", "bb"]]}));
+    return Object.assign({ nav: this.navItems('HomeWardIncharge') }, this.home({"greet": "Good morning, Lata", "sub": "Ward 2 · 9 of 12 beds · 4 nurses on shift", "quick": [["Roster", "Roster"], ["Nursing station", "Nursing"], ["Indent to store", "Inventory"]], "kpis": [["Occupied", "10 / 12", "1 discharge today", "Beds"], ["Staff on shift", "4", "minimum 3", "Roster"], ["Overdue tasks", "3", "across ward", "Nursing"], ["Swap requests", "2", "to approve", "Approvals"], ["Linen below par", "1", "bedsheets", "Facility"]], "q": ["Ward overview", "Patients needing attention", "Nursing"], "head": ["Bed", "Patient", "Concern", "Nurse", "Status"], "rows": [["#W2-204-A", "F. Ali", "Platelets critical", "Anjali", "~br:Watch"], ["#W2-206-B", "P. Rao", "Nil by mouth until 14:00", "Joseph", "~ba:NBM"], ["#W2-202-A", "A. Joshi", "Fall risk, post-op", "Meera", "~ba:Fall risk"], ["#W2-205-A", "K. Nair", "Discharge 14:00", "Anjali", "~bg:Discharge"]], "alerts": [["Night cover short", "Sat 18 Oct below 2", "Roster", "br"], ["Incident open", "Fall INC-0192", "Quality", "ba"], ["Indent partly issued", "SI-1399", "Store", "bb"]]}));
   }
 }
 </script>

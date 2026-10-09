@@ -78,18 +78,23 @@ summary::-webkit-details-marker{display:none}
 <a class="nvl" href="HomeAdmin.dc.html">Hospital Admin</a>
 <a class="nvl" href="HomeMedSupt.dc.html">Medical Superintendent</a>
 <a class="nvl" href="HomeDoctor.dc.html">Doctor</a>
+<a class="nvl" href="HomeHod.dc.html">Head of Department</a>
+<a class="nvl" href="ClinicDesk.dc.html">Clinic (one-screen mode)</a>
 <a class="nvl" href="HomeNurse.dc.html">Staff Nurse</a>
 <a class="nvl" href="HomeWardIncharge.dc.html">Ward In-charge</a>
 <a class="nvl" href="HomeFrontOffice.dc.html">Front Office</a>
+<a class="nvl" href="HomeSecurity.dc.html">Security Desk</a>
 <a class="nvl" href="HomeCashier.dc.html">Cashier</a>
 <a class="nvl" href="HomeBillingMgr.dc.html">Billing Manager</a>
 <a class="nvl" href="HomeLab.dc.html">Laboratory</a>
+<a class="nvl" href="HomePhlebo.dc.html">Home Collection</a>
 <a class="nvl" href="HomeRadiology.dc.html">Radiology</a>
 <a class="nvl" href="HomePharmacy.dc.html">Pharmacy</a>
 <a class="nvl" href="HomeStore.dc.html">Store and Purchase</a>
 <a class="nvl" href="HomeHr.dc.html">HR</a>
 <a class="nvl" href="HomePayroll.dc.html">Payroll</a>
 <a class="nvl" href="HomeAccounts.dc.html">Accounts</a>
+<a class="nvl" href="HomeAuditor.dc.html">Auditor</a>
 <a class="nvlA" href="HomeMrd.dc.html">Medical Records</a>
 <a class="nvl" href="HomeKitchen.dc.html">Kitchen</a>
 <a class="nvl" href="HomeFacility.dc.html">Facility</a>
@@ -99,7 +104,7 @@ summary::-webkit-details-marker{display:none}
 <a class="nvl" href="Console.dc.html">Platform owner (console)</a>
 <a class="nvl" href="Portal.dc.html">Patient (portal)</a>
 </div></details>
-
+<a class="btn2" href="Approvals.dc.html">Approvals <span class="b bo">5</span></a>
 <div style="display:flex;align-items:center;gap:10px"><div class="av">SM</div><div><div style="font-weight:600;font-size:13px">Sunil More</div><div class="cap">MRD Officer</div></div></div>
 </header>
 <main style="padding:24px 28px 40px;display:flex;flex-direction:column;gap:20px">
@@ -209,7 +214,7 @@ class Component extends DCLogic {
       alerts: d.alerts.map(function (a) { return { t: a[0], s: a[1], b: a[2], bc: a[3] }; }), links: links } };
   }
   navItems(active) {
-    var P = {"mrd": [["Records", [["Home", "HomeMrd"], ["Medical Records", "Records"], ["Patient Profile", "PatientProfile"]]], ["Reports", [["Reports", "Reports"]]], ["Personal", [["My Space", "MySpace"]]]]};
+    var P = {"mrd": [["Records", [["Home", "HomeMrd"], ["Medical Records", "Records"], ["Patient Profile", "PatientProfile"], ["Approvals", "Approvals"]]], ["Reports", [["Reports", "Reports"]]], ["Personal", [["My Space", "MySpace"]]]]};
     return P['mrd'].map(function (g) {
       return { label: g[0], items: g[1].map(function (i) {
         var on = i[1] === active;
@@ -224,7 +229,7 @@ class Component extends DCLogic {
       nav: this.navItems('Records'),
       tabs: T.map((t) => ({ l: t, on: t === tab, off: t !== tab, pick: () => this.setState({ tab: t }) })),
       showDef: tab === T[0], showRel: tab === T[1], showBirth: tab === T[2], showDeath: tab === T[3], showMlc: tab === T[4], showStats: tab === T[5],
-      defs: [['IP/26-27/000842', 'K. Nair', '07 Oct', 'Dr. R. Menon', 'Summary unsigned', 'Pending', 'ba'], ['IP/26-27/000839', 'T. Shah', '07 Oct', 'Dr. P. Joshi', 'Consent scan, op notes', 'Pending', 'ba'], ['IP/26-27/000835', 'L. Das', '06 Oct', 'Dr. F. Khan', 'None', 'Coded', 'bg'], ['IP/26-27/000831', 'N. Iyer', '05 Oct', 'Dr. Meera Iyer', 'Progress note day 2', 'Pending', 'ba'], ['IP/26-27/000828', 'H. Singh', '06 Oct', 'Dr. R. Menon', 'MCCD copy', 'Pending', 'ba'], ['IP/26-27/000820', 'P. Rao', '04 Oct', 'Dr. A. Thomas', 'None', 'Closed', 'bn']]
+      defs: [['IP/26-27/000837', 'R. Bose', '08 Oct', 'Dr. P. Joshi', 'Summary unsigned', 'Pending', 'ba'], ['IP/26-27/000833', 'D. Mehta', '09 Oct', 'Dr. P. Joshi', 'Consent scan, op notes', 'Pending', 'ba'], ['IP/26-27/000830', 'B. Gaikwad', '06 Oct', 'Dr. F. Khan', 'None', 'Coded', 'bg'], ['IP/26-27/000831', 'V. Deshmukh', '05 Oct', 'Dr. Meera Iyer', 'Progress note day 2', 'Pending', 'ba'], ['IP/26-27/000828', 'H. Singh', '06 Oct', 'Dr. R. Menon', 'MCCD copy', 'Pending', 'ba'], ['IP/26-27/000818', 'A. Pillai', '04 Oct', 'Dr. A. Thomas', 'None', 'Closed', 'bn']]
         .map(function (d) { return { ip: d[0], p: d[1], dt: d[2], dr: d[3], m: d[4], c: d[5], cc: d[6] }; })
     };
   }

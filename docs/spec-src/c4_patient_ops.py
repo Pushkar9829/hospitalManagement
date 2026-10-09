@@ -132,7 +132,8 @@ def story():
                      "(includes Bed Management)", "CORE",
                      "Admission desk, Doctors, Ward In-charge, Billing, Medical Superintendent",
                      "Manages the in-patient stay from admission request to final bill and "
-                     "discharge, including bed allocation and a live running bill.")
+                     "discharge, including bed allocation, a live running bill, cashless "
+                     "insurance and government schemes, day care and IPD analytics.")
     s += H2("Admission")
     s += table([
         ["Step", "Details"],
@@ -200,6 +201,67 @@ def story():
                  "investigations, condition at discharge, medicines, advice and follow-up. "
                  "Medicines are pulled from the active medication chart so nothing is "
                  "retyped.", "note", "Discharge summary.")
+
+    s += H2("Insurance, TPA and government schemes")
+    s.append(P("The insurance desk gets cashless approvals on time and turns them into paid "
+               "claims. It works with insurers directly, through third-party administrators "
+               "(TPAs), with corporates and with government schemes. Treatment never waits "
+               "for an approval: emergencies are admitted first."))
+    s += flow([
+        ("Admission desk", "Captures payer, policy and ID at admission"),
+        ("Insurance desk", "Verifies policy, sum insured and room-rent limit"),
+        ("Insurance desk", "Sends pre-authorisation with notes and reports"),
+        ("Insurer", "Approves, queries or denies (target 1 hour)"),
+        ("System", "Approved amount on the bill; alerts at 90% used"),
+        ("Insurance desk", "Sends enhancement with updated notes"),
+        ("Billing", "Final bill split into insurer and patient share"),
+        ("Insurer", "Final approval (target 3 hours); claim filed"),
+    ], title="User flow: cashless admission")
+    s += states(["DRAFT", "SENT", "APPROVED", "ENHANCED", "FINAL_APPROVED", "SETTLED"],
+                branches=[(1, "QUERY / DENIED"), (5, "SHORT_PAID")],
+                title="Pre-authorisation lifecycle")
+    s += table([
+        ["Rule", "Detail"],
+        ["Payers", "Cash, corporate, insurer (direct), TPA, PM-JAY, CGHS, ECHS. Each payer has "
+                   "a rate card and its own documents checklist."],
+        ["Time limits", "IRDAI Master Circular (May 2024): insurer decides a cashless request "
+                        "within 1 hour and final discharge approval within 3 hours. The desk "
+                        "sees both timers and escalates when they run out."],
+        ["Room-rent limit", "A room above the policy limit shows the proportionate deduction "
+                            "warning and needs signed upgrade consent before transfer."],
+        ["Enhancement", "Suggested automatically at 90% of the approved amount."],
+        ["Split bill", "Every line is payable by insurer, patient or corporate; non-payable "
+                       "items and co-pay go to the patient share."],
+        ["Government schemes", "Beneficiary check and package pre-authorisation are done on "
+                               "the scheme portal; the number and package are recorded here; "
+                               "scheme rates apply and the patient pays nothing for the "
+                               "package."],
+        ["Claims", "Filed with the documents checklist within the payer's window; payments "
+                   "are matched by UTR and short payments booked as deductions with reason."],
+        ["Denial", "Patient informed with reason; converted to cash or corporate; papers "
+                   "given for a reimbursement claim."],
+    ], widths=[0.22, 0.78], first_col_bold=True)
+
+    s += H2("Packages and day care")
+    s += bullets([
+        "Packages fix the price of a stay or procedure (for example normal delivery, knee "
+        "arthroscopy, cataract). Items outside the package are billed separately and shown "
+        "to the attendant every day; package variance is reported.",
+        "Day care uses day-care beds for same-day admissions such as dialysis, chemotherapy "
+        "and cataract: short admission, procedure, observation and same-day discharge on a "
+        "day-care package, with the next session booked.",
+    ])
+
+    s += H2("OPD and IPD analytics")
+    s += bullets([
+        "OPD: visits, booked versus walk-in, median wait per stage (arrival, check-in, "
+        "triage, doctor, billing, pharmacy), no-show rate, doctor utilisation and late starts.",
+        "IPD: occupancy by ward from the midnight census, average length of stay, bed turnover "
+        "rate and interval, discharge and bed turnaround, revenue per occupied bed day, "
+        "deaths, LAMA and readmissions within 30 days.",
+        "Formulas, targets and the full module flows are in docs/modules/OPD.md and "
+        "docs/modules/IPD.md.",
+    ])
 
     s += H2("Real-time bed management")
     s.append(P("The bed board is a live screen that every admission desk, ward and "

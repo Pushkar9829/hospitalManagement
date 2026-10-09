@@ -48,7 +48,7 @@ summary::-webkit-details-marker{display:none}
 .av{width:36px;height:36px;border-radius:50%;background:#D7E1EE;color:#1D3557;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none}
 </style>
 </helmet>
-<div style="width:100%;min-height:1320px;display:flex;flex-wrap:wrap;background:#F4F6F8">
+<div style="width:100%;min-height:1960px;display:flex;flex-wrap:wrap;background:#F4F6F8">
 <nav aria-label="Main menu" style="flex:1 1 232px;background:#13263F;color:#fff;padding:18px 12px 28px;box-sizing:border-box">
 <div style="display:flex;align-items:center;gap:10px;padding:0 8px 14px;border-bottom:1px solid #24406A;margin-bottom:4px">
 <div style="width:34px;height:34px;border-radius:8px;background:#B4501A;display:flex;align-items:center;justify-content:center;font-weight:700">H</div>
@@ -78,18 +78,23 @@ summary::-webkit-details-marker{display:none}
 <a class="nvl" href="HomeAdmin.dc.html">Hospital Admin</a>
 <a class="nvl" href="HomeMedSupt.dc.html">Medical Superintendent</a>
 <a class="nvl" href="HomeDoctor.dc.html">Doctor</a>
+<a class="nvl" href="HomeHod.dc.html">Head of Department</a>
+<a class="nvl" href="ClinicDesk.dc.html">Clinic (one-screen mode)</a>
 <a class="nvl" href="HomeNurse.dc.html">Staff Nurse</a>
 <a class="nvl" href="HomeWardIncharge.dc.html">Ward In-charge</a>
 <a class="nvl" href="HomeFrontOffice.dc.html">Front Office</a>
+<a class="nvl" href="HomeSecurity.dc.html">Security Desk</a>
 <a class="nvl" href="HomeCashier.dc.html">Cashier</a>
 <a class="nvl" href="HomeBillingMgr.dc.html">Billing Manager</a>
 <a class="nvl" href="HomeLab.dc.html">Laboratory</a>
+<a class="nvl" href="HomePhlebo.dc.html">Home Collection</a>
 <a class="nvl" href="HomeRadiology.dc.html">Radiology</a>
 <a class="nvl" href="HomePharmacy.dc.html">Pharmacy</a>
 <a class="nvl" href="HomeStore.dc.html">Store and Purchase</a>
 <a class="nvl" href="HomeHr.dc.html">HR</a>
 <a class="nvl" href="HomePayroll.dc.html">Payroll</a>
 <a class="nvl" href="HomeAccounts.dc.html">Accounts</a>
+<a class="nvl" href="HomeAuditor.dc.html">Auditor</a>
 <a class="nvl" href="HomeMrd.dc.html">Medical Records</a>
 <a class="nvl" href="HomeKitchen.dc.html">Kitchen</a>
 <a class="nvl" href="HomeFacility.dc.html">Facility</a>
@@ -109,8 +114,8 @@ summary::-webkit-details-marker{display:none}
 <div class="ch"><h2 class="h2">Roles</h2><button class="btn2" type="button">New role</button></div>
 <div style="padding:8px;display:flex;flex-direction:column;gap:2px">
 <sc-for list="{{roles}}" as="r" hint-placeholder-count="12">
-<sc-if value="{{r.on}}" hint-placeholder-val="{{false}}"><button type="button" style="display:flex;justify-content:space-between;align-items:center;width:100%;padding:9px 10px;border:0;border-radius:7px;background:#E6EEF9;font:600 13px 'IBM Plex Sans',sans-serif;color:#142130;cursor:pointer;min-height:40px"><span>{{r.n}}</span><span class="cap">{{r.u}} users</span></button></sc-if>
-<sc-if value="{{r.off}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{r.pick}}" style="display:flex;justify-content:space-between;align-items:center;width:100%;padding:9px 10px;border:0;border-radius:7px;background:transparent;font:13px 'IBM Plex Sans',sans-serif;color:#142130;cursor:pointer;min-height:40px"><span>{{r.n}}</span><span class="cap">{{r.u}} users</span></button></sc-if>
+<sc-if value="{{r.on}}" hint-placeholder-val="{{false}}"><button type="button" style="display:flex;justify-content:space-between;align-items:center;width:100%;padding:9px 10px;border:0;border-radius:7px;background:#E6EEF9;font:600 13px 'IBM Plex Sans',sans-serif;color:#142130;cursor:pointer;min-height:40px"><span>{{r.n}}</span><span class="cap">{{r.u}}</span></button></sc-if>
+<sc-if value="{{r.off}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{r.pick}}" style="display:flex;justify-content:space-between;align-items:center;width:100%;padding:9px 10px;border:0;border-radius:7px;background:transparent;font:13px 'IBM Plex Sans',sans-serif;color:#142130;cursor:pointer;min-height:40px"><span>{{r.n}}</span><span class="cap">{{r.u}}</span></button></sc-if>
 </sc-for>
 </div>
 </section>
@@ -124,6 +129,7 @@ summary::-webkit-details-marker{display:none}
 <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:14px">
 <label style="display:flex;gap:6px;align-items:center;min-height:36px"><input type="radio" name="scope"> Own records</label>
 <label style="display:flex;gap:6px;align-items:center;min-height:36px"><input type="radio" name="scope" checked="checked"> Assigned ward</label>
+<label style="display:flex;gap:6px;align-items:center;min-height:36px"><input type="radio" name="scope"> Department</label>
 <label style="display:flex;gap:6px;align-items:center;min-height:36px"><input type="radio" name="scope"> Branch</label>
 <label style="display:flex;gap:6px;align-items:center;min-height:36px"><input type="radio" name="scope"> All</label>
 </div></fieldset>
@@ -147,7 +153,7 @@ summary::-webkit-details-marker{display:none}
 </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1320}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1960}}'>
 class Component extends DCLogic {
   tabState(def) { return (this.state && this.state.tab) || def; }
   tabsOf(T, cur) { return T.map((t) => ({ l: t, on: t === cur, off: t !== cur, pick: () => this.setState({ tab: t }) })); }
@@ -189,11 +195,11 @@ class Component extends DCLogic {
   }
   renderVals() {
     var sel = (this.state && this.state.sel) || 'Staff Nurse';
-    var R = [['Hospital Super Admin', 2], ['Hospital Admin', 3], ['Consultant Doctor', 46], ['Resident Doctor', 22], ['Staff Nurse', 138], ['Ward In-charge', 12], ['Front Office Executive', 14], ['Cashier', 9], ['Billing Manager', 2], ['Lab Technician', 11], ['Pathologist', 3], ['Pharmacist', 8], ['Store Keeper', 4], ['HR Manager', 2], ['Payroll Officer', 1], ['Accountant', 3], ['MRD Officer', 2], ['Quality Manager', 1], ['CRM Executive', 4], ['Employee (self-service)', 412]];
+    var R = [['Hospital Super Admin', 2], ['Hospital Admin', 3], ['Medical Superintendent', 1], ['Department Head (HOD)', 9], ['Consultant Doctor', 46], ['Resident / Duty Doctor', 22], ['Nursing Superintendent', 1], ['Ward In-charge (Sister)', 12], ['Staff Nurse', 138], ['Front Office Executive', 14], ['Security Desk', 6], ['Cashier', 9], ['Billing Manager', 2], ['TPA Coordinator', 3], ['Accountant', 3], ['Finance Controller', 1], ['Auditor', 2], ['Lab Technician', 11], ['Pathologist / Lab In-charge', 3], ['Home Phlebotomist', 3], ['Radiology Technician', 6], ['Radiologist', 2], ['Pharmacist', 8], ['Pharmacy In-charge', 1], ['Store Keeper', 4], ['Purchase Manager', 1], ['HR Manager', 2], ['HR Executive', 3], ['Payroll Officer', 1], ['MRD Officer / Coder', 2], ['Dietitian', 2], ['Kitchen Supervisor', 1], ['Housekeeping Supervisor', 2], ['Maintenance Technician', 4], ['Biomedical Engineer', 1], ['Quality Manager', 1], ['Infection Control Nurse', 1], ['Call Centre / CRM Executive', 4], ['Employee (self-service)', 412]];
     var P = [['Patients', 'Patient record', 1, 0, 0, 0, 1], ['IPD', 'Bed board', 1, 0, 0, 0, 0], ['Nursing', 'Vitals', 1, 1, 1, 0, 1], ['Nursing', 'Medication administration', 1, 1, 0, 0, 1], ['Nursing', 'Nursing notes', 1, 1, 1, 0, 1], ['Nursing', 'Indents', 1, 1, 1, 0, 0], ['Nursing', 'ICU chart', 1, 1, 1, 0, 1], ['Laboratory', 'Results', 1, 0, 0, 0, 1], ['Pharmacy', 'Ward issues', 1, 1, 0, 0, 0], ['Diet', 'Diet orders', 1, 1, 0, 0, 0], ['Facility', 'Maintenance tickets', 1, 1, 0, 0, 0], ['Quality', 'Incident reports', 1, 1, 0, 0, 0], ['Billing', 'Running bill', 0, 0, 0, 0, 0]];
     return {
       nav: this.navItems('Roles'), sel: sel,
-      roles: R.map((r) => ({ n: r[0], u: r[1], on: r[0] === sel, off: r[0] !== sel, pick: () => this.setState({ sel: r[0] }) })),
+      roles: R.map((r) => ({ n: r[0], u: r[1] + (r[1] === 1 ? ' user' : ' users'), on: r[0] === sel, off: r[0] !== sel, pick: () => this.setState({ sel: r[0] }) })),
       perms: P.map(function (p) { return { m: p[0], r: p[1], v: !!p[2], c: !!p[3], e: !!p[4], a: !!p[5], x: !!p[6] }; })
     };
   }

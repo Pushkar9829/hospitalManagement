@@ -62,6 +62,9 @@ def story():
                                       "statusChangedAt"],
         ["IPD", "admissions, transfers, dischargeSummaries", "ipNo, bed history[], "
                                                              "consultants, payer, status"],
+        ["IPD", "preAuths, claims, settlements", "admissionId, payerId, policyNo, "
+                                                  "requested, approved[], status, timers, "
+                                                  "documents[], utr"],
         ["NUR", "vitals, marEntries, nursingNotes, ioCharts, handovers", "admissionId, at, "
                                                                           "by, values"],
         ["LAB", "labTests, labSamples, labResults", "parameters, ranges; barcode, status "

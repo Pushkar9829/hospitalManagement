@@ -297,6 +297,31 @@
     ]
    ],
    [
+    "Services",
+    [
+     [
+      "Medical Records",
+      "Records"
+     ],
+     [
+      "Diet & Kitchen",
+      "Diet"
+     ],
+     [
+      "Facility",
+      "Facility"
+     ],
+     [
+      "Quality",
+      "Quality"
+     ],
+     [
+      "CRM",
+      "Crm"
+     ]
+    ]
+   ],
+   [
     "Personal",
     [
      [
@@ -441,6 +466,145 @@
      [
       "Radiology",
       "Radiology"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "hod": {
+  "name": "Head of Department",
+  "roles": "Department Head (HOD)",
+  "user": "Dr. Meera Iyer",
+  "init": "MI",
+  "home": "HomeHod",
+  "scope": "Own department (Cardiology)",
+  "menu": [
+   [
+    "My department",
+    [
+     [
+      "Home",
+      "HomeHod"
+     ],
+     [
+      "Approvals",
+      "Approvals"
+     ],
+     [
+      "Rosters",
+      "Roster"
+     ],
+     [
+      "Reports",
+      "Reports"
+     ]
+    ]
+   ],
+   [
+    "Clinical",
+    [
+     [
+      "OPD Consultation",
+      "Consult"
+     ],
+     [
+      "In-patient Rounds",
+      "IpdRounds"
+     ],
+     [
+      "Discharge Desk",
+      "Discharge"
+     ],
+     [
+      "Bed Board",
+      "Beds"
+     ]
+    ]
+   ],
+   [
+    "Department",
+    [
+     [
+      "Indents and Stock",
+      "Inventory"
+     ],
+     [
+      "Quality",
+      "Quality"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "clinic": {
+  "name": "Clinic (one-screen mode)",
+  "roles": "Clinic doctor who is also the admin",
+  "user": "Dr. Anil Deshpande",
+  "init": "AD",
+  "home": "ClinicDesk",
+  "scope": "Whole clinic",
+  "menu": [
+   [
+    "Clinic",
+    [
+     [
+      "Today's Clinic",
+      "ClinicDesk"
+     ],
+     [
+      "Appointments",
+      "Opd"
+     ],
+     [
+      "Patients",
+      "Patients"
+     ],
+     [
+      "Billing",
+      "Billing"
+     ],
+     [
+      "Pharmacy",
+      "Pharmacy"
+     ]
+    ]
+   ],
+   [
+    "Setup",
+    [
+     [
+      "Clinic Settings",
+      "Settings"
+     ],
+     [
+      "Users",
+      "Users"
+     ],
+     [
+      "Reports",
+      "Reports"
+     ],
+     [
+      "Subscription",
+      "Subscription"
      ]
     ]
    ],
@@ -641,6 +805,68 @@
     ]
    ],
    [
+    "Records and CRM",
+    [
+     [
+      "Medical Records",
+      "Records"
+     ],
+     [
+      "CRM",
+      "Crm"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "security": {
+  "name": "Security Desk",
+  "roles": "Security Desk",
+  "user": "Sunil Jadhav",
+  "init": "SJ",
+  "home": "HomeSecurity",
+  "scope": "Gate and ward entrances",
+  "menu": [
+   [
+    "Gate",
+    [
+     [
+      "Home",
+      "HomeSecurity"
+     ],
+     [
+      "Visitors and Passes",
+      "FrontOffice"
+     ],
+     [
+      "Bed Board",
+      "Beds"
+     ]
+    ]
+   ],
+   [
+    "Requests",
+    [
+     [
+      "Tickets",
+      "Facility"
+     ],
+     [
+      "Report Incident",
+      "Quality"
+     ]
+    ]
+   ],
+   [
     "Personal",
     [
      [
@@ -792,6 +1018,38 @@
      [
       "Quality",
       "Quality"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "phlebotomist": {
+  "name": "Home Collection",
+  "roles": "Home Collection Phlebotomist",
+  "user": "Kiran More",
+  "init": "KM",
+  "home": "HomePhlebo",
+  "scope": "Assigned area, own visits",
+  "menu": [
+   [
+    "Visits",
+    [
+     [
+      "Home",
+      "HomePhlebo"
+     ],
+     [
+      "Laboratory",
+      "Lab"
      ]
     ]
    ],
@@ -1101,6 +1359,54 @@
    ]
   ]
  },
+ "auditor": {
+  "name": "Auditor",
+  "roles": "Auditor (internal or statutory), read-only",
+  "user": "CA Sanjay Gupta",
+  "init": "SG",
+  "home": "HomeAuditor",
+  "scope": "Whole hospital, read-only",
+  "menu": [
+   [
+    "Overview",
+    [
+     [
+      "Home",
+      "HomeAuditor"
+     ],
+     [
+      "Audit Log",
+      "AuditLog"
+     ],
+     [
+      "Reports",
+      "Reports"
+     ]
+    ]
+   ],
+   [
+    "Books and records",
+    [
+     [
+      "Finance",
+      "Finance"
+     ],
+     [
+      "Inventory",
+      "Inventory"
+     ],
+     [
+      "Payroll",
+      "Payroll"
+     ],
+     [
+      "Approvals History",
+      "Approvals"
+     ]
+    ]
+   ]
+  ]
+ },
  "mrd": {
   "name": "Medical Records",
   "roles": "MRD Officer, Medical Coder",
@@ -1123,6 +1429,10 @@
      [
       "Patient Profile",
       "PatientProfile"
+     ],
+     [
+      "Approvals",
+      "Approvals"
      ]
     ]
    ],
@@ -1208,6 +1518,10 @@
      [
       "Store Indents",
       "Inventory"
+     ],
+     [
+      "Approvals",
+      "Approvals"
      ]
     ]
    ],
@@ -1244,6 +1558,10 @@
      [
       "Medical Records",
       "Records"
+     ],
+     [
+      "Approvals",
+      "Approvals"
      ]
     ]
    ],

@@ -78,18 +78,23 @@ summary::-webkit-details-marker{display:none}
 <a class="nvl" href="HomeAdmin.dc.html">Hospital Admin</a>
 <a class="nvl" href="HomeMedSupt.dc.html">Medical Superintendent</a>
 <a class="nvl" href="HomeDoctor.dc.html">Doctor</a>
+<a class="nvl" href="HomeHod.dc.html">Head of Department</a>
+<a class="nvl" href="ClinicDesk.dc.html">Clinic (one-screen mode)</a>
 <a class="nvl" href="HomeNurse.dc.html">Staff Nurse</a>
 <a class="nvl" href="HomeWardIncharge.dc.html">Ward In-charge</a>
 <a class="nvl" href="HomeFrontOffice.dc.html">Front Office</a>
+<a class="nvl" href="HomeSecurity.dc.html">Security Desk</a>
 <a class="nvlA" href="HomeCashier.dc.html">Cashier</a>
 <a class="nvl" href="HomeBillingMgr.dc.html">Billing Manager</a>
 <a class="nvl" href="HomeLab.dc.html">Laboratory</a>
+<a class="nvl" href="HomePhlebo.dc.html">Home Collection</a>
 <a class="nvl" href="HomeRadiology.dc.html">Radiology</a>
 <a class="nvl" href="HomePharmacy.dc.html">Pharmacy</a>
 <a class="nvl" href="HomeStore.dc.html">Store and Purchase</a>
 <a class="nvl" href="HomeHr.dc.html">HR</a>
 <a class="nvl" href="HomePayroll.dc.html">Payroll</a>
 <a class="nvl" href="HomeAccounts.dc.html">Accounts</a>
+<a class="nvl" href="HomeAuditor.dc.html">Auditor</a>
 <a class="nvl" href="HomeMrd.dc.html">Medical Records</a>
 <a class="nvl" href="HomeKitchen.dc.html">Kitchen</a>
 <a class="nvl" href="HomeFacility.dc.html">Facility</a>
@@ -219,7 +224,7 @@ class Component extends DCLogic {
     return {
       nav: this.navItems('IpdBill'),
       kpis: [{ l: 'In-patients on cash or corporate', v: '65', n: '38 more on insurance' }, { l: 'Deposit below 20%', v: '4', n: 'top-up SMS sent' }, { l: 'Discharges to bill today', v: '6', n: '1 final, 2 drafts' }, { l: 'Final bill time', v: '38 min', n: 'median this week · target 45' }, { l: 'Refunds due', v: '₹22,600', n: '3 patients' }],
-      pts: [['K. Nair', 'W2-205-A', 'Cash', fin ? 'Final' : 'Final draft', fin ? 'bg' : 'ba', true], ['A. Joshi', 'W1-108-A', 'Cash', 'Dues ₹18,400', 'br'], ['F. Ali', 'W2-204-A', 'Cash (claim denied)', 'Deposit 85% used', 'bo'], ['L. Das', 'PVT-05', 'ICICI Lombard', 'Insurer final pending', 'ba'], ['Ravi Kumar', 'W2-204-B', 'Self', 'Running', 'bn'], ['J. Dsouza', 'W2-205-B', 'HDFC Ergo', 'Enhancement due', 'bo']]
+      pts: [['K. Nair', 'W2-205-A', 'Cash', fin ? 'Final' : 'Final draft', fin ? 'bg' : 'ba', true], ['A. Joshi', 'W2-202-A', 'Cash', 'Dues ₹18,400', 'br'], ['F. Ali', 'W2-204-A', 'Cash (claim denied)', 'Deposit 85% used', 'bo'], ['L. Das', 'PVT-05', 'ICICI Lombard', 'Insurer final pending', 'ba'], ['Ravi Kumar', 'W2-204-B', 'Self', 'Running', 'bn'], ['J. Dsouza', 'W2-205-B', 'HDFC Ergo', 'Enhancement due', 'bo']]
         .map(function (p) { return { n: p[0], bed: p[1], payer: p[2], s: p[3], c: p[4], bg: p[5] ? '#E6EEF9' : 'transparent' }; }),
       stl: fin ? 'Final bill made' : 'Final draft', stc: fin ? 'bg' : 'ba',
       cred: credited ? '₹1,240' : '₹0', bal: credited ? '₹17,410' : '₹18,650',
@@ -233,10 +238,10 @@ class Component extends DCLogic {
   }
   tabDefs() {
     return { main: 'Running bills', tabs: ['Running bills', 'Deposits and refunds', 'Packages', 'Discount requests', 'Auto-charge log'], panels: {
-      'Deposits and refunds': { title: 'Deposits and refunds today', acts: ['Collect deposit'], head: ['Time', 'Patient', 'Type', 'Mode', 'Amount', 'Receipt'], rows: [['09:05', 'Sunita Pawar', 'Admission deposit', 'UPI', '₹20,000', '#RC/26-27/004410'], ['09:40', 'F. Ali', 'Top-up', 'Card', '₹15,000', '#RC/26-27/004415'], ['10:30', 'T. Shah', 'Refund of excess deposit', 'Bank transfer', '-₹6,800', '#RF/26-27/000212'], ['11:10', 'Meena Kadam', 'Package advance', 'UPI', '₹40,000', '#RC/26-27/004422']], note: 'Refunds above ₹25,000 need Billing Manager approval. Refunds go back to the original payment mode where possible.' },
+      'Deposits and refunds': { title: 'Deposits and refunds today', acts: ['Collect deposit'], head: ['Time', 'Patient', 'Type', 'Mode', 'Amount', 'Receipt'], rows: [['09:05', 'Sunita Pawar', 'Admission deposit', 'UPI', '₹20,000', '#RC/26-27/004410'], ['09:40', 'F. Ali', 'Top-up', 'Card', '₹15,000', '#RC/26-27/004415'], ['11:05', 'T. Shah', 'Refund of excess deposit', 'Bank transfer', '-₹6,800', '#RF/26-27/000212'], ['11:10', 'Meena Kadam', 'Package advance', 'UPI', '₹40,000', '#RC/26-27/004422']], note: 'Refunds above ₹25,000 need Billing Manager approval. Refunds go back to the original payment mode where possible.' },
       'Packages': { title: 'Patients on packages', sub: 'Items outside the package are billed separately and shown to the attendant every day.', head: ['Patient', 'Package', 'Package price', 'Used so far', 'Outside package', 'Status'], rows: [['Meena Kadam', 'Knee arthroscopy (3 days, private)', '₹95,000', '₹0', '₹0', '~bb:Admitted today'], ['G. Kale', 'CGHS pneumonia', '₹62,000', '₹41,000', '₹0', '~bg:Within package'], ['R. Bose', 'Hip replacement (5 days)', '₹2,40,000', '₹2,40,000', '₹14,500 (extra 2 days)', '~ba:Over stay']] },
       'Discount requests': { title: 'Discount requests', sub: 'Up to 5% or ₹10,000 the Billing Manager approves; above that, the Super Admin.', acts: ['New request'], head: ['Patient', 'Asked', 'Reason', 'Raised by', 'Status'], rows: [['A. Joshi', '₹8,000', 'Long stay, family hardship', 'Neha Kulkarni', '~ba:With Billing Manager'], ['S. Patil', '₹1,500', 'Staff family', 'Neha Kulkarni', '~bg:Approved']] },
-      'Auto-charge log': { title: 'Auto-charges posted last night (00:05)', sub: 'Room and nursing by midnight census; ICU above 6 h counts as a full day.', head: ['Ward', 'Patients', 'Room and nursing', 'RMO', 'Diet', 'Exceptions'], rows: [['Ward 2', '8', '₹22,400', '₹4,000', '₹3,600', '~bg:None'], ['ICU', '8', '₹96,000', '₹8,000', '₹2,400', '~ba:1 transfer at 23:40, check'], ['Private', '5', '₹32,500', '₹2,500', '₹2,250', '~bg:None']] }
+      'Auto-charge log': { title: 'Auto-charges posted last night (00:05)', sub: 'Room and nursing by midnight census; ICU above 6 h counts as a full day.', head: ['Ward', 'Patients', 'Room and nursing', 'RMO', 'Diet', 'Exceptions'], rows: [['Ward 2', '9', '₹25,200', '₹4,500', '₹4,050', '~bg:None'], ['ICU', '8', '₹96,000', '₹8,000', '₹2,400', '~ba:1 transfer at 23:40, check'], ['Private', '5', '₹32,500', '₹2,500', '₹2,250', '~bg:None']] }
     } };
   }
   renderVals() {

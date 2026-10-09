@@ -15,7 +15,7 @@ import c1_overview, c1b_saas, c2_roles, c3_core, c4_patient_ops, c5_clinical, c6
 import c7_business, c7b_support, c8_journeys, c9_arch, c10_data, c11_code, c12_api, c13_deploy
 
 TITLE = "Hospital Management System - Phase 1 SaaS Product and Technical Specification"
-VERSION = "1.2"
+VERSION = "1.3"
 OUT = os.path.join(os.path.dirname(__file__), "..", "Hospital_Management_System_Phase1_Specification.pdf")
 
 

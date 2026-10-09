@@ -10,6 +10,6 @@
         head: ['Date', 'Yellow (kg)', 'Red (kg)', 'White (kg)', 'Blue (kg)', 'Total', 'Manifest', 'Handover'],
         rows: [['09 Oct', '42', '31', '6', '9', '88', '#BMW/26/1009', '~bg:08:30'], ['08 Oct', '39', '29', '5', '8', '81', '#BMW/26/1008', '~bg:08:25'], ['07 Oct', '44', '33', '6', '10', '93', '#BMW/26/1007', '~bg:08:40']] },
       'Patient transport': { title: 'Patient transport requests', acts: ['New request'], head: ['Request', 'Patient', 'From', 'To', 'Mode', 'Requested', 'Porter', 'Status'],
-        rows: [['#PT-0441', 'Ravi Kumar', 'W2-204-B', 'Radiology (2D Echo)', 'Wheelchair', '14:40', 'Ganesh', '~bo:Assigned'], ['#PT-0440', 'K. Nair', 'ICU-04', 'CT scan', 'Stretcher + O2', '13:10', 'Raju, Vinod', '~bg:Done'], ['#PT-0439', 'T. Shah', 'W1-112-B', 'Main gate (discharge)', 'Wheelchair', '12:20', 'Ganesh', '~bg:Done']] }
+        rows: [['#PT-0441', 'Ravi Kumar', 'W2-204-B', 'Radiology (2D Echo)', 'Wheelchair', '14:40', 'Ganesh', '~bo:Assigned'], ['#PT-0440', 'R. Shetty', 'ICU-04', 'CT scan', 'Stretcher + O2', '13:10', 'Raju, Vinod', '~bg:Done'], ['#PT-0439', 'T. Shah', 'W1-112-B', 'Main gate (discharge)', 'Wheelchair', '12:20', 'Ganesh', '~bg:Done']] }
     } };
   }

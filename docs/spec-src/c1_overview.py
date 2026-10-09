@@ -62,7 +62,9 @@ def story():
          "department registration, hospital setup and masters, audit trail, notifications"],
         ["<b>Patient Operations</b>",
          "Patient registration (UHID), OPD appointment scheduling and queue, IPD admission, "
-         "transfer and discharge, real-time bed management"],
+         "transfer and discharge, real-time bed management, insurance and TPA "
+         "pre-authorisation and claims, government schemes (PM-JAY, CGHS, ECHS), packages, "
+         "day care, OPD and IPD analytics"],
         ["<b>Clinical Workflows</b>",
          "Nursing stations and nursing notes, shift rosters, doctor profiles and scheduling, "
          "staff directory, OPD consultation and e-prescription"],
@@ -85,14 +87,15 @@ def story():
                "they plug in later as new subscription modules without rework."))
     s += table([
         ["Phase 2 item", "Phase 1 hook already in place"],
-        ["Emergency Room, Operation Theatre (with CSSD), Day Care",
+        ["Emergency Room, Operation Theatre (with CSSD)",
          "Admission source field, bed categories, service master and billing engine accept "
          "new departments"],
-        ["Insurance / TPA management",
-         "Payer field on every bill, price lists per payer, pre-authorisation status field"],
+        ["Direct insurer exchange (National Health Claims Exchange) and scheme portal APIs",
+         "Phase 1 insurance desk keeps pre-authorisations, replies, documents and claims with "
+         "insurer reference numbers; staff key them into insurer and scheme portals"],
         ["Blood bank, ambulance, global referrals",
          "Generic order and service model, partner master, notification engine"],
-        ["Advanced analytics (staff, doctor, nurse performance, OPD time-in-hospital)",
+        ["Advanced analytics (staff, doctor and nurse performance scorecards, forecasting)",
          "Every event is timestamped (check-in, consult start, consult end, billing, exit) "
          "and kept in an event log"],
         ["AI features (follow-up bots, smart registration, dictation, OCR, remote care)",
@@ -140,10 +143,12 @@ def story():
          "audit, notifications, dashboards"],
         ["OPD", "OPD and Appointments", "Add-on", "CORE",
          "Doctor schedules, slots, booking, walk-in tokens, queue screen, vitals, "
-         "consultation notes, e-prescription, follow-ups"],
+         "consultation notes, e-prescription, follow-ups, OPD analytics (wait time per "
+         "stage)"],
         ["IPD", "IPD, ADT and Beds", "Add-on", "CORE",
          "Admission, transfer, discharge, real-time bed board, running bill, deposits, "
-         "discharge summary"],
+         "discharge summary, insurance and TPA desk (pre-authorisation, enhancement, final "
+         "approval, claims), government schemes, packages, day care, IPD analytics"],
         ["NUR", "Nursing Station", "Add-on", "IPD",
          "Ward census, vitals chart, medication administration, nursing notes, intake and "
          "output, handover, indents"],

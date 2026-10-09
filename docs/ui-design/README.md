@@ -4,12 +4,12 @@ The full clickable design lives on a design canvas:
 https://claude.ai/artifact/Fnp7CKPFT5jbiEFyMFNRq2
 (private until the owner shares it from the canvas Share menu).
 
-It has 112 boards on 15 pages, and 22 role panels (each role has its own home page, menu and data scope):
+It has 117 boards on 15 pages, and 27 role panels (each role has its own home page, menu and data scope):
 
 | Page | Boards |
 |---|---|
 | Phase 0 · Foundations | Overview, design system, login and 2FA |
-| Role Panels | Role panel map and a home dashboard for each of 20 roles |
+| Role Panels | Role panel map, a home dashboard for each of 24 roles (including Head of Department, Security Desk, Home Collection and Auditor) and the clinic one-screen desk |
 | OPD 1 · Module flow end to end | OPD overview and competitor benchmark, swimlane flow, alternate flows, status lifecycles, rules and tests, OPD settings, OPD analytics |
 | OPD 2 · Role-wise flows | OPD flow for patient, call centre, front office, cashier, nurse, doctor, pharmacy and lab, OPD admin, management, with their screens |
 | IPD 1 · Module flow end to end | IPD overview and competitor benchmark, swimlane flow (admission advice to bed turnaround), 13 alternate flows, status lifecycles, rules and tests, IPD settings, IPD analytics |

@@ -34,7 +34,7 @@
       "x": 0,
       "y": 0,
       "w": 1440,
-      "h": 2600,
+      "h": 3560,
       "title": "03 Role Panel Map",
       "page": "p10",
       "is_interactive": true,
@@ -42,7 +42,7 @@
     },
     "HomeAdmin.dc.html": {
       "x": 0,
-      "y": 2720,
+      "y": 3680,
       "w": 1440,
       "h": 1320,
       "title": "04 Home · Hospital Admin",
@@ -52,7 +52,7 @@
     },
     "HomeMedSupt.dc.html": {
       "x": 1520,
-      "y": 2720,
+      "y": 3680,
       "w": 1440,
       "h": 1320,
       "title": "05 Home · Medical Superintendent",
@@ -62,7 +62,7 @@
     },
     "HomeDoctor.dc.html": {
       "x": 3040,
-      "y": 2720,
+      "y": 3680,
       "w": 1440,
       "h": 1320,
       "title": "06 Home · Doctor",
@@ -72,7 +72,7 @@
     },
     "HomeNurse.dc.html": {
       "x": 4560,
-      "y": 2720,
+      "y": 3680,
       "w": 1440,
       "h": 1320,
       "title": "07 Home · Staff Nurse",
@@ -82,7 +82,7 @@
     },
     "HomeWardIncharge.dc.html": {
       "x": 0,
-      "y": 4160,
+      "y": 5120,
       "w": 1440,
       "h": 1320,
       "title": "08 Home · Ward In-charge",
@@ -92,7 +92,7 @@
     },
     "HomeFrontOffice.dc.html": {
       "x": 1520,
-      "y": 4160,
+      "y": 5120,
       "w": 1440,
       "h": 1320,
       "title": "09 Home · Front Office",
@@ -102,7 +102,7 @@
     },
     "HomeCashier.dc.html": {
       "x": 3040,
-      "y": 4160,
+      "y": 5120,
       "w": 1440,
       "h": 1320,
       "title": "10 Home · Cashier",
@@ -112,7 +112,7 @@
     },
     "HomeBillingMgr.dc.html": {
       "x": 4560,
-      "y": 4160,
+      "y": 5120,
       "w": 1440,
       "h": 1320,
       "title": "11 Home · Billing Manager",
@@ -122,7 +122,7 @@
     },
     "HomeLab.dc.html": {
       "x": 0,
-      "y": 5600,
+      "y": 6560,
       "w": 1440,
       "h": 1320,
       "title": "12 Home · Laboratory",
@@ -132,7 +132,7 @@
     },
     "HomeRadiology.dc.html": {
       "x": 1520,
-      "y": 5600,
+      "y": 6560,
       "w": 1440,
       "h": 1320,
       "title": "13 Home · Radiology",
@@ -142,7 +142,7 @@
     },
     "HomePharmacy.dc.html": {
       "x": 3040,
-      "y": 5600,
+      "y": 6560,
       "w": 1440,
       "h": 1320,
       "title": "14 Home · Pharmacy",
@@ -152,7 +152,7 @@
     },
     "HomeStore.dc.html": {
       "x": 4560,
-      "y": 5600,
+      "y": 6560,
       "w": 1440,
       "h": 1320,
       "title": "15 Home · Store and Purchase",
@@ -162,7 +162,7 @@
     },
     "HomeHr.dc.html": {
       "x": 0,
-      "y": 7040,
+      "y": 8000,
       "w": 1440,
       "h": 1320,
       "title": "16 Home · HR",
@@ -172,7 +172,7 @@
     },
     "HomePayroll.dc.html": {
       "x": 1520,
-      "y": 7040,
+      "y": 8000,
       "w": 1440,
       "h": 1320,
       "title": "17 Home · Payroll",
@@ -182,7 +182,7 @@
     },
     "HomeAccounts.dc.html": {
       "x": 3040,
-      "y": 7040,
+      "y": 8000,
       "w": 1440,
       "h": 1320,
       "title": "18 Home · Accounts",
@@ -192,7 +192,7 @@
     },
     "HomeMrd.dc.html": {
       "x": 4560,
-      "y": 7040,
+      "y": 8000,
       "w": 1440,
       "h": 1320,
       "title": "19 Home · Medical Records",
@@ -202,7 +202,7 @@
     },
     "HomeKitchen.dc.html": {
       "x": 0,
-      "y": 8480,
+      "y": 9440,
       "w": 1440,
       "h": 1320,
       "title": "20 Home · Kitchen",
@@ -212,7 +212,7 @@
     },
     "HomeFacility.dc.html": {
       "x": 1520,
-      "y": 8480,
+      "y": 9440,
       "w": 1440,
       "h": 1320,
       "title": "21 Home · Facility",
@@ -222,7 +222,7 @@
     },
     "HomeQuality.dc.html": {
       "x": 3040,
-      "y": 8480,
+      "y": 9440,
       "w": 1440,
       "h": 1320,
       "title": "22 Home · Quality",
@@ -232,7 +232,7 @@
     },
     "HomeCrm.dc.html": {
       "x": 4560,
-      "y": 8480,
+      "y": 9440,
       "w": 1440,
       "h": 1320,
       "title": "23 Home · CRM and Call Centre",
@@ -301,7 +301,7 @@
       "expand": "fill"
     },
     "Approvals.dc.html": {
-      "h": 1320,
+      "h": 1640,
       "page": "p2",
       "title": "30 Approvals Inbox",
       "w": 1440,
@@ -326,7 +326,7 @@
       "title": "32 Audit Log",
       "w": 1440,
       "x": 0,
-      "y": 1440,
+      "y": 1760,
       "is_interactive": true,
       "expand": "fill"
     },
@@ -336,7 +336,7 @@
       "title": "33 Hospital Settings",
       "w": 1440,
       "x": 1520,
-      "y": 1440,
+      "y": 1760,
       "is_interactive": true,
       "expand": "fill"
     },
@@ -346,17 +346,17 @@
       "title": "34 Users",
       "w": 1440,
       "x": 3040,
-      "y": 1440,
+      "y": 1760,
       "is_interactive": true,
       "expand": "fill"
     },
     "Roles.dc.html": {
-      "h": 1320,
+      "h": 1960,
       "page": "p2",
       "title": "35 Roles & Access",
       "w": 1440,
       "x": 0,
-      "y": 2880,
+      "y": 3200,
       "is_interactive": true,
       "expand": "fill"
     },
@@ -366,7 +366,7 @@
       "title": "36 Departments & Masters",
       "w": 1440,
       "x": 1520,
-      "y": 2880,
+      "y": 3200,
       "is_interactive": true,
       "expand": "fill"
     },
@@ -1070,6 +1070,56 @@
       "title": "IPD · Management · flow",
       "page": "p14",
       "is_interactive": true
+    },
+    "HomeHod.dc.html": {
+      "x": 0,
+      "y": 10880,
+      "w": 1440,
+      "h": 1320,
+      "title": "24 Home · Head of Department",
+      "page": "p10",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "ClinicDesk.dc.html": {
+      "x": 1520,
+      "y": 10880,
+      "w": 1440,
+      "h": 1320,
+      "title": "25 Clinic desk (one-screen mode)",
+      "page": "p10",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "HomeSecurity.dc.html": {
+      "x": 3040,
+      "y": 10880,
+      "w": 1440,
+      "h": 1320,
+      "title": "26 Home · Security Desk",
+      "page": "p10",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "HomePhlebo.dc.html": {
+      "x": 4560,
+      "y": 10880,
+      "w": 1440,
+      "h": 1320,
+      "title": "27 Home · Home Collection",
+      "page": "p10",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "HomeAuditor.dc.html": {
+      "x": 0,
+      "y": 12320,
+      "w": 1440,
+      "h": 1320,
+      "title": "28 Home · Auditor",
+      "page": "p10",
+      "is_interactive": true,
+      "expand": "fill"
     }
   },
   "createdOnFiles": {
@@ -1243,6 +1293,11 @@
     "HomeFacility.dc.html",
     "HomeQuality.dc.html",
     "HomeCrm.dc.html",
+    "HomeHod.dc.html",
+    "ClinicDesk.dc.html",
+    "HomeSecurity.dc.html",
+    "HomePhlebo.dc.html",
+    "HomeAuditor.dc.html",
     "Signup.dc.html",
     "SetupWizard.dc.html",
     "Console.dc.html",

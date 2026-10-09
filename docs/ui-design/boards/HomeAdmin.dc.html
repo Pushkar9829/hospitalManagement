@@ -78,18 +78,23 @@ summary::-webkit-details-marker{display:none}
 <a class="nvlA" href="HomeAdmin.dc.html">Hospital Admin</a>
 <a class="nvl" href="HomeMedSupt.dc.html">Medical Superintendent</a>
 <a class="nvl" href="HomeDoctor.dc.html">Doctor</a>
+<a class="nvl" href="HomeHod.dc.html">Head of Department</a>
+<a class="nvl" href="ClinicDesk.dc.html">Clinic (one-screen mode)</a>
 <a class="nvl" href="HomeNurse.dc.html">Staff Nurse</a>
 <a class="nvl" href="HomeWardIncharge.dc.html">Ward In-charge</a>
 <a class="nvl" href="HomeFrontOffice.dc.html">Front Office</a>
+<a class="nvl" href="HomeSecurity.dc.html">Security Desk</a>
 <a class="nvl" href="HomeCashier.dc.html">Cashier</a>
 <a class="nvl" href="HomeBillingMgr.dc.html">Billing Manager</a>
 <a class="nvl" href="HomeLab.dc.html">Laboratory</a>
+<a class="nvl" href="HomePhlebo.dc.html">Home Collection</a>
 <a class="nvl" href="HomeRadiology.dc.html">Radiology</a>
 <a class="nvl" href="HomePharmacy.dc.html">Pharmacy</a>
 <a class="nvl" href="HomeStore.dc.html">Store and Purchase</a>
 <a class="nvl" href="HomeHr.dc.html">HR</a>
 <a class="nvl" href="HomePayroll.dc.html">Payroll</a>
 <a class="nvl" href="HomeAccounts.dc.html">Accounts</a>
+<a class="nvl" href="HomeAuditor.dc.html">Auditor</a>
 <a class="nvl" href="HomeMrd.dc.html">Medical Records</a>
 <a class="nvl" href="HomeKitchen.dc.html">Kitchen</a>
 <a class="nvl" href="HomeFacility.dc.html">Facility</a>
@@ -160,7 +165,7 @@ class Component extends DCLogic {
       alerts: d.alerts.map(function (a) { return { t: a[0], s: a[1], b: a[2], bc: a[3] }; }), links: links } };
   }
   navItems(active) {
-    var P = {"admin": [["Overview", [["Home", "HomeAdmin"], ["Approvals", "Approvals"], ["Reports", "Reports"]]], ["Operations", [["Patients", "Patients"], ["Front Office", "FrontOffice"], ["Bed Board", "Beds"], ["Inventory", "Inventory"]]], ["Settings", [["Hospital Settings", "Settings"], ["Users", "Users"], ["Roles & Access", "Roles"], ["Departments", "Departments"], ["OPD Settings", "OpdConfig"], ["IPD Settings", "IpdConfig"]]], ["Personal", [["My Space", "MySpace"]]]]};
+    var P = {"admin": [["Overview", [["Home", "HomeAdmin"], ["Approvals", "Approvals"], ["Reports", "Reports"]]], ["Operations", [["Patients", "Patients"], ["Front Office", "FrontOffice"], ["Bed Board", "Beds"], ["Inventory", "Inventory"]]], ["Settings", [["Hospital Settings", "Settings"], ["Users", "Users"], ["Roles & Access", "Roles"], ["Departments", "Departments"], ["OPD Settings", "OpdConfig"], ["IPD Settings", "IpdConfig"]]], ["Services", [["Medical Records", "Records"], ["Diet & Kitchen", "Diet"], ["Facility", "Facility"], ["Quality", "Quality"], ["CRM", "Crm"]]], ["Personal", [["My Space", "MySpace"]]]]};
     return P['admin'].map(function (g) {
       return { label: g[0], items: g[1].map(function (i) {
         var on = i[1] === active;
@@ -169,7 +174,7 @@ class Component extends DCLogic {
     });
   }
   renderVals() {
-    return Object.assign({ nav: this.navItems('HomeAdmin') }, this.home({"greet": "Good morning, Kavita", "sub": "Setup, users and day-to-day operations for Main Branch", "quick": [["Add user", "Users"], ["Register department", "Departments"], ["Bed board", "Beds"]], "kpis": [["Occupancy", "86%", "103 of 120 beds", "Beds"], ["OPD today", "412", "64 waiting", "FrontOffice"], ["My requests pending", "3", "with Super Admin", "Approvals"], ["Users", "74 / 100", "licences used", "Users"], ["Low stock items", "17", "central store", "Inventory"]], "q": ["My requests waiting for approval", "Changes you made that a checker must approve", "Approvals"], "head": ["Request", "Raised", "Waiting with", "Status"], "rows": [["New user: Rahul Mehta (Billing Manager)", "08 Oct", "Super Admin", "~ba:Pending"], ["Department: Nephrology", "07 Oct", "Super Admin", "~ba:Pending"], ["Tariff: ECG ₹280 to ₹300", "05 Oct", "-", "~bg:Approved"], ["Ward: Day care beds (Phase 2)", "02 Oct", "-", "~bn:Draft"]], "alerts": [["Licence limit near", "116 of 120 beds licensed", "Limit", "ba"], ["User locked", "lalit.g after 5 failed logins", "Unlock", "br"], ["Template change", "Lab report header updated", "Info", "bb"]]}));
+    return Object.assign({ nav: this.navItems('HomeAdmin') }, this.home({"greet": "Good morning, Kavita", "sub": "Setup, users and day-to-day operations for Main Branch", "quick": [["Add user", "Users"], ["Register department", "Departments"], ["Bed board", "Beds"]], "kpis": [["Occupancy", "86%", "103 of 120 beds", "Beds"], ["OPD today", "412", "64 waiting", "FrontOffice"], ["My requests pending", "3", "with Super Admin", "Approvals"], ["Users", "74 / 100", "licences used", "Users"], ["Low stock items", "17", "central store", "Inventory"]], "q": ["My requests waiting for approval", "Changes you made that a checker must approve", "Approvals"], "head": ["Request", "Raised", "Waiting with", "Status"], "rows": [["New user: Rahul Mehta (Billing Manager)", "08 Oct", "Super Admin", "~ba:Pending"], ["Department: Nephrology", "07 Oct", "Super Admin", "~ba:Pending"], ["Tariff: ECG ₹280 to ₹300", "05 Oct", "-", "~bg:Approved"], ["Ward: Day care beds (6)", "02 Oct", "-", "~bn:Draft"]], "alerts": [["Licence limit near", "116 of 120 beds licensed", "Limit", "ba"], ["User locked", "lalit.g after 5 failed logins", "Unlock", "br"], ["Template change", "Lab report header updated", "Info", "bb"]]}));
   }
 }
 </script>

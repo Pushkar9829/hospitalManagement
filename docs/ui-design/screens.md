@@ -12,7 +12,8 @@ Every screen on the design canvas, with its web route, main role, module gate, p
 | Platform console | boards/Console.dc.html | console/ | Platform owner | Platform | platform:* | GET /platform/tenants, /platform/metrics |
 | Tenant detail | boards/ConsoleTenant.dc.html | console/tenants/:id | Platform owner | Platform | platform:tenant:* | GET /platform/tenants/{id}, POST /platform/tenants/{id}/subscription |
 | Role panel map | boards/PanelMap.dc.html | - | Everyone | CORE | - | GET /auth/me (roles, panels, menu) |
-| Role home pages (20) | boards/HomeDoctor.dc.html | /home | Each role | CORE | per role | GET /me/home (queue, counts, alerts) |
+| Role home pages (24) | boards/HomeDoctor.dc.html | /home | Each role | CORE | per role | GET /me/home (queue, counts, alerts) |
+| Clinic desk (one-screen mode) | boards/ClinicDesk.dc.html | /clinic | Clinic doctor and admin | OPD | opd:*, billing:bill:create | GET /opd/queue, PUT /opd/visits/{id}/consultation, POST /billing/bills |
 | Subscription | boards/Subscription.dc.html | /settings/subscription | Super Admin | CORE | settings:subscription:read | GET /subscription, POST /subscription/preview |
 | Admin dashboard | boards/Dashboard.dc.html | / | Admin | CORE | dashboard:admin:read | GET /dashboard/summary |
 | Approvals | boards/Approvals.dc.html | /approvals | Checkers | CORE | approvals:inbox:read | GET /approvals, POST /approvals/{id}/decision |

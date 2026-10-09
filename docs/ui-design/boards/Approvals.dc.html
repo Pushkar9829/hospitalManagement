@@ -48,7 +48,7 @@ summary::-webkit-details-marker{display:none}
 .av{width:36px;height:36px;border-radius:50%;background:#D7E1EE;color:#1D3557;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none}
 </style>
 </helmet>
-<div style="width:100%;min-height:1320px;display:flex;flex-wrap:wrap;background:#F4F6F8">
+<div style="width:100%;min-height:1640px;display:flex;flex-wrap:wrap;background:#F4F6F8">
 <nav aria-label="Main menu" style="flex:1 1 232px;background:#13263F;color:#fff;padding:18px 12px 28px;box-sizing:border-box">
 <div style="display:flex;align-items:center;gap:10px;padding:0 8px 14px;border-bottom:1px solid #24406A;margin-bottom:4px">
 <div style="width:34px;height:34px;border-radius:8px;background:#B4501A;display:flex;align-items:center;justify-content:center;font-weight:700">H</div>
@@ -78,18 +78,23 @@ summary::-webkit-details-marker{display:none}
 <a class="nvl" href="HomeAdmin.dc.html">Hospital Admin</a>
 <a class="nvl" href="HomeMedSupt.dc.html">Medical Superintendent</a>
 <a class="nvl" href="HomeDoctor.dc.html">Doctor</a>
+<a class="nvl" href="HomeHod.dc.html">Head of Department</a>
+<a class="nvl" href="ClinicDesk.dc.html">Clinic (one-screen mode)</a>
 <a class="nvl" href="HomeNurse.dc.html">Staff Nurse</a>
 <a class="nvl" href="HomeWardIncharge.dc.html">Ward In-charge</a>
 <a class="nvl" href="HomeFrontOffice.dc.html">Front Office</a>
+<a class="nvl" href="HomeSecurity.dc.html">Security Desk</a>
 <a class="nvl" href="HomeCashier.dc.html">Cashier</a>
 <a class="nvl" href="HomeBillingMgr.dc.html">Billing Manager</a>
 <a class="nvl" href="HomeLab.dc.html">Laboratory</a>
+<a class="nvl" href="HomePhlebo.dc.html">Home Collection</a>
 <a class="nvl" href="HomeRadiology.dc.html">Radiology</a>
 <a class="nvl" href="HomePharmacy.dc.html">Pharmacy</a>
 <a class="nvl" href="HomeStore.dc.html">Store and Purchase</a>
 <a class="nvl" href="HomeHr.dc.html">HR</a>
 <a class="nvl" href="HomePayroll.dc.html">Payroll</a>
 <a class="nvl" href="HomeAccounts.dc.html">Accounts</a>
+<a class="nvl" href="HomeAuditor.dc.html">Auditor</a>
 <a class="nvl" href="HomeMrd.dc.html">Medical Records</a>
 <a class="nvl" href="HomeKitchen.dc.html">Kitchen</a>
 <a class="nvl" href="HomeFacility.dc.html">Facility</a>
@@ -156,7 +161,7 @@ summary::-webkit-details-marker{display:none}
 </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1320}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1640}}'>
 class Component extends DCLogic {
   tabState(def) { return (this.state && this.state.tab) || def; }
   tabsOf(T, cur) { return T.map((t) => ({ l: t, on: t === cur, off: t !== cur, pick: () => this.setState({ tab: t }) })); }
@@ -225,7 +230,7 @@ class Component extends DCLogic {
       'My requests': { title: 'My requests', head: ['Request', 'Raised', 'Waiting with', 'Status'], rows: [['Role change: Front Office to Billing Manager (Rahul Mehta)', '08 Oct', 'Super Admin', '~ba:Pending'], ['Reopen September payroll', '02 Oct', '-', '~br:Rejected']] },
       'Approval rules': { title: 'Approval rules', sub: 'Who must approve what. Changing a rule also needs Super Admin approval.', acts: ['Add rule'],
         head: ['Action', 'Maker', 'Checker L1', 'Checker L2 when', 'Expires after'],
-        rows: [['Bill discount', 'Cashier', 'Billing Manager', 'Over 10% or ₹10,000: Super Admin', '48 h'], ['Refund or cancellation', 'Cashier', 'Billing Manager', 'Over ₹25,000: Finance Controller', '48 h'], ['Purchase order', 'Purchase', 'HOD', 'Over ₹1,00,000: Super Admin', '72 h'], ['Stock adjustment', 'Store / Pharmacist', 'Pharmacy In-charge', 'Over ₹5,000: Finance', '48 h'], ['Payroll release', 'Payroll Officer', 'HR Manager', 'Always: Finance Controller', '72 h'], ['Medical record release', 'MRD Officer', 'Medical Superintendent', '-', '72 h']] }
+        rows: [['Bill discount', 'Cashier', 'Billing Manager', 'Over 10% or ₹10,000: Super Admin', '48 h'], ['Bill cancellation or refund', 'Cashier', 'Billing Manager', 'Over ₹25,000: Finance Controller', '48 h'], ['Tariff or price change', 'Hospital Admin', 'Super Admin', '-', '72 h'], ['Discharge with pending dues', 'Billing', 'Medical Superintendent', '-', '4 h'], ['Lab result release', 'Lab Technician', 'Pathologist', '-', '24 h'], ['Amend released lab report', 'Pathologist', 'Lab In-charge', '-', '24 h'], ['Radiology report sign-off', 'Resident or technician', 'Radiologist', '-', '24 h'], ['Stock adjustment or write-off', 'Store Keeper or Pharmacist', 'Pharmacy In-charge', 'Over ₹5,000: Finance', '48 h'], ['Purchase order', 'Purchase Manager', 'HOD or Admin', 'Over ₹1,00,000: Super Admin', '72 h'], ['Goods receipt with price variance', 'Store Keeper', 'Purchase Manager', '-', '48 h'], ['Employee salary change', 'HR Executive', 'HR Manager', 'Always: Super Admin', '72 h'], ['Payroll run release', 'Payroll Officer', 'HR Manager', 'Always: Finance Controller', '72 h'], ['Manual journal entry', 'Accountant', 'Finance Controller', '-', '48 h'], ['Patient record merge', 'Front Office', 'Hospital Admin', '-', '48 h'], ['Department create or close', 'Hospital Admin', 'Super Admin', '-', '72 h'], ['User with privileged role', 'Hospital Admin', 'Super Admin', '-', '48 h'], ['Role permission change', 'Hospital Admin', 'Super Admin', '-', '48 h'], ['Medical record release', 'MRD Officer', 'Medical Superintendent', '-', '72 h'], ['Linen or asset condemnation', 'Housekeeping or Biomedical', 'Hospital Admin', '-', '72 h'], ['Expense claim or petty cash', 'Employee or custodian', 'Manager', 'Over ₹10,000: Finance', '72 h'], ['Incident closure', 'Investigator', 'Quality Manager', '-', '72 h'], ['Roster publish, leave and indents', 'Ward in-charge or employee', 'HOD', '-', '48 h']], note: '22 default rules from the specification. Requests expire after the time shown and must be raised again; the maker can never approve their own request.' }
     } };
   }
   renderVals() {

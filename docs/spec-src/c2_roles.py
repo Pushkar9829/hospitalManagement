@@ -74,6 +74,8 @@ def story():
         ["Payroll Officer", "Entity", "Payroll inputs, payroll run (maker)."],
         ["Employee (Self-service)", "Own", "Payslips, leave, attendance, roster, "
          "profile. Every staff login has this role."],
+        ["Insurance Desk (TPA Coordinator)", "Branch", "Pre-authorisations, enhancements, "
+         "final approvals, claims and settlements with insurers, TPAs and schemes."],
         ["Auditor", "Tenant", "Read-only access to finance, stock and audit logs."],
         ["MRD Officer / Coder", "Branch", "Record completion, coding, file tracking, record "
          "release, birth, death and MLC registers."],

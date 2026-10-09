@@ -32,7 +32,7 @@ if os.path.exists(tabs_js):
 tail = rd('parts/tail_open.html').replace('__PANELS_JSON__', json.dumps({pk: pan['menu']}, ensure_ascii=False)).replace('__PANELKEY__', pk)
 out = head + shell + body + tail + js + rd('parts/tail_close.html')
 # Screens taller than the default 1320 px board
-TALL = {'IpdAnalytics': 1640, 'IpdBill': 1420}
+TALL = {'IpdAnalytics': 1640, 'IpdBill': 1420, 'Roles': 1960, 'Approvals': 1640}
 if name in TALL:
     out = out.replace('"height":1320}', '"height":%d}' % TALL[name]).replace('min-height:1320px', 'min-height:%dpx' % TALL[name])
 open(os.path.join(OUT, '%s.dc.html' % name), 'w').write(out)

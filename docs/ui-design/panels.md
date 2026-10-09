@@ -26,6 +26,7 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
   - **Overview:** Home, Approvals, Reports
   - **Operations:** Patients, Front Office, Bed Board, Inventory
   - **Settings:** Hospital Settings, Users, Roles & Access, Departments, OPD Settings, IPD Settings
+  - **Services:** Medical Records, Diet & Kitchen, Facility, Quality, CRM
   - **Personal:** My Space
 
 ## Medical Superintendent
@@ -48,6 +49,27 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
   - **My day:** Home, OPD Consultation, In-patient Rounds, Discharge Desk
   - **Patients:** Patient Profile, Bed Board
   - **Results:** Laboratory, Radiology
+  - **Personal:** My Space
+
+## Head of Department
+
+- Roles: Department Head (HOD)
+- Home: boards/HomeHod.dc.html
+- Data scope: Own department (Cardiology)
+- Menu:
+  - **My department:** Home, Approvals, Rosters, Reports
+  - **Clinical:** OPD Consultation, In-patient Rounds, Discharge Desk, Bed Board
+  - **Department:** Indents and Stock, Quality
+  - **Personal:** My Space
+
+## Clinic (one-screen mode)
+
+- Roles: Clinic doctor who is also the admin
+- Home: boards/ClinicDesk.dc.html
+- Data scope: Whole clinic
+- Menu:
+  - **Clinic:** Today's Clinic, Appointments, Patients, Billing, Pharmacy
+  - **Setup:** Clinic Settings, Users, Reports, Subscription
   - **Personal:** My Space
 
 ## Staff Nurse
@@ -79,6 +101,17 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Menu:
   - **Front desk:** Home, Front Office, OPD Check-in, Register Patient, Patient Profile, Appointments
   - **In-patients:** Admissions, Bed Board, Bed Requests
+  - **Records and CRM:** Medical Records, CRM
+  - **Personal:** My Space
+
+## Security Desk
+
+- Roles: Security Desk
+- Home: boards/HomeSecurity.dc.html
+- Data scope: Gate and ward entrances
+- Menu:
+  - **Gate:** Home, Visitors and Passes, Bed Board
+  - **Requests:** Tickets, Report Incident
   - **Personal:** My Space
 
 ## Cashier
@@ -109,6 +142,15 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Menu:
   - **Laboratory:** Home, Worklists, Patient Profile
   - **Requests:** Store Indents, Quality
+  - **Personal:** My Space
+
+## Home Collection
+
+- Roles: Home Collection Phlebotomist
+- Home: boards/HomePhlebo.dc.html
+- Data scope: Assigned area, own visits
+- Menu:
+  - **Visits:** Home, Laboratory
   - **Personal:** My Space
 
 ## Radiology
@@ -172,13 +214,22 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
   - **Reports:** Reports
   - **Personal:** My Space
 
+## Auditor
+
+- Roles: Auditor (internal or statutory), read-only
+- Home: boards/HomeAuditor.dc.html
+- Data scope: Whole hospital, read-only
+- Menu:
+  - **Overview:** Home, Audit Log, Reports
+  - **Books and records:** Finance, Inventory, Payroll, Approvals History
+
 ## Medical Records
 
 - Roles: MRD Officer, Medical Coder
 - Home: boards/HomeMrd.dc.html
 - Data scope: All records, no billing
 - Menu:
-  - **Records:** Home, Medical Records, Patient Profile
+  - **Records:** Home, Medical Records, Patient Profile, Approvals
   - **Reports:** Reports
   - **Personal:** My Space
 
@@ -197,7 +248,7 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Home: boards/HomeFacility.dc.html
 - Data scope: Branch facilities
 - Menu:
-  - **Facility:** Home, Housekeeping and Facility, Bed Board, Store Indents
+  - **Facility:** Home, Housekeeping and Facility, Bed Board, Store Indents, Approvals
   - **Personal:** My Space
 
 ## Quality
@@ -206,7 +257,7 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Home: boards/HomeQuality.dc.html
 - Data scope: Whole hospital, read-only clinical
 - Menu:
-  - **Quality:** Home, Quality and Incidents, Medical Records
+  - **Quality:** Home, Quality and Incidents, Medical Records, Approvals
   - **Reports:** Reports
   - **Personal:** My Space
 

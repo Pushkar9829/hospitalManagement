@@ -78,18 +78,23 @@ summary::-webkit-details-marker{display:none}
 <a class="nvl" href="HomeAdmin.dc.html">Hospital Admin</a>
 <a class="nvl" href="HomeMedSupt.dc.html">Medical Superintendent</a>
 <a class="nvl" href="HomeDoctor.dc.html">Doctor</a>
+<a class="nvl" href="HomeHod.dc.html">Head of Department</a>
+<a class="nvl" href="ClinicDesk.dc.html">Clinic (one-screen mode)</a>
 <a class="nvl" href="HomeNurse.dc.html">Staff Nurse</a>
 <a class="nvl" href="HomeWardIncharge.dc.html">Ward In-charge</a>
 <a class="nvl" href="HomeFrontOffice.dc.html">Front Office</a>
+<a class="nvl" href="HomeSecurity.dc.html">Security Desk</a>
 <a class="nvl" href="HomeCashier.dc.html">Cashier</a>
 <a class="nvl" href="HomeBillingMgr.dc.html">Billing Manager</a>
 <a class="nvlA" href="HomeLab.dc.html">Laboratory</a>
+<a class="nvl" href="HomePhlebo.dc.html">Home Collection</a>
 <a class="nvl" href="HomeRadiology.dc.html">Radiology</a>
 <a class="nvl" href="HomePharmacy.dc.html">Pharmacy</a>
 <a class="nvl" href="HomeStore.dc.html">Store and Purchase</a>
 <a class="nvl" href="HomeHr.dc.html">HR</a>
 <a class="nvl" href="HomePayroll.dc.html">Payroll</a>
 <a class="nvl" href="HomeAccounts.dc.html">Accounts</a>
+<a class="nvl" href="HomeAuditor.dc.html">Auditor</a>
 <a class="nvl" href="HomeMrd.dc.html">Medical Records</a>
 <a class="nvl" href="HomeKitchen.dc.html">Kitchen</a>
 <a class="nvl" href="HomeFacility.dc.html">Facility</a>
@@ -169,7 +174,7 @@ class Component extends DCLogic {
     });
   }
   renderVals() {
-    return Object.assign({ nav: this.navItems('HomeLab') }, this.home({"greet": "Good morning, Dr. Rao", "sub": "Laboratory · 188 reports released today", "quick": [["Validate results", "Lab"], ["Collection worklist", "Lab"], ["Indent reagents", "Inventory"]], "kpis": [["To collect", "14", "3 urgent", "Lab"], ["In process", "22", "result entry", "Lab"], ["To validate", "9", "1 critical", "Lab"], ["Home collections", "11", "4 done", "Lab"], ["TAT met", "94%", "routine, today", "Lab"]], "q": ["Awaiting your validation", "Results entered by technicians", "Lab"], "head": ["Sample", "Patient", "Test", "Flags", "Waiting"], "rows": [["#LB-26-018842", "F. Ali", "CBC", "~br:Critical", "22 min"], ["#LB-26-018851", "Ravi Kumar", "Lipid profile", "~ba:High", "15 min"], ["#LB-26-018861", "K. Nair", "ABG", "~bo:STAT", "4 min"], ["#LB-26-018874", "S. Patil", "Blood culture prelim", "~bb:Micro", "1 h"]], "alerts": [["Critical not acknowledged", "F. Ali platelets", "Call", "br"], ["QC out of range", "Analyser 2, glucose level 2", "QC", "ba"], ["Reagent low", "HbA1c kit, 2 days left", "Stock", "ba"]]}));
+    return Object.assign({ nav: this.navItems('HomeLab') }, this.home({"greet": "Good morning, Dr. Rao", "sub": "Laboratory · 188 reports released today", "quick": [["Validate results", "Lab"], ["Collection worklist", "Lab"], ["Indent reagents", "Inventory"]], "kpis": [["To collect", "14", "3 urgent", "Lab"], ["In process", "22", "result entry", "Lab"], ["To validate", "9", "1 critical", "Lab"], ["Home collections", "11", "4 done", "Lab"], ["TAT met", "94%", "routine, today", "Lab"]], "q": ["Awaiting your validation", "Results entered by technicians", "Lab"], "head": ["Sample", "Patient", "Test", "Flags", "Waiting"], "rows": [["#LB-26-018842", "F. Ali", "CBC", "~br:Critical", "22 min"], ["#LB-26-018851", "Ravi Kumar", "Lipid profile", "~ba:High", "15 min"], ["#LB-26-018861", "R. Shetty", "ABG", "~bo:STAT", "4 min"], ["#LB-26-018874", "S. Patil", "Blood culture prelim", "~bb:Micro", "1 h"]], "alerts": [["Critical not acknowledged", "F. Ali platelets", "Call", "br"], ["QC out of range", "Analyser 2, glucose level 2", "QC", "ba"], ["Reagent low", "HbA1c kit, 2 days left", "Stock", "ba"]]}));
   }
 }
 </script>

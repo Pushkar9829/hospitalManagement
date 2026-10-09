@@ -197,6 +197,13 @@ PUT /api/v1/opd/visits/6654dd.../consultation
         ["PUT", "/ipd/admissions/{id}/discharge-summary", "ipd:summary:write", "Draft or sign"],
         ["POST", "/ipd/admissions/{id}/discharge/complete", "ipd:discharge:complete",
          "Exit; bed to CLEANING"],
+        ["POST", "/ipd/admissions/{id}/preauths", "ipd:preauth:create", "Send pre-authorisation"],
+        ["POST", "/ipd/preauths/{id}/replies", "ipd:preauth:update", "Approval, query or denial"],
+        ["POST", "/ipd/preauths/{id}/enhancements", "ipd:preauth:create", "Request more"],
+        ["POST", "/ipd/preauths/{id}/final", "ipd:preauth:create", "Final bill for approval"],
+        ["POST", "/ipd/claims", "ipd:claim:create", "File claim with documents"],
+        ["POST", "/ipd/claims/{id}/settlements", "ipd:claim:settle", "Match payment, deductions"],
+        ["GET", "/reports/ipd-indicators", "reports:ipd:read", "Occupancy, stay, turnover"],
     ])
     s += code("""
 POST /api/v1/ipd/admissions

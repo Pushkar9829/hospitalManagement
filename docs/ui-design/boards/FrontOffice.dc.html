@@ -78,18 +78,23 @@ summary::-webkit-details-marker{display:none}
 <a class="nvl" href="HomeAdmin.dc.html">Hospital Admin</a>
 <a class="nvl" href="HomeMedSupt.dc.html">Medical Superintendent</a>
 <a class="nvl" href="HomeDoctor.dc.html">Doctor</a>
+<a class="nvl" href="HomeHod.dc.html">Head of Department</a>
+<a class="nvl" href="ClinicDesk.dc.html">Clinic (one-screen mode)</a>
 <a class="nvl" href="HomeNurse.dc.html">Staff Nurse</a>
 <a class="nvl" href="HomeWardIncharge.dc.html">Ward In-charge</a>
 <a class="nvlA" href="HomeFrontOffice.dc.html">Front Office</a>
+<a class="nvl" href="HomeSecurity.dc.html">Security Desk</a>
 <a class="nvl" href="HomeCashier.dc.html">Cashier</a>
 <a class="nvl" href="HomeBillingMgr.dc.html">Billing Manager</a>
 <a class="nvl" href="HomeLab.dc.html">Laboratory</a>
+<a class="nvl" href="HomePhlebo.dc.html">Home Collection</a>
 <a class="nvl" href="HomeRadiology.dc.html">Radiology</a>
 <a class="nvl" href="HomePharmacy.dc.html">Pharmacy</a>
 <a class="nvl" href="HomeStore.dc.html">Store and Purchase</a>
 <a class="nvl" href="HomeHr.dc.html">HR</a>
 <a class="nvl" href="HomePayroll.dc.html">Payroll</a>
 <a class="nvl" href="HomeAccounts.dc.html">Accounts</a>
+<a class="nvl" href="HomeAuditor.dc.html">Auditor</a>
 <a class="nvl" href="HomeMrd.dc.html">Medical Records</a>
 <a class="nvl" href="HomeKitchen.dc.html">Kitchen</a>
 <a class="nvl" href="HomeFacility.dc.html">Facility</a>
@@ -195,7 +200,7 @@ class Component extends DCLogic {
       alerts: d.alerts.map(function (a) { return { t: a[0], s: a[1], b: a[2], bc: a[3] }; }), links: links } };
   }
   navItems(active) {
-    var P = {"frontoffice": [["Front desk", [["Home", "HomeFrontOffice"], ["Front Office", "FrontOffice"], ["OPD Check-in", "OpdCheckin"], ["Register Patient", "Patients"], ["Patient Profile", "PatientProfile"], ["Appointments", "Opd"]]], ["In-patients", [["Admissions", "Admission"], ["Bed Board", "Beds"], ["Bed Requests", "IpdBedRequests"]]], ["Personal", [["My Space", "MySpace"]]]]};
+    var P = {"frontoffice": [["Front desk", [["Home", "HomeFrontOffice"], ["Front Office", "FrontOffice"], ["OPD Check-in", "OpdCheckin"], ["Register Patient", "Patients"], ["Patient Profile", "PatientProfile"], ["Appointments", "Opd"]]], ["In-patients", [["Admissions", "Admission"], ["Bed Board", "Beds"], ["Bed Requests", "IpdBedRequests"]]], ["Records and CRM", [["Medical Records", "Records"], ["CRM", "Crm"]]], ["Personal", [["My Space", "MySpace"]]]]};
     return P['frontoffice'].map(function (g) {
       return { label: g[0], items: g[1].map(function (i) {
         var on = i[1] === active;
@@ -213,7 +218,7 @@ class Component extends DCLogic {
   tabDefs() {
     return { main: 'Today', tabs: ['Today', 'Visitor log', 'Patient locator', 'Enquiry history'], panels: {
       'Visitor log': { title: 'Visitor log', acts: ['Export'], head: ['Time in', 'Visitor', 'Patient', 'Bed', 'Pass', 'Time out'],
-        rows: [['10:12', 'Sunita Kumar', 'Ravi Kumar', '#W2-204-B', 'Attendant', '-'], ['09:40', 'Imran Sheikh', 'K. Nair', '#ICU-04', 'Visitor', '11:20'], ['09:05', 'Rekha Pillai', 'L. Das', '#PVT-05', 'Attendant', '-']] },
+        rows: [['10:12', 'Sunita Kumar', 'Ravi Kumar', '#W2-204-B', 'Attendant', '-'], ['09:40', 'Imran Sheikh', 'R. Shetty', '#ICU-04', 'Visitor', '11:20'], ['09:05', 'Rekha Pillai', 'L. Das', '#PVT-05', 'Attendant', '-']] },
       'Patient locator': { title: 'Patient locator', sub: 'Shows ward and bed only. No clinical details. VIP and medico-legal patients are hidden.', form: [['Search admitted patient', 'Kumar', 2]],
         head: ['Patient', 'Ward', 'Bed', 'Visiting hours'], rows: [['Ravi Kumar', 'Ward 2, floor 2', '#W2-204-B', '16:00 to 19:00'], ['Sunil Kumar', 'General Ward A', '#W1-104-B', '16:00 to 19:00']] },
       'Enquiry history': { title: 'Enquiry history', head: ['Date', 'Enquiries', 'Booked', 'Leads to CRM', 'Top topic'], rows: [['09 Oct', '31', '12', '4', 'Doctor availability'], ['08 Oct', '44', '19', '6', 'Health check-up packages'], ['07 Oct', '38', '15', '3', 'MRI tariff']] }
