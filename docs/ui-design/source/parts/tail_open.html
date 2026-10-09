@@ -1,0 +1,42 @@
+</main>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1320}}'>
+class Component extends DCLogic {
+  tabState(def) { return (this.state && this.state.tab) || def; }
+  tabsOf(T, cur) { return T.map((t) => ({ l: t, on: t === cur, off: t !== cur, pick: () => this.setState({ tab: t }) })); }
+  cell(s) {
+    s = String(s);
+    if (s.indexOf('~') === 0) { var i = s.indexOf(':'); return { isB: true, isT: false, bc: s.slice(1, i), t: s.slice(i + 1), cls: '' }; }
+    if (s.indexOf('#') === 0) return { isB: false, isT: true, t: s.slice(1), cls: 'mono' };
+    return { isB: false, isT: true, t: s, cls: '' };
+  }
+  panel(d) {
+    d = d || {};
+    var self = this;
+    return { title: d.title || '', sub: d.sub || '',
+      acts: (d.acts || []).map(function (a, i) { return { l: a, k: i === 0 ? 'btn' : 'btn2' }; }),
+      hasKpi: !!d.kpis, kpis: (d.kpis || []).map(function (k) { return { l: k[0], v: k[1], n: k[2] || '' }; }),
+      hasForm: !!d.form, form: (d.form || []).map(function (f, i) { return { l: f[0], v: f[1], span: f[2] || 1, id: 'pf' + i }; }),
+      hasTable: !!d.head, head: d.head || [], rows: (d.rows || []).map(function (r) { return r.map(function (c) { return self.cell(c); }); }),
+      hasNote: !!d.note, note: d.note || '' };
+  }
+  navItems(active) {
+    var NAV = [
+      ['Overview', [['Dashboard', 'Dashboard'], ['Approvals', 'Approvals'], ['Reports', 'Reports'], ['Audit Log', 'AuditLog']]],
+      ['Patients', [['Patients', 'Patients'], ['Patient Profile', 'PatientProfile'], ['Front Office', 'FrontOffice'], ['Appointments', 'Opd'], ['Consultation', 'Consult'], ['Admissions', 'Admission'], ['Bed Board', 'Beds'], ['Discharge Desk', 'Discharge']]],
+      ['Clinical', [['Nursing Station', 'Nursing'], ['Rosters', 'Roster']]],
+      ['Diagnostics', [['Laboratory', 'Lab'], ['Radiology', 'Radiology'], ['Pharmacy', 'Pharmacy']]],
+      ['Business', [['Billing', 'Billing'], ['Finance', 'Finance'], ['Inventory', 'Inventory'], ['HR', 'Hr'], ['Payroll', 'Payroll']]],
+      ['Support', [['Medical Records', 'Records'], ['Diet & Kitchen', 'Diet'], ['Facility', 'Facility'], ['Quality', 'Quality'], ['CRM', 'Crm']]],
+      ['Settings', [['Hospital Settings', 'Settings'], ['Users', 'Users'], ['Roles & Access', 'Roles'], ['Departments', 'Departments'], ['Subscription', 'Subscription']]],
+      ['Personal', [['My Space', 'MySpace']]]
+    ];
+    return NAV.map(function (g) {
+      return { label: g[0], items: g[1].map(function (i) {
+        var on = i[1] === active;
+        return { label: i[0], href: i[1] + '.dc.html', on: on, off: !on };
+      }) };
+    });
+  }

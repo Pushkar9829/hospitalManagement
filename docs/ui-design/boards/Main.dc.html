@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hospital Management System – UI overview</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;color:#142130;background:#F4F6F8}
+a{color:#1F5FAD}a:hover{color:#163F73}
+.lk{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:7px;text-decoration:none;color:#142130;font-size:14px;min-height:36px;box-sizing:border-box;align-items:center}
+.lk:hover{background:#EEF3F9;color:#142130}
+.rl{font-size:11px;color:#5B6878;white-space:nowrap}
+</style>
+</helmet>
+<div style="width:100%;min-height:1000px;box-sizing:border-box;background:#F4F6F8">
+<div style="background:#13263F;color:#fff;padding:48px 56px 40px">
+<div style="max-width:1320px;margin:0 auto;display:flex;flex-wrap:wrap;gap:32px;align-items:flex-end;justify-content:space-between">
+<div style="flex:1 1 520px">
+<div style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#F2A46F;font-weight:600">UI / UX prototype · Phase 1</div>
+<h1 style="margin:10px 0 8px;font-size:44px;line-height:1.1;font-weight:700">Hospital Management System</h1>
+<p style="margin:0;font-size:17px;color:#C9D4E3;max-width:640px">Multi-tenant SaaS for clinics and hospitals. 16 modules, role-based panels, one shared design language. Press Play and use the left menu on any screen to move between modules. Developers: start with the Developer handoff board.</p>
+</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap">
+<div><div style="font-size:32px;font-weight:700">47</div><div style="font-size:13px;color:#C9D4E3">boards</div></div>
+<div><div style="font-size:32px;font-weight:700">16</div><div style="font-size:13px;color:#C9D4E3">modules</div></div>
+<div><div style="font-size:32px;font-weight:700">10</div><div style="font-size:13px;color:#C9D4E3">pages</div></div>
+</div>
+</div>
+</div>
+<div style="max-width:1320px;margin:0 auto;padding:36px 56px 56px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px">
+<sc-for list="{{phases}}" as="p" hint-placeholder-count="8">
+<section style="background:#fff;border:1px solid #DDE2E8;border-radius:12px;padding:18px 14px 14px;display:flex;flex-direction:column;gap:4px">
+<div style="font-size:12px;font-weight:600;color:#9A4413;letter-spacing:.06em;text-transform:uppercase;padding:0 10px">{{p.num}}</div>
+<h2 style="margin:0 0 8px;font-size:17px;padding:0 10px">{{p.name}}</h2>
+<sc-for list="{{p.screens}}" as="s" hint-placeholder-count="4">
+<a class="lk" href="{{s.href}}"><span>{{s.label}}</span><span class="rl">{{s.role}}</span></a>
+</sc-for>
+</section>
+</sc-for>
+</div>
+<div style="max-width:1320px;margin:0 auto;padding:0 56px 56px">
+<div style="background:#fff;border:1px solid #DDE2E8;border-radius:12px;padding:20px 24px;display:flex;flex-wrap:wrap;gap:28px;font-size:14px">
+<div style="flex:1 1 260px"><strong>Panels.</strong> Each screen opens in the panel of the role that uses it most. The menu shows only subscribed modules and permitted items.</div>
+<div style="flex:1 1 260px"><strong>Layout.</strong> Desktop first at 1440 px; side menu stacks on tablets and phones. Patient portal is mobile first.</div>
+<div style="flex:1 1 260px"><strong>Data.</strong> All names, numbers and hospitals are sample data for illustration.</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var P = [
+      ['Phase 0', 'Foundations', [['Design system', 'DesignSystem', 'All'], ['Login and 2FA', 'Login', 'All users']]],
+      ['Phase 1', 'SaaS Platform', [['Pricing and signup', 'Signup', 'Prospect'], ['Setup wizard', 'SetupWizard', 'Super Admin'], ['Platform console', 'Console', 'Platform owner'], ['Hospital subscription', 'Subscription', 'Super Admin']]],
+      ['Phase 2', 'Security and Core', [['Admin dashboard', 'Dashboard', 'Hospital Admin'], ['Approvals inbox', 'Approvals', 'Checkers'], ['Reports centre', 'Reports', 'Managers'], ['Audit log', 'AuditLog', 'Super Admin'], ['Hospital settings', 'Settings', 'Super Admin'], ['Users', 'Users', 'Hospital Admin'], ['Roles and access', 'Roles', 'Super Admin'], ['Departments and masters', 'Departments', 'Hospital Admin']]],
+      ['Phase 3', 'Patient Operations', [['Patient registration', 'Patients', 'Front Office'], ['Patient profile', 'PatientProfile', 'All clinical'], ['Front office', 'FrontOffice', 'Front Office'], ['OPD appointments', 'Opd', 'Front Office'], ['Doctor consultation', 'Consult', 'Doctor'], ['IPD admission', 'Admission', 'Admission Desk'], ['Live bed board', 'Beds', 'Admission Desk'], ['Discharge desk', 'Discharge', 'Doctor, billing'], ['Queue TV display', 'QueueTV', 'Waiting area']]],
+      ['Phase 4', 'Clinical Workflows', [['Nursing station', 'Nursing', 'Staff Nurse'], ['Shift roster', 'Roster', 'Ward In-charge']]],
+      ['Phase 5', 'Diagnostics and Pharmacy', [['Laboratory', 'Lab', 'Lab / Pathologist'], ['Radiology', 'Radiology', 'Radiologist'], ['Pharmacy', 'Pharmacy', 'Pharmacist']]],
+      ['Phase 6', 'Billing, Finance and People', [['Billing counter', 'Billing', 'Cashier'], ['Finance', 'Finance', 'Accountant'], ['Inventory', 'Inventory', 'Store Keeper'], ['HR and attendance', 'Hr', 'HR Manager'], ['Payroll', 'Payroll', 'Payroll Officer'], ['My space (self-service)', 'MySpace', 'Every employee']]],
+      ['Phase 7', 'Support and Engagement', [['Medical records', 'Records', 'MRD Officer'], ['Diet and kitchen', 'Diet', 'Dietitian'], ['Housekeeping and facility', 'Facility', 'Supervisor'], ['Quality and incidents', 'Quality', 'Quality Manager'], ['Patient CRM', 'Crm', 'CRM Executive'], ['Patient portal', 'Portal', 'Patient']]],
+      ['Print', 'Print templates', [['IPD final bill (A4)', 'PrintBill', 'Billing'], ['OPD receipt (80 mm)', 'PrintReceipt', 'Cashier'], ['Prescription (A5)', 'PrintRx', 'Doctor'], ['Lab report (A4)', 'PrintLab', 'Pathologist'], ['Discharge summary (A4)', 'PrintDischarge', 'Doctor']]],
+      ['Handoff', 'For developers', [['Developer handoff', 'Handoff', 'Developers'], ['Screen states', 'States', 'Developers']]]
+    ];
+    return { phases: P.map(function (p) {
+      return { num: p[0], name: p[1], screens: p[2].map(function (s) { return { label: s[0], href: s[1] + '.dc.html', role: s[2] }; }) };
+    }) };
+  }
+}
+</script>
+</body>
+</html>

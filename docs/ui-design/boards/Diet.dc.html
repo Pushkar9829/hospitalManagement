@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Diet and kitchen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'IBM Plex Sans',system-ui,sans-serif;color:#142130;background:#F4F6F8}
+a{color:#1F5FAD}a:hover{color:#163F73}
+.nv{display:block;padding:5px 10px;border-radius:6px;color:#C9D4E3;text-decoration:none;font-size:13px;line-height:18px}
+.nv:hover{background:#1E3656;color:#fff}
+.nva{display:block;padding:5px 10px;border-radius:6px;background:#2A4A75;color:#fff;text-decoration:none;font-size:13px;line-height:18px;font-weight:600;box-shadow:inset 3px 0 0 #F2A46F}
+.ng{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8FA3BD;padding:12px 10px 4px;font-weight:600}
+.card{background:#fff;border:1px solid #DDE2E8;border-radius:10px}
+.ch{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid #EEF1F4}
+.h2{margin:0;font-size:15px;font-weight:600}
+.tw{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;font-weight:600;color:#556272;font-size:12px;padding:8px 12px;border-bottom:1px solid #DDE2E8;background:#F8FAFC;white-space:nowrap}
+.tbl td{padding:9px 12px;border-bottom:1px solid #EEF1F4;vertical-align:middle}
+.b{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.bg{background:#E3F3EA;color:#1A6B44}.br{background:#FDECEA;color:#A3201A}.ba{background:#FFF1D6;color:#7A4E00}.bb{background:#E6EEF9;color:#1F5FAD}.bn{background:#EEF0F3;color:#3F4A57}.bo{background:#FCE9DC;color:#9A4413}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;min-height:44px;box-sizing:border-box;border-radius:8px;border:1px solid #1D3557;background:#1D3557;color:#fff;font:600 13px 'IBM Plex Sans',sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:hover{color:#fff;background:#163052}
+.btn2{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 14px;min-height:44px;box-sizing:border-box;border-radius:8px;border:1px solid #C9D1DB;background:#fff;color:#142130;font:600 13px 'IBM Plex Sans',sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn2:hover{color:#142130;background:#F4F6F8}
+.inp{width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid #C9D1DB;border-radius:8px;font:14px 'IBM Plex Sans',sans-serif;color:#142130;background:#fff;min-height:44px}
+.lbl{display:block;font-size:12px;font-weight:600;color:#3F4A57;margin-bottom:5px}
+.mono{font-family:'IBM Plex Mono',monospace}
+.muted{color:#5B6878}
+.cap{font-size:12px;color:#5B6878}
+.kpi{background:#fff;border:1px solid #DDE2E8;border-radius:10px;padding:14px 16px}
+.kv{font-size:24px;font-weight:700;margin-top:4px}
+.seg{display:inline-flex;gap:4px;padding:4px;border-radius:9px;background:#E9EDF2;flex-wrap:wrap}
+.tab{padding:7px 12px;border:0;border-radius:7px;background:transparent;color:#3F4A57;font:600 13px 'IBM Plex Sans',sans-serif;min-height:36px;cursor:pointer}
+.taba{padding:7px 12px;border:0;border-radius:7px;background:#fff;color:#142130;font:600 13px 'IBM Plex Sans',sans-serif;min-height:36px;box-shadow:0 1px 2px rgba(20,33,48,.12);cursor:pointer}
+.bar{height:10px;border-radius:0 4px 4px 0;background:#1D3557}
+.track{height:10px;background:#EEF1F4;border-radius:4px;overflow:hidden}
+.av{width:36px;height:36px;border-radius:50%;background:#D7E1EE;color:#1D3557;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none}
+</style>
+</helmet>
+<div style="width:100%;min-height:1320px;display:flex;flex-wrap:wrap;background:#F4F6F8">
+<nav aria-label="Main menu" style="flex:1 1 232px;background:#13263F;color:#fff;padding:18px 12px 28px;box-sizing:border-box">
+<div style="display:flex;align-items:center;gap:10px;padding:0 8px 14px;border-bottom:1px solid #24406A;margin-bottom:4px">
+<div style="width:34px;height:34px;border-radius:8px;background:#B4501A;display:flex;align-items:center;justify-content:center;font-weight:700">H</div>
+<div><div style="font-weight:700;font-size:14px">Demo Hospital</div><div style="font-size:12px;color:#8FA3BD">Main Branch · Kitchen panel</div></div>
+</div>
+<sc-for list="{{nav}}" as="g" hint-placeholder-count="7">
+<div class="ng">{{g.label}}</div>
+<sc-for list="{{g.items}}" as="it" hint-placeholder-count="3">
+<sc-if value="{{it.on}}" hint-placeholder-val="{{false}}"><a class="nva" href="{{it.href}}" aria-current="page">{{it.label}}</a></sc-if>
+<sc-if value="{{it.off}}" hint-placeholder-val="{{true}}"><a class="nv" href="{{it.href}}">{{it.label}}</a></sc-if>
+</sc-for>
+</sc-for>
+<a class="nv" href="Main.dc.html" style="margin-top:14px;border-top:1px solid #24406A;padding-top:12px">← All screens</a>
+</nav>
+<div style="flex:999 1 560px;min-width:0;display:flex;flex-direction:column">
+<header style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:12px 28px;background:#fff;border-bottom:1px solid #DDE2E8">
+<div style="flex:1 1 260px;min-width:0">
+<div class="cap">Support / Diet and kitchen</div>
+<h1 style="margin:2px 0 0;font-size:20px;font-weight:700">Diet and kitchen</h1>
+</div>
+<input class="inp" aria-label="Search patients, bills and records" placeholder="Search UHID, name, mobile, bill no." style="flex:0 1 320px;width:auto">
+<a class="btn2" href="Approvals.dc.html">Approvals <span class="b bo">5</span></a>
+<div style="display:flex;align-items:center;gap:10px"><div class="av">NB</div><div><div style="font-weight:600;font-size:13px">Nisha Bhat</div><div class="cap">Dietitian</div></div></div>
+</header>
+<main style="padding:24px 28px 40px;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:center">
+<div class="seg"><button class="tab" type="button">Breakfast 07:30</button><button class="taba" type="button">Lunch 12:30</button><button class="tab" type="button">Evening 16:30</button><button class="tab" type="button">Dinner 19:30</button></div>
+<div style="display:flex;gap:8px"><button class="btn2" type="button">Print tray labels</button><button class="btn" type="button">Print production sheet</button></div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+<section class="card" style="flex:999 1 640px;min-width:0">
+<div class="ch"><h2 class="h2">Lunch production sheet · Thu 9 Oct</h2><span class="cap">Updates live when doctors change diets</span></div>
+<div class="tw"><table class="tbl">
+<thead><tr><th>Diet type</th><th>Ward 1</th><th>Ward 2</th><th>ICU</th><th>Private</th><th>Attendants</th><th>Total</th></tr></thead>
+<tbody>
+<sc-for list="{{prod}}" as="p" hint-placeholder-count="8"><tr><td style="font-weight:600">{{p.t}}</td><td>{{p.a}}</td><td>{{p.b}}</td><td>{{p.c}}</td><td>{{p.d}}</td><td>{{p.e}}</td><td style="font-weight:700">{{p.s}}</td></tr></sc-for>
+</tbody></table></div>
+</section>
+<aside style="flex:1 1 320px;display:flex;flex-direction:column;gap:20px">
+<section class="card">
+<div class="ch"><h2 class="h2">Nil by mouth now</h2><span class="b br">4</span></div>
+<div class="tw"><table class="tbl"><tbody>
+<tr><td>P. Rao · W2-206-B</td><td>Until 14:00</td></tr><tr><td>A. Joshi · W1-108-A</td><td>Procedure 15:00</td></tr><tr><td>K. Nair · ICU-04</td><td>Ventilated</td></tr><tr><td>Baby Ishan · PICU-2</td><td>Until review</td></tr>
+</tbody></table></div>
+</section>
+<section class="card">
+<div class="ch"><h2 class="h2">Diet changes today</h2></div>
+<div style="padding:8px 16px 14px;display:flex;flex-direction:column;gap:8px;font-size:13px">
+<div><strong>Ravi Kumar</strong> · W2-204-B<div class="cap">Normal to low-salt cardiac · Dr. Meera Iyer · 11:05</div></div>
+<div><strong>M. Lal</strong> · W2-203-A<div class="cap">Normal to diabetic 1,800 kcal · Dietitian · 10:20</div></div>
+<div><strong>S. Patil</strong> · W2-201-A<div class="cap">Liquid to soft · Dr. R. Menon · 09:40</div></div>
+</div>
+</section>
+<section class="card" style="padding:16px;display:flex;flex-direction:column;gap:8px">
+<h2 class="h2">Delivery status</h2>
+<div style="display:flex;justify-content:space-between;font-size:13px"><span>Ward 1</span><span class="b bg">Delivered 12:41</span></div>
+<div style="display:flex;justify-content:space-between;font-size:13px"><span>Ward 2</span><span class="b bb">On the way</span></div>
+<div style="display:flex;justify-content:space-between;font-size:13px"><span>ICU</span><span class="b bn">Not started</span></div>
+</section>
+</aside>
+</div>
+</main>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1320}}'>
+class Component extends DCLogic {
+  tabState(def) { return (this.state && this.state.tab) || def; }
+  tabsOf(T, cur) { return T.map((t) => ({ l: t, on: t === cur, off: t !== cur, pick: () => this.setState({ tab: t }) })); }
+  cell(s) {
+    s = String(s);
+    if (s.indexOf('~') === 0) { var i = s.indexOf(':'); return { isB: true, isT: false, bc: s.slice(1, i), t: s.slice(i + 1), cls: '' }; }
+    if (s.indexOf('#') === 0) return { isB: false, isT: true, t: s.slice(1), cls: 'mono' };
+    return { isB: false, isT: true, t: s, cls: '' };
+  }
+  panel(d) {
+    d = d || {};
+    var self = this;
+    return { title: d.title || '', sub: d.sub || '',
+      acts: (d.acts || []).map(function (a, i) { return { l: a, k: i === 0 ? 'btn' : 'btn2' }; }),
+      hasKpi: !!d.kpis, kpis: (d.kpis || []).map(function (k) { return { l: k[0], v: k[1], n: k[2] || '' }; }),
+      hasForm: !!d.form, form: (d.form || []).map(function (f, i) { return { l: f[0], v: f[1], span: f[2] || 1, id: 'pf' + i }; }),
+      hasTable: !!d.head, head: d.head || [], rows: (d.rows || []).map(function (r) { return r.map(function (c) { return self.cell(c); }); }),
+      hasNote: !!d.note, note: d.note || '' };
+  }
+  navItems(active) {
+    var NAV = [
+      ['Overview', [['Dashboard', 'Dashboard'], ['Approvals', 'Approvals'], ['Reports', 'Reports'], ['Audit Log', 'AuditLog']]],
+      ['Patients', [['Patients', 'Patients'], ['Patient Profile', 'PatientProfile'], ['Front Office', 'FrontOffice'], ['Appointments', 'Opd'], ['Consultation', 'Consult'], ['Admissions', 'Admission'], ['Bed Board', 'Beds'], ['Discharge Desk', 'Discharge']]],
+      ['Clinical', [['Nursing Station', 'Nursing'], ['Rosters', 'Roster']]],
+      ['Diagnostics', [['Laboratory', 'Lab'], ['Radiology', 'Radiology'], ['Pharmacy', 'Pharmacy']]],
+      ['Business', [['Billing', 'Billing'], ['Finance', 'Finance'], ['Inventory', 'Inventory'], ['HR', 'Hr'], ['Payroll', 'Payroll']]],
+      ['Support', [['Medical Records', 'Records'], ['Diet & Kitchen', 'Diet'], ['Facility', 'Facility'], ['Quality', 'Quality'], ['CRM', 'Crm']]],
+      ['Settings', [['Hospital Settings', 'Settings'], ['Users', 'Users'], ['Roles & Access', 'Roles'], ['Departments', 'Departments'], ['Subscription', 'Subscription']]],
+      ['Personal', [['My Space', 'MySpace']]]
+    ];
+    return NAV.map(function (g) {
+      return { label: g[0], items: g[1].map(function (i) {
+        var on = i[1] === active;
+        return { label: i[0], href: i[1] + '.dc.html', on: on, off: !on };
+      }) };
+    });
+  }
+  renderVals() {
+    var P = [['Normal', 14, 6, 0, 9, 22], ['Soft', 3, 2, 1, 1, 0], ['Liquid', 1, 1, 3, 0, 0], ['Diabetic', 5, 3, 1, 2, 0], ['Low-salt cardiac', 2, 2, 2, 1, 0], ['Renal', 1, 0, 1, 0, 0], ['High protein', 2, 1, 0, 1, 0], ['Tube feed', 0, 0, 3, 0, 0]];
+    return {
+      nav: this.navItems('Diet'),
+      prod: P.map(function (p) { return { t: p[0], a: p[1], b: p[2], c: p[3], d: p[4], e: p[5], s: p[1] + p[2] + p[3] + p[4] + p[5] }; })
+    };
+  }
+}
+</script>
+</body>
+</html>
