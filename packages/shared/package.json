@@ -1,0 +1,21 @@
+{
+  "name": "@hms/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./catalog": "./src/catalog/index.js",
+    "./schemas": "./src/schemas/index.js"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.7"
+  }
+}

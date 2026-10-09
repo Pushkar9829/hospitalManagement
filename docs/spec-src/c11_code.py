@@ -8,7 +8,9 @@ def story():
                "depends on: configuration, tenancy, authentication, subscription gating, "
                "permissions, maker-checker, numbering, and the transaction-heavy flows "
                "(bed allocation, pharmacy dispensing, billing, payroll). Developers build "
-               "each module on these building blocks. All code is TypeScript."))
+               "each module on these building blocks. The codebase is JavaScript (ES modules); "
+               "the listings keep type annotations to document shapes, and the running "
+               "implementation lives in apps/api/src with the same file names ending in .js."))
 
     s += H2("Backend foundation")
     s += code("""

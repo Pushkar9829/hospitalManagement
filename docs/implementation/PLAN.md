@@ -43,7 +43,7 @@ The stack follows the spec, with one change: the UI kit is **Tailwind CSS** inst
 
 | Layer | Choice | Notes |
 |---|---|---|
-| Language | **TypeScript** everywhere | Types and Zod schemas are shared between web and API. This is still React JS; TypeScript only adds compile-time checks |
+| Language | **JavaScript** (ES modules, Node 22+) everywhere | Zod schemas in `packages/shared` give runtime validation on both sides; JSDoc comments document shapes where helpful |
 | Web build | React 19 + Vite | Static output for S3; each route's code loads only when opened |
 | Styling | **Tailwind CSS v4** | Design tokens in CSS variables (`@theme`), dark mode and high-contrast themes from the same tokens, `prettier-plugin-tailwindcss` for class order |
 | Accessible primitives | Radix UI (Dialog, Popover, DropdownMenu, Tabs, Tooltip, Select) | Unstyled, keyboard- and screen-reader-ready; we style them with Tailwind |
@@ -87,7 +87,7 @@ hospitalManagement/
 │  ├─ shared/         Zod schemas, enums, module codes, permission keys, money/date utils
 │  ├─ ui/             Tailwind component library + design tokens (used by all 3 web apps)
 │  ├─ i18n/           shared translation files (en, hi) and helpers
-│  └─ config/         tsconfig, eslint, prettier, tailwind presets, vitest base config
+│  └─ config/         eslint, prettier, tailwind presets, vitest base config
 ├─ infra/
 │  ├─ terraform/      envs/{dev,staging,prod}, modules/{web,api,redis,network,iam}
 │  └─ docker/         api.Dockerfile, docker-compose.yml (mongo replica set, redis, mailpit)
@@ -102,19 +102,19 @@ hospitalManagement/
 
 ```
 apps/api/src/
-├─ server.ts                 HTTP + Socket.IO bootstrap, graceful shutdown
-├─ worker.ts                 BullMQ worker entry (same image, different command)
-├─ app.ts                    Express app and middleware chain (spec section "Request lifecycle")
+├─ server.js                 HTTP + Socket.IO bootstrap, graceful shutdown
+├─ worker.js                 BullMQ worker entry (same image, different command)
+├─ app.js                    Express app and middleware chain (spec section "Request lifecycle")
 ├─ config/
-│  └─ env.ts                 Zod-validated env; crash on boot if wrong
+│  └─ env.js                 Zod-validated env; crash on boot if wrong
 ├─ core/                     shared kernel: every module depends on it, it depends on no module
-│  ├─ tenancy/               context.ts (AsyncLocalStorage), tenant.plugin.ts, tenantResolver.ts, tenant.registry.ts
+│  ├─ tenancy/               context.js (AsyncLocalStorage), tenant.plugin.js, tenantResolver.js, tenant.registry.js
 │  ├─ auth/                  login, refresh, logout, 2FA, password policy, sessions, token blacklist
-│  ├─ rbac/                  guards.ts (requireModule, authorize, scope), permission.cache.ts, roles seed
+│  ├─ rbac/                  guards.js (requireModule, authorize, scope), permission.cache.js, roles seed
 │  ├─ approvals/             maker-checker engine: rules, requests, decide, apply via events
-│  ├─ audit/                 audit.plugin.ts (auto log on save), audit.service.ts, export
+│  ├─ audit/                 audit.plugin.js (auto log on save), audit.service.js, export
 │  ├─ sequences/             atomic counters: UHID, bill no., IP no., per tenant/branch/series/year
-│  ├─ db/                    connection, withTransaction.ts, base.plugin.ts (createdBy, version, soft delete)
+│  ├─ db/                    connection, withTransaction.js, base.plugin.js (createdBy, version, soft delete)
 │  ├─ events/                outbox model, publisher, relay job, subscriber registry
 │  ├─ files/                 S3 upload/download with presigned URLs, virus scan hook
 │  ├─ notify/                SMS (DLT templates), WhatsApp, e-mail, in-app; provider adapters
@@ -127,7 +127,7 @@ apps/api/src/
 │  ├─ i18n/                  server-side message keys for SMS and PDFs
 │  └─ observability/         pino logger, request id, metrics, OpenTelemetry setup
 ├─ modules/
-│  ├─ index.ts               mountModules(): registers every module's router, events, jobs
+│  ├─ index.js               mountModules(): registers every module's router, events, jobs
 │  ├─ platform/              tenants, plans, subscriptions, signup, console APIs
 │  ├─ setup/                 hospital profile, branches, departments, wards, beds, masters, imports
 │  ├─ users/                 users, roles, data scopes, employee login
@@ -159,29 +159,29 @@ apps/api/src/
 
 ```
 modules/opd/
-├─ index.ts                  public surface: router, service interface, event handlers, jobs
-├─ opd.routes.ts             route table: path → requireModule('OPD') → authorize('opd:visit:create') → validate(schema) → controller
+├─ index.js                  public surface: router, service interface, event handlers, jobs
+├─ opd.routes.js             route table: path → requireModule('OPD') → authorize('opd:visit:create') → validate(schema) → controller
 ├─ controllers/              HTTP in/out only (no business rules)
-│  ├─ appointment.controller.ts
-│  └─ visit.controller.ts
+│  ├─ appointment.controller.js
+│  └─ visit.controller.js
 ├─ services/                 business rules + transactions (unit-tested)
-│  ├─ appointment.service.ts
-│  ├─ queue.service.ts
-│  └─ consultation.service.ts
+│  ├─ appointment.service.js
+│  ├─ queue.service.js
+│  └─ consultation.service.js
 ├─ models/                   Mongoose models with tenant + base + audit plugins and indexes
-│  ├─ appointment.model.ts
-│  └─ visit.model.ts
-├─ events.ts                 events this module publishes and the handlers it subscribes
-├─ jobs.ts                   background jobs (reminders, no-show marking)
+│  ├─ appointment.model.js
+│  └─ visit.model.js
+├─ events.js                 events this module publishes and the handlers it subscribes
+├─ jobs.js                   background jobs (reminders, no-show marking)
 ├─ print/                    pdfmake templates (OPD slip, prescription A5)
 ├─ reports/                  report definitions (queries + columns + permissions)
 ├─ seed/                     demo data + master defaults for a new tenant
 ├─ README.md                 what the module owns, its events, its permissions
 └─ __tests__/
-   ├─ appointment.service.test.ts    unit
-   ├─ opd.api.test.ts                every route: 401, 402, 403, 422, happy path
-   ├─ opd.isolation.test.ts          another tenant's IDs → 404
-   └─ queue.concurrency.test.ts      parallel token issue never duplicates
+   ├─ appointment.service.test.js    unit
+   ├─ opd.api.test.js                every route: 401, 402, 403, 422, happy path
+   ├─ opd.isolation.test.js          another tenant's IDs → 404
+   └─ queue.concurrency.test.js      parallel token issue never duplicates
 ```
 
 Request and response schemas for OPD do not live here. They live in
@@ -190,7 +190,7 @@ Request and response schemas for OPD do not live here. They live in
 **Layering rules.** These are enforced with ESLint `no-restricted-imports` and `dependency-cruiser` in CI.
 
 - `controllers` call only `services`; `services` call their own `models` and other modules'
-  `index.ts` service interfaces.
+  `index.js` service interfaces.
 - No module imports another module's `models/`.
 - `core/` never imports from `modules/`.
 
@@ -198,19 +198,19 @@ Request and response schemas for OPD do not live here. They live in
 
 ```
 apps/web/src/
-├─ main.tsx                  bootstrap: providers, i18n, Sentry
+├─ main.jsx                  bootstrap: providers, i18n, Sentry
 ├─ app/
-│  ├─ router.tsx             builds routes from the module registry, filtered by subscription + permission
-│  ├─ store.ts               Redux store, RTK Query base API (cookie auth, x-branch-id, 401 → refresh)
-│  ├─ providers.tsx          theme, i18n, toasts, socket, query error boundary
+│  ├─ router.jsx             builds routes from the module registry, filtered by subscription + permission
+│  ├─ store.js               Redux store, RTK Query base API (cookie auth, x-branch-id, 401 → refresh)
+│  ├─ providers.jsx          theme, i18n, toasts, socket, query error boundary
 │  ├─ shell/                 AppShell, Sidebar (search, collapsible groups, favourites), TopBar,
 │  │                         BranchSwitcher, RoleSwitcher, CommandPalette, ApprovalsBell, AlertsTray
-│  └─ registry.ts            list of modules: code, routes, menu items, permissions, shortcuts
+│  └─ registry.js            list of modules: code, routes, menu items, permissions, shortcuts
 ├─ modules/
 │  ├─ auth/  setup/  users/  patients/  billing/  insurance/  opd/  ipd/  nursing/  lab/
 │  ├─ radiology/  pharmacy/  inventory/  hr/  payroll/  finance/  mrd/  diet/  facility/
 │  └─ quality/  crm/  reports/  approvals/  audit/  myspace/  queue-tv/
-├─ lib/                      socket.ts, hotkeys.ts, print.ts, format (₹, dates, UHID), storage (draft autosave)
+├─ lib/                      socket.js, hotkeys.js, print.js, format (₹, dates, UHID), storage (draft autosave)
 └─ styles/
    └─ app.css                @import "tailwindcss"; @import "@hms/ui/tokens.css";
 ```
@@ -219,14 +219,14 @@ apps/web/src/
 
 ```
 modules/opd/
-├─ index.ts                  module manifest: routes, menu entries, permissions, hotkeys, home widgets
-├─ routes.tsx                lazy routes: /opd/appointments, /opd/check-in, /opd/consult/:visitId …
-├─ api.ts                    RTK Query endpoints (injectEndpoints) + socket cache updates
+├─ index.js                  module manifest: routes, menu entries, permissions, hotkeys, home widgets
+├─ routes.jsx                lazy routes: /opd/appointments, /opd/check-in, /opd/consult/:visitId …
+├─ api.js                    RTK Query endpoints (injectEndpoints) + socket cache updates
 ├─ pages/                    one file per screen in docs/ui-design/screens.md
-│  ├─ AppointmentsPage.tsx
-│  ├─ CheckInPage.tsx
-│  ├─ TriagePage.tsx
-│  └─ ConsultationPage.tsx
+│  ├─ AppointmentsPage.jsx
+│  ├─ CheckInPage.jsx
+│  ├─ TriagePage.jsx
+│  └─ ConsultationPage.jsx
 ├─ components/               module-only pieces (SlotGrid, TokenSlip, PrescriptionPad)
 ├─ hooks/                    useQueue, useConsultationDraft …
 ├─ i18n/                     en.json, hi.json
@@ -234,18 +234,18 @@ modules/opd/
 ```
 
 **Naming:**
-- Pages are named `XxxPage.tsx`, and each page's URL matches the route in `screens.md`.
+- Pages are named `XxxPage.jsx`, and each page's URL matches the route in `screens.md`.
 - Tabs are kept in the URL (`?tab=gst`), so links and the browser back button work.
 
 ### 3.3 Shared packages
 
 ```
 packages/shared/src/
-├─ modules.ts                ModuleCode union + labels + dependencies (IPD needs CORE …)
-├─ permissions.ts            every permission key as a constant, grouped by module
+├─ modules.js                module codes + labels + dependencies (IPD needs CORE …)
+├─ permissions.js            every permission key as a constant, grouped by module
 ├─ enums/                    statuses (bed, bill, sample …) with label keys and badge tone
-├─ money.ts                  paise helpers, GST split, rounding, Indian number format
-├─ ids.ts                    UHID / bill no. formats, ABHA validation, mobile/PIN/IFSC checks
+├─ money.js                  paise helpers, GST split, rounding, Indian number format
+├─ ids.js                    UHID / bill no. formats, ABHA validation, mobile/PIN/IFSC checks
 └─ modules/<module>/         Zod schemas for requests, responses and forms
 
 packages/ui/src/
@@ -258,7 +258,7 @@ packages/ui/src/
 ├─ feedback/                 StatusBadge, ApprovalBanner, StateViews (403, 402, error, offline, session-expired,
 │                            conflict-409, device-not-connected), ConfirmDialog (reason required)
 ├─ layout/                   Page, PageHeader, Card, SplitView, Stepper, PrintFrame
-└─ index.ts
+└─ index.js
 ```
 
 `packages/ui` has a Storybook (or Ladle) catalogue. Every component has a story with all its
@@ -569,7 +569,7 @@ module's README carries a copy of this list.
 
 **On every pull request.** Turborepo runs only for packages that changed:
 1. Install with a frozen lockfile and cached pnpm store.
-2. Lint (ESLint + Tailwind class order + import boundaries), type check, Prettier check.
+2. Lint (ESLint + Tailwind class order + import boundaries), Prettier check.
 3. Unit and component tests with coverage thresholds.
 4. API integration tests against a Mongo replica set and Redis in services.
 5. Build all apps; bundle-size budget for `web` (initial JS under 250 KB gzip).
@@ -600,7 +600,7 @@ against staging.
 
 | Env | Web | API | Data | Purpose |
 |---|---|---|---|---|
-| local | Vite dev server | `tsx watch` | docker-compose Mongo replica set + Redis | Development |
+| local | Vite dev server | `node --watch` | docker-compose Mongo replica set + Redis | Development |
 | dev | `*.dev.example.com` | ECS (1 task) | Atlas M10 | Shared integration |
 | staging | `*.staging.example.com` | ECS (2 tasks) | Atlas M10 with anonymised seed | Demos, UAT, nightly tests |
 | prod | `*.example.com` + custom domains | ECS (2–6 tasks) | Atlas M30+, PITR backups | Live hospitals |
@@ -627,9 +627,9 @@ Separate AWS accounts for non-prod and prod. A pilot or small hospital can use t
 ## 13. First tasks (Phase 0 backlog, in order)
 
 1. Scaffold the monorepo: `apps/{web,portal,console,api}`, `packages/{shared,ui,i18n,config}`,
-   Turborepo, pnpm, TypeScript project references, ESLint/Prettier, Husky.
+   Turborepo, pnpm, ESLint/Prettier, Husky.
 2. `infra/docker/docker-compose.yml`: Mongo 8 one-node replica set, Redis 7, Mailpit.
-3. API: `config/env.ts`, `core/errors`, `core/observability`, `core/db`, `core/tenancy` (from the
+3. API: `config/env.js`, `core/errors`, `core/observability`, `core/db`, `core/tenancy` (from the
    reference code in spec chapter "Reference Source Code"), health route, test helpers.
 4. API: `core/auth` + `core/rbac` + login/refresh/logout routes + tests (401/403/isolation).
 5. UI: `tokens.css`, Button/Input/Select/FormField/Dialog/Tabs/Toast, StatusBadge, DataTable,
@@ -642,3 +642,12 @@ Separate AWS accounts for non-prod and prod. A pilot or small hospital can use t
 
 When Phase 0 is green on staging, start Phase 1 with `platform` → `setup` → `users` →
 `patients` → `billing`.
+
+---
+
+## 14. Progress
+
+| Phase | Status | Notes |
+|---|---|---|
+| 0. Foundation | Mostly built | Done: monorepo, CI, shared package, API kernel (tenancy, auth with 2FA/OTP, RBAC, approvals, audit, numbering, outbox events, realtime, idempotency, rate limits, OpenAPI), UI kit and web shell. Still to do: Terraform for dev/staging, S3 file service, PDF print engine |
+| 1. Platform and core | Next | `platform` → `setup` → `users` → `patients` → `billing` |

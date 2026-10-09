@@ -100,8 +100,8 @@ def story():
     s += H2("Technology stack")
     s += table([
         ["Layer", "Choice", "Why"],
-        ["Web app", "React 19, TypeScript, Vite", "Fast builds, static output for S3, typed "
-                                                  "code shared with API"],
+        ["Web app", "React 19, JavaScript (ES modules), Vite", "Fast builds, static output for S3, "
+                                                  "schemas shared with API"],
         ["UI kit", "Tailwind CSS v4 + Radix UI primitives + TanStack Table",
          "Design tokens as CSS variables (light, dark, high contrast), accessible "
          "headless components, fast data tables for billing, stock, payroll"],
@@ -109,7 +109,7 @@ def story():
                                                         "hooks"],
         ["Forms", "React Hook Form + Zod", "Same Zod schemas validate on client and server"],
         ["Real-time", "Socket.IO client", "Bed board, queue screen, approvals, alerts"],
-        ["API", "Node.js 24 LTS, Express 5, TypeScript", "Simple, widely known, large "
+        ["API", "Node.js 24 LTS, Express 5, JavaScript (ES modules)", "Simple, widely known, large "
                                                           "ecosystem"],
         ["Database", "MongoDB 8 (Atlas) + Mongoose 8", "Flexible clinical documents, "
                                                        "transactions on replica sets"],

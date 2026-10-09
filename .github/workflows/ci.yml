@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+    env:
+      REDIS_URL: redis://localhost:6379
+      MONGOMS_VERSION: 8.0.4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Cache MongoDB test binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: mongodb-${{ runner.os }}-8.0.4
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm lint
+      - name: Catalogue is in sync with the design docs
+        run: pnpm catalog && git diff --exit-code packages/shared/src/catalog
+      - run: pnpm test
+      - name: Integration tests (MongoDB replica set in memory + Redis)
+        run: pnpm test:int
+      - run: pnpm build
+      - name: Dependency audit
+        run: pnpm audit --audit-level high
