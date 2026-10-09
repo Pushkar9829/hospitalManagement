@@ -144,7 +144,7 @@ def story():
         ["FIN", "Finance and Accounts", "Add-on", "CORE",
          "Chart of accounts, auto journals, vendor payables, ledgers, trial balance, P&amp;L, "
          "balance sheet, GST reports"],
-    ], widths=[0.08, 0.17, 0.09, 0.09, 0.57], mono_cols=(0,))
+    ], widths=[0.08, 0.17, 0.11, 0.09, 0.55], mono_cols=(0,))
     s += callout("Bed management is part of IPD because one cannot work without the other. "
                  "Doctor profiles live in CORE because billing and lab reports need them even "
                  "when OPD is not subscribed. Doctor schedules and slots are part of OPD.",

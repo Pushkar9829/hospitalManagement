@@ -37,51 +37,61 @@ class ArchDiagram(Flowable):
         c.drawString(x + 6, y + h - 10, label)
 
     def draw(self):
+        c = self.canv
         W = self.aw
-        bw, bh = 104, 34
-        # users
-        self.box(0, 280, 120, 38, "Hospital users", "browsers, tablets", ORANGE_LT, ORANGE)
-        self.box(W - 120, 280, 120, 38, "Patients", "SMS links, booking page",
-                 ORANGE_LT, ORANGE)
-        # edge
-        self.box(W / 2 - 130, 280, 120, 38, "Route 53 + ACM", "DNS, TLS certificates",
-                 NAVY_LT)
-        self.box(W / 2 + 10, 280, 120, 38, "CloudFront + WAF", "CDN, edge security",
-                 NAVY_LT)
-        _arrow(self.canv, 120, 299, W / 2 - 131, 299)
-        _arrow(self.canv, W / 2 - 10, 299, W / 2 + 9, 299)
-        _arrow(self.canv, W - 121, 299, W / 2 + 131, 299)
-        # AWS VPC group
+        # top row: four equal boxes
+        g4 = 26
+        w4 = (W - 3 * g4) / 4
+        xs = [i * (w4 + g4) for i in range(4)]
+        self.box(xs[0], 280, w4, 38, "Hospital users", "browsers, tablets", ORANGE_LT, ORANGE)
+        self.box(xs[1], 280, w4, 38, "Route 53 + ACM", "DNS, TLS certificates", NAVY_LT)
+        self.box(xs[2], 280, w4, 38, "CloudFront + WAF", "CDN, edge security", NAVY_LT)
+        self.box(xs[3], 280, w4, 38, "Patients", "SMS links, booking page", ORANGE_LT, ORANGE)
+        _arrow(c, xs[0] + w4 + 1, 299, xs[1] - 1, 299)
+        _arrow(c, xs[1] + w4 + 1, 299, xs[2] - 1, 299)
+        _arrow(c, xs[3] - 1, 299, xs[2] + w4 + 1, 299)
+        # region
         self.group(0, 0, W, 262, "AWS Region (ap-south-1 Mumbai)", NAVY)
-        # S3 frontend
-        cx = W / 2 + 70
-        self.box(14, 205, bw + 20, bh + 6, "S3: web app bucket", "React build, private + OAC",
+        lw = 128                      # left column width
+        lx = 12
+        gx = lx + lw + 12             # private group x
+        gw = W - gx - 10
+        ix = gx + 8                   # inner x
+        iw = gw - 16
+        gap = 10
+        cw = (iw - 2 * gap) / 3
+        cx3 = [ix + i * (cw + gap) for i in range(3)]
+        cf_mid = xs[2] + w4 / 2
+        # row A: web bucket and ALB
+        self.box(lx, 205, lw, 40, "S3: web app bucket", "React build, private + OAC",
                  GREEN_LT, GREEN)
-        _arrow(self.canv, cx - 20, 279, 14 + (bw + 20) / 2 + 10, 246)
-        self.canv.setFont("Body", 6.8)
-        self.canv.setFillColor(MUTED)
-        self.canv.drawString(70, 262 - 6, "/*  static files")
-        # ALB
-        self.box(cx - 52, 205, bw, bh + 6, "Application LB", "/api/*, /socket.io/*")
-        _arrow(self.canv, cx, 279, cx, 246)
-        # private subnet group
-        self.group(150, 70, W - 164, 120, "Private subnets (2 AZs)", ORANGE)
-        self.box(164, 120, bw + 6, bh + 10, "ECS Fargate: API", "Node.js, Express, Socket.IO")
-        self.box(164 + bw + 22, 120, bw + 6, bh + 10, "ECS Fargate: Worker",
-                 "BullMQ jobs, PDFs, payroll")
-        self.box(164 + 2 * (bw + 22), 120, bw - 10, bh + 10, "ElastiCache", "Redis 7")
-        self.box(164, 78, 2 * bw + 28, 30, "MongoDB Atlas (PrivateLink)",
+        alb_w = 120
+        self.box(cf_mid - alb_w / 2, 205, alb_w, 40, "Application LB", "/api/*, /socket.io/*")
+        _arrow(c, cf_mid - 10, 279, lx + lw / 2 + 20, 246)
+        _arrow(c, cf_mid, 279, cf_mid, 246)
+        c.setFont("Body", 6.8)
+        c.setFillColor(MUTED)
+        c.drawString(lx + lw + 8, 226, "static files (default route)")
+        c.drawString(cf_mid + 4, 262 - 14, "/api, /socket.io")
+        # private subnets
+        self.group(gx, 66, gw, 126, "Private subnets (2 AZs)", ORANGE)
+        self.box(cx3[0], 120, cw, 44, "ECS Fargate: API", "Node.js, Express, Socket.IO")
+        self.box(cx3[1], 120, cw, 44, "ECS Fargate: Worker", "BullMQ jobs, PDFs, payroll")
+        self.box(cx3[2], 120, cw, 44, "ElastiCache", "Redis 7")
+        self.box(cx3[0], 74, 2 * cw + gap, 34, "MongoDB Atlas (PrivateLink)",
                  "3-node replica set, encrypted, PITR backups", GREEN_LT, GREEN)
-        self.box(164 + 2 * (bw + 22), 78, bw - 10, 30, "Secrets Manager", "keys, DB URI")
-        _arrow(self.canv, cx, 204, 164 + (bw + 6) / 2 + 40, 165)
-        # side services
-        self.box(14, 120, bw + 20, bh + 10, "S3: documents bucket", "SSE-KMS, signed URLs",
+        self.box(cx3[2], 74, cw, 34, "Secrets Manager", "keys, DB URI")
+        _arrow(c, cf_mid, 204, cx3[0] + cw / 2 + 10, 165)
+        # left column services
+        self.box(lx, 124, lw, 40, "S3: documents bucket", "SSE-KMS, signed URLs",
                  GREEN_LT, GREEN)
-        self.box(14, 70, bw + 20, 34, "SES / SMS / WhatsApp", "notification providers")
-        self.box(14, 14, bw + 20, 34, "ECR", "Docker images")
-        self.box(164, 14, 2 * bw + 28, 34, "CloudWatch + X-Ray", "logs, metrics, alarms, traces")
-        self.box(164 + 2 * (bw + 22), 14, bw - 10, 34, "AWS Backup", "S3 versioning")
-        _arrow(self.canv, 163, 142, 14 + bw + 21, 142)
+        _arrow(c, cx3[0] - 1, 142, lx + lw + 1, 142)
+        self.box(lx, 74, lw, 34, "SES / SMS / WhatsApp", "notification providers")
+        # bottom row
+        self.box(lx, 14, lw, 34, "ECR", "Docker images")
+        self.box(cx3[0], 14, 2 * cw + gap, 34, "CloudWatch + X-Ray",
+                 "logs, metrics, alarms, traces")
+        self.box(cx3[2], 14, cw, 34, "AWS Backup", "S3 versioning, snapshots")
 
 
 def story():
