@@ -72,6 +72,26 @@ def story():
         "Time stamps (booked, arrived, vitals, consult start, consult end, billed) feed the "
         "Phase 2 'patient time spent in OPD' analytics.",
     ])
+    s += H2("Health check-up packages")
+    s += bullets([
+        "Package master: tests, radiology, consultations and the order of stations, e.g. "
+        "'Executive Health Check' or 'Pre-employment'. Gender and age variants.",
+        "Booking by date with daily capacity. Corporate bulk bookings by uploading an "
+        "employee list, billed to the company.",
+        "Check-in creates every order and a route sheet. A tracker shows which stations "
+        "each person has finished, so the coordinator can move people along.",
+        "When all results are in, a physician reviews and writes the summary. One "
+        "consolidated report is released to the patient and, with consent, to the employer.",
+    ])
+    s += H2("Tele-consultation")
+    s += bullets([
+        "Tele-consult is a visit type with its own fee and slots. Payment is taken online "
+        "before the slot.",
+        "A secure video link from an integrated video provider is sent by SMS and shown in "
+        "the patient portal. The doctor uses the same consultation screen and e-prescription.",
+        "Consent for tele-consultation is captured as required by the Telemedicine Practice "
+        "Guidelines.",
+    ])
     s += H3("Reports")
     s += bullets(["Daily OPD register", "Doctor-wise and department-wise footfall",
                   "New vs follow-up", "Average waiting and consultation time",

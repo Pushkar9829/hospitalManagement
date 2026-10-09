@@ -77,6 +77,14 @@ S["toc2"] = ParagraphStyle("toc2", fontName="Body", fontSize=9.4, leading=12.5,
 
 CODE_MAX_COLS = 104
 
+# Filled by build.py before stories are generated: key -> section number.
+SEC = {}
+
+
+def sec(key):
+    return SEC[key]
+
+
 
 class Anchor(Flowable):
     """Zero-size flowable that registers a TOC entry + PDF outline/bookmark."""

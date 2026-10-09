@@ -75,6 +75,19 @@ def story():
         ["Employee (Self-service)", "Own", "Payslips, leave, attendance, roster, "
          "profile. Every staff login has this role."],
         ["Auditor", "Tenant", "Read-only access to finance, stock and audit logs."],
+        ["MRD Officer / Coder", "Branch", "Record completion, coding, file tracking, record "
+         "release, birth, death and MLC registers."],
+        ["Dietitian", "Branch", "Diet orders and plans, nutrition assessment, counselling."],
+        ["Kitchen Supervisor", "Kitchen", "Production sheets, tray labels, delivery, "
+         "kitchen indents."],
+        ["Housekeeping Supervisor", "Branch", "Cleaning tasks and checklists, linen and "
+         "laundry."],
+        ["Maintenance Technician", "Branch", "Maintenance tickets assigned to them."],
+        ["Biomedical Engineer", "Branch", "Equipment register, PM, calibration, "
+         "breakdowns, AMC."],
+        ["Quality Manager", "Tenant", "Feedback, complaints, incidents, indicators, "
+         "audits, controlled documents."],
+        ["Security Desk", "Gate", "Visitor and attendant pass check-in and check-out."],
     ], widths=[0.25, 0.15, 0.6], first_col_bold=True)
 
     s += H2("Role to module access matrix")
@@ -99,12 +112,27 @@ def story():
         ["Accountant", "R", "", "R", "", "", "", "R", "R", "", "R", "CRU"],
         ["Employee", "R", "", "", "", "", "", "", "", "own", "own", ""],
     ], widths=[0.17] + [0.0755] * 11, first_col_bold=True)
+    s.append(P("Support modules. Every staff login can also raise maintenance tickets "
+               "(FAC) and report incidents (QLT)."))
+    s += table([
+        ["Role", "MRD", "DIET", "FAC", "QLT"],
+        ["Hospital Super Admin", "RA", "R", "RA", "RA"],
+        ["Hospital Admin", "CRU", "CRU", "CRU", "R"],
+        ["Medical Superintendent", "RA", "R", "R", "RA"],
+        ["Consultant / Resident", "own records", "C (diet orders)", "C", "C"],
+        ["Staff Nurse", "R", "CR", "C", "C"],
+        ["MRD Officer / Coder", "CRU", "", "C", "C"],
+        ["Dietitian / Kitchen Supervisor", "", "CRU", "C", "C"],
+        ["Housekeeping / Maintenance / Biomedical", "", "", "CRU", "C"],
+        ["Quality Manager", "R", "R", "R", "CRUA"],
+        ["Security Desk", "", "", "C", "C"],
+    ], widths=[0.4, 0.15, 0.15, 0.15, 0.15], first_col_bold=True)
 
     s += H2("Login and session security")
     s += table([
         ["Control", "Rule"],
         ["Login identifier", "Username or mobile number or e-mail, unique per tenant. Tenant "
-                             "is resolved from the sub-domain (e.g. citycare.medicore.app)"],
+                             "is resolved from the sub-domain (e.g. citycare.example.com)"],
         ["Password policy", "Minimum 10 characters, at least 3 of 4 character classes, not "
                             "one of the last 5 passwords, stored with Argon2id"],
         ["Two-factor", "OTP by SMS or authenticator app. Mandatory for Super Admin, Admin, "
@@ -177,6 +205,10 @@ def story():
         ["Department create / close", "Hospital Admin", "Super Admin", "-"],
         ["User with privileged role", "Hospital Admin", "Super Admin", "-"],
         ["Role permission change", "Hospital Admin", "Super Admin", "-"],
+        ["Medical record release", "MRD Officer", "Medical Superintendent", "-"],
+        ["Linen / asset condemnation", "Housekeeping / Biomedical", "Hospital Admin", "-"],
+        ["Expense claim / petty cash", "Employee / Custodian", "Manager", "Finance (&gt; INR 10,000)"],
+        ["Incident closure", "Investigator", "Quality Manager", "-"],
     ], widths=[0.3, 0.2, 0.2, 0.3])
 
     s += H3("User flow: discount approval")

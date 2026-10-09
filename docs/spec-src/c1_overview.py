@@ -7,8 +7,8 @@ def story():
     # ---------------- 1. Overview ----------------
     s += H1("Executive Summary and Scope")
     s.append(P(
-        "This document is the complete Phase 1 specification for <b>MediCore HMS</b> "
-        "(working name), a multi-tenant SaaS hospital management system that runs every operational, "
+        "This document is the complete Phase 1 specification for the <b>Hospital Management System</b>, "
+        "a multi-tenant SaaS product that runs every operational, "
         "clinical, financial and people process of a hospital from one product. The goal is "
         "simple: once a hospital goes live, it should not need a separate billing tool, "
         "pharmacy package, HR tool, payroll tool, inventory tool or accounting package."))
@@ -26,30 +26,35 @@ def story():
     s += H2("What this document contains")
     s += table([
         ["Section", "Contents", "Primary reader"],
-        ["1-2", "Scope, product model, module catalogue and subscription rules",
+        [f"{sec('overview')}-{sec('product')}",
+         "Scope, product model, module catalogue and subscription rules",
          "Founders, sales, product"],
-        ["3", "SaaS platform: signup, provisioning, subscription billing, metering, "
-              "custom domains, platform console, SaaS metrics",
+        [f"{sec('saas')}", "SaaS platform: signup, provisioning, subscription billing, "
+                           "metering, custom domains, platform console, SaaS metrics",
          "Founders, sales, finance, developers"],
-        ["4", "Roles, permissions, maker-checker and Super Admin approvals",
+        [f"{sec('roles')}", "Roles, permissions, maker-checker and Super Admin approvals",
          "Product, security, QA"],
-        ["5-9", "Module-by-module features, user flows, business rules, data and screens",
+        [f"{sec('core')}-{sec('support')}",
+         "Module-by-module features, user flows, business rules, data and screens",
          "Product, developers, QA, trainers"],
-        ["10", "End-to-end patient, money and people journeys across modules",
+        [f"{sec('journeys')}", "End-to-end patient, money and people journeys across modules",
          "Everyone"],
-        ["11-13", "Architecture, database design and reference source code",
+        [f"{sec('arch')}-{sec('code')}", "Architecture, database design and reference source code",
          "Developers, architects"],
-        ["14", "REST API documentation with request and response examples",
+        [f"{sec('api')}", "REST API documentation with request and response examples",
          "Frontend and backend developers"],
-        ["15-16", "AWS deployment on S3 and CloudFront, CI/CD, security and operations",
+        [f"{sec('deploy')}-{sec('security')}",
+         "AWS deployment on S3 and CloudFront, CI/CD, security and operations",
          "DevOps, security"],
-        ["17-18", "Non-functional requirements, testing, delivery plan and acceptance",
+        [f"{sec('quality')}-{sec('plan')}",
+         "Non-functional requirements, testing, delivery plan and acceptance",
          "Project managers, QA, client"],
     ], widths=[0.1, 0.62, 0.28])
 
     s += H2("Phase 1 scope")
-    s.append(P("Phase 1 delivers the five pillars from the roadmap, plus the people and "
-               "money modules a hospital needs so that it can retire every other tool."))
+    s.append(P("Phase 1 delivers the five pillars from the roadmap, plus the people, money and "
+               "support-service modules a hospital needs so that it can retire every other "
+               "tool."))
     s += table([
         ["Roadmap pillar", "Phase 1 modules in this document"],
         ["<b>Security and Foundations</b>",
@@ -66,7 +71,12 @@ def story():
          "dispensing"],
         ["<b>Billing and Reporting</b>",
          "Cash, billing and printing, financial reporting and accounts, inventory and stock "
-         "tracking, purchase, HR, attendance, leave and payroll management"],
+         "tracking, purchase, HR, recruitment, training, attendance, leave and payroll "
+         "management"],
+        ["<b>Support services and quality</b> (added so no other software is needed)",
+         "Medical records with birth, death and medico-legal registers; diet and kitchen; "
+         "housekeeping, linen, maintenance, biomedical equipment and waste; quality, "
+         "feedback, complaints and incident reporting; patient portal; visitor passes"],
     ], widths=[0.28, 0.72])
 
     s += H2("Out of scope for Phase 1")
@@ -74,7 +84,7 @@ def story():
                "they plug in later as new subscription modules without rework."))
     s += table([
         ["Phase 2 item", "Phase 1 hook already in place"],
-        ["Emergency Room, Operation Theatre, Day Care",
+        ["Emergency Room, Operation Theatre (with CSSD), Day Care",
          "Admission source field, bed categories, service master and billing engine accept "
          "new departments"],
         ["Insurance / TPA management",
@@ -100,6 +110,8 @@ def story():
         "Lab analysers and biometric devices connect through file import or a small "
         "connector service. Full HL7 / ASTM bidirectional interfacing is optional in Phase 1.",
         "Prices shown in this document are indicative and must be finalised by the business.",
+        "Web addresses use example.com as a stand-in for the product's own domain, chosen "
+        "when the brand is decided.",
     ])
 
     s.append(PageBreak())
@@ -146,7 +158,19 @@ def story():
          "payslips, bank file, payroll journal"],
         ["FIN", "Finance and Accounts", "Add-on", "CORE",
          "Chart of accounts, auto journals, vendor payables, ledgers, trial balance, P&amp;L, "
-         "balance sheet, GST reports"],
+         "balance sheet, GST reports, petty cash, expense claims, budgets"],
+        ["MRD", "Medical Records", "Add-on", "CORE",
+         "Record completion and coding, file tracking, record release, birth, death, "
+         "mortuary and medico-legal registers, hospital statistics"],
+        ["DIET", "Diet and Kitchen", "Add-on", "IPD",
+         "Diet orders, NBM, dietitian notes, kitchen production sheet, tray labels, "
+         "delivery, meal charges"],
+        ["FAC", "Housekeeping and Facility", "Add-on", "CORE",
+         "Bed cleaning tasks, area checklists, linen and laundry, maintenance tickets, "
+         "biomedical equipment PM and AMC, biomedical waste"],
+        ["QLT", "Quality and Feedback", "Add-on", "CORE",
+         "Patient feedback, complaints, incident reporting with CAPA, NABH indicators, "
+         "audits, document control"],
     ], widths=[0.08, 0.17, 0.11, 0.09, 0.55], mono_cols=(0,))
     s += callout("Bed management is part of IPD because one cannot work without the other. "
                  "Doctor profiles live in CORE because billing and lab reports need them even "
@@ -161,7 +185,7 @@ def story():
         ["", "Clinic", "Hospital", "Enterprise"],
         ["Target", "OPD clinics, polyclinics, up to 20 beds", "20-150 beds",
          "150+ beds, groups, multi-branch"],
-        ["Included modules", "CORE, OPD, PHR, LAB", "All 11 Phase 1 modules",
+        ["Included modules", "CORE, OPD, PHR, LAB", "All 15 Phase 1 modules",
          "All modules + dedicated database option"],
         ["Users included", "15", "100", "Unlimited"],
         ["Branches", "1", "Up to 3", "Unlimited"],
@@ -179,6 +203,9 @@ def story():
         ["HRM", "INR 30 per employee", "Active employees in month"],
         ["PAY", "INR 25 per payslip", "Payslips generated in month"],
         ["FIN", "INR 3,000", "Per legal entity"],
+        ["MRD, DIET, QLT", "INR 1,500 each", "Per branch"],
+        ["FAC", "INR 2,000", "Per branch"],
+        ["Patient portal (in CORE)", "Included", "Online payments carry gateway fees"],
     ], widths=[0.3, 0.3, 0.4])
 
     s += H2("Subscription rules")
@@ -224,6 +251,6 @@ def story():
                  "commercial enforcement.", "warn", "Clinical safety rule.")
 
     s += callout("Signup, tenant provisioning, subscription billing, metering, custom "
-                 "domains and the Platform Console are specified in Section 3.", "note",
+                 f"domains and the Platform Console are specified in Section {sec('saas')}.", "note",
                  "SaaS operations.")
     return s

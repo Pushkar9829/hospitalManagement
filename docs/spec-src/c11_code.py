@@ -23,7 +23,7 @@ const Env = z.object({
   JWT_PUBLIC_KEY: z.string().min(100),
   AWS_REGION: z.string().default('ap-south-1'),
   S3_DOCS_BUCKET: z.string(),
-  ROOT_DOMAIN: z.string().default('medicore.app'),
+  ROOT_DOMAIN: z.string().default('example.com'),
   SMS_PROVIDER: z.enum(['msg91', 'twilio', 'console']).default('console'),
 });
 
@@ -150,7 +150,7 @@ import { current } from '../tenancy/context';
 import { AppError } from '../errors';
 
 export type ModuleCode = 'CORE' | 'OPD' | 'IPD' | 'NUR' | 'LAB' | 'RAD' | 'PHR'
-  | 'INV' | 'HRM' | 'PAY' | 'FIN';
+  | 'INV' | 'HRM' | 'PAY' | 'FIN' | 'MRD' | 'DIET' | 'FAC' | 'QLT';
 
 /** 402 if the hospital has not subscribed to the module. */
 export const requireModule = (code: ModuleCode): RequestHandler => (_req, _res, next) =>

@@ -12,7 +12,7 @@ def story():
     s += H1("REST API Documentation")
     s += H2("Conventions")
     s += kv([
-        ["Base URL", "https://{hospital}.medicore.app/api/v1 (same origin as the web app)"],
+        ["Base URL", "https://{hospital}.example.com/api/v1 (same origin as the web app)"],
         ["Format", "JSON, UTF-8. Dates in ISO 8601 UTC. Money in paise as integers"],
         ["Authentication", "httpOnly cookie access_token (web) or Authorization: Bearer "
                            "&lt;token&gt; (integrations). Refresh via POST /auth/refresh"],
@@ -361,6 +361,52 @@ GET /api/v1/payroll/runs/66f0...
         ["GET", "/reports/{code}?params", "reports:{module}:read", "Any module report"],
         ["POST", "/reports/{code}/export", "reports:{module}:export", "Async Excel / PDF to S3"],
     ])
+    s += H2("Medical records, diet, facility and quality")
+    s += ep([
+        ["GET", "/mrd/deficiencies?doctorId=", "mrd:record:read", "Pending record items"],
+        ["PUT", "/mrd/records/{admissionId}/coding", "mrd:coding:write", "Final ICD-10 codes"],
+        ["POST", "/mrd/files/{id}/issue", "mrd:file:issue", "Issue physical file"],
+        ["POST", "/mrd/release-requests", "mrd:release:request", "Record copy (approval)"],
+        ["POST", "/mrd/births", "mrd:birth:create", "Birth register entry"],
+        ["POST", "/mrd/deaths", "mrd:death:create", "Death register entry"],
+        ["GET", "/mrd/deaths/{id}/mccd.pdf", "mrd:death:read", "Cause of death certificate"],
+        ["CRUD", "/mrd/mlc", "mrd:mlc:*", "Medico-legal register"],
+        ["PUT", "/diet/orders/{admissionId}", "diet:order:write", "Diet and NBM"],
+        ["GET", "/diet/production?date=&amp;meal=", "diet:kitchen:read", "Production sheet"],
+        ["POST", "/diet/deliveries", "diet:kitchen:write", "Confirm ward delivery"],
+        ["GET", "/facility/hk-tasks?status=", "facility:hk:read", "Housekeeping board"],
+        ["POST", "/facility/hk-tasks/{id}/done", "facility:hk:write", "Bed or area cleaned"],
+        ["POST", "/facility/linen/transactions", "facility:linen:write", "Issue / laundry"],
+        ["POST", "/facility/tickets", "any staff", "Raise maintenance ticket"],
+        ["PATCH", "/facility/tickets/{id}", "facility:ticket:update", "Assign, resolve"],
+        ["CRUD", "/facility/equipment", "facility:equipment:*", "Equipment, PM, AMC"],
+        ["POST", "/facility/bmw/entries", "facility:bmw:write", "Biomedical waste weights"],
+        ["POST", "/quality/incidents", "any staff", "Report incident"],
+        ["PATCH", "/quality/incidents/{id}", "quality:incident:update", "RCA, CAPA, close"],
+        ["CRUD", "/quality/complaints", "quality:complaint:*", "Complaint register"],
+        ["GET", "/quality/indicators?month=", "quality:indicator:read", "Indicator values"],
+        ["POST", "/public/feedback/{token}", "patient link", "Submit feedback"],
+    ])
+
+    s += H2("Front office, portal and other additions")
+    s += ep([
+        ["CRUD", "/front-office/enquiries", "frontoffice:enquiry:*", "Enquiry log"],
+        ["POST", "/front-office/passes", "frontoffice:pass:create", "Attendant / visitor pass"],
+        ["POST", "/front-office/passes/{code}/scan", "frontoffice:pass:scan", "Gate in / out"],
+        ["POST", "/portal/auth/otp", "patient (public)", "Portal login OTP"],
+        ["GET", "/portal/me/documents", "patient", "Reports, bills, summaries"],
+        ["POST", "/portal/me/payments", "patient", "Pay dues online"],
+        ["CRUD", "/opd/health-check-packages", "opd:package:*", "Check-up packages"],
+        ["POST", "/opd/health-checks", "opd:healthcheck:create", "Book and route sheet"],
+        ["POST", "/rad/studies/{id}/form-f", "rad:pcpndt:write", "PCPNDT Form F"],
+        ["CRUD", "/hr/requisitions, /hr/candidates", "hr:recruitment:*", "Recruitment"],
+        ["CRUD", "/hr/trainings, /hr/appraisals", "hr:training:*, hr:appraisal:*",
+         "Training, appraisal"],
+        ["POST", "/finance/expense-claims", "self", "Claim with receipts"],
+        ["CRUD", "/finance/petty-cash, /finance/budgets", "finance:pettycash:*",
+         "Petty cash, budgets"],
+    ])
+
     s += H2("WebSocket events")
     s += table([
         ["Channel / event", "Payload", "Who receives"],

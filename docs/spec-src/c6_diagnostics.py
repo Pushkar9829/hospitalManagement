@@ -39,6 +39,12 @@ def story():
                              "and uploaded report"],
         ["Quality control", "QC lot entries and Levey-Jennings chart per analyser "
                             "(basic in Phase 1)"],
+        ["Microbiology", "Culture workflow with preliminary and final reports: organism, "
+                         "colony count, antibiotic sensitivity panel (S / I / R); "
+                         "antibiogram report for infection control"],
+        ["Histopathology", "Specimen accession, gross description, blocks and slides "
+                           "tracking, microscopic findings, diagnosis, synoptic templates; "
+                           "longer TAT targets"],
     ], widths=[0.22, 0.78], first_col_bold=True)
     s += flow([
         ("Doctor", "Orders CBC and LFT in consultation"),
@@ -79,6 +85,10 @@ def story():
                    "images' button opens PACS web viewer. Small JPEG key images can be "
                    "uploaded to S3 if no PACS"],
         ["Delivery", "Same as lab: EMR, SMS link, print, film issue register"],
+        ["PCPNDT compliance", "For ultrasound on pregnant women, Form F is mandatory under the "
+                              "PCPNDT Act: captured digitally with doctor declaration, "
+                              "patient signature, register kept for the statutory period "
+                              "and monthly report to the appropriate authority"],
     ], widths=[0.22, 0.78], first_col_bold=True)
     s += states(["ORDERED", "SCHEDULED", "ARRIVED", "PERFORMED", "REPORTED", "SIGNED"],
                 title="Radiology study status")

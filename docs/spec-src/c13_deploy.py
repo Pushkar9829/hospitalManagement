@@ -8,9 +8,9 @@ def deploy():
     s += H2("Environments")
     s += table([
         ["Environment", "URL pattern", "Purpose", "Deploys"],
-        ["dev", "*.dev.medicore.app", "Developer integration", "Every merge to develop"],
-        ["staging", "*.staging.medicore.app", "QA, UAT with client, demo", "Release branch"],
-        ["production", "*.medicore.app + custom domains", "Live hospitals",
+        ["dev", "*.dev.example.com", "Developer integration", "Every merge to develop"],
+        ["staging", "*.staging.example.com", "QA, UAT with client, demo", "Release branch"],
+        ["production", "*.example.com + custom domains", "Live hospitals",
          "Tagged release, manual approval"],
     ], widths=[0.15, 0.3, 0.3, 0.25])
 
@@ -19,7 +19,7 @@ def deploy():
         "Create three AWS accounts (dev, staging, prod) under AWS Organizations; enable "
         "CloudTrail, GuardDuty and AWS Config in all.",
         "Register domain in Route 53. Request a wildcard ACM certificate for "
-        "*.medicore.app in <b>us-east-1</b> (required by CloudFront) and one in ap-south-1 "
+        "*.example.com in <b>us-east-1</b> (required by CloudFront) and one in ap-south-1 "
         "for the ALB.",
         "Apply Terraform in infra/ to create: VPC (2 public, 2 private subnets), S3 web "
         "buckets, S3 documents bucket with KMS key, CloudFront distributions with OAC, "
@@ -39,11 +39,11 @@ def deploy():
 pnpm --filter web build                 # outputs apps/web/dist (index.html + hashed assets)
 
 # Upload hashed assets with long cache, then index.html with no cache
-aws s3 sync apps/web/dist s3://medicore-web-prod \\
+aws s3 sync apps/web/dist s3://hms-web-prod \\
   --delete --exclude index.html \\
   --cache-control "public,max-age=31536000,immutable"
 
-aws s3 cp apps/web/dist/index.html s3://medicore-web-prod/index.html \\
+aws s3 cp apps/web/dist/index.html s3://hms-web-prod/index.html \\
   --cache-control "no-cache,no-store,must-revalidate" --content-type text/html
 
 # Only index.html needs invalidation because assets have content hashes
@@ -57,7 +57,7 @@ aws cloudfront create-invalidation --distribution-id E1ABCDEF2GHIJK --paths "/in
     "Effect": "Allow",
     "Principal": { "Service": "cloudfront.amazonaws.com" },
     "Action": "s3:GetObject",
-    "Resource": "arn:aws:s3:::medicore-web-prod/*",
+    "Resource": "arn:aws:s3:::hms-web-prod/*",
     "Condition": { "StringEquals": {
       "AWS:SourceArn": "arn:aws:cloudfront::123456789012:distribution/E1ABCDEF2GHIJK" } }
   }]
@@ -75,7 +75,7 @@ aws cloudfront create-invalidation --distribution-id E1ABCDEF2GHIJK --paths "/in
                           "Router deep links work"],
         ["Security headers", "Response headers policy: HSTS, CSP, X-Frame-Options DENY, "
                              "Referrer-Policy"],
-        ["Alternate names", "*.medicore.app plus each hospital's custom domain"],
+        ["Alternate names", "*.example.com plus each hospital's custom domain"],
         ["WAF", "AWS managed core rule set, SQLi, known bad inputs, IP rate limiting"],
     ], widths=[0.25, 0.75], first_col_bold=True)
 
@@ -169,14 +169,14 @@ jobs:
       - id: ecr
         uses: aws-actions/amazon-ecr-login@v2
       - run: |
-          IMAGE=${{ steps.ecr.outputs.registry }}/medicore-api:${{ github.sha }}
+          IMAGE=${{ steps.ecr.outputs.registry }}/hms-api:${{ github.sha }}
           docker build -f apps/api/Dockerfile -t $IMAGE .
           docker push $IMAGE
           echo "IMAGE=$IMAGE" >> $GITHUB_ENV
       - run: pnpm --filter api migrate:up      # idempotent index + data migrations
       - run: |
           for svc in api worker; do
-            ./infra/scripts/ecs-deploy.sh medicore-prod medicore-$svc "$IMAGE"
+            ./infra/scripts/ecs-deploy.sh hms-prod hms-$svc "$IMAGE"
           done                                  # rolling update, circuit breaker rollback
 """, ".github/workflows/deploy-api.yml")
 
@@ -187,10 +187,10 @@ jobs:
         ["MONGO_URI", "Secrets Manager", "Atlas PrivateLink SRV string"],
         ["REDIS_URL", "rediss://...:6379", "TLS"],
         ["JWT_PRIVATE_KEY / JWT_PUBLIC_KEY", "Secrets Manager", "RS256, rotated yearly"],
-        ["S3_DOCS_BUCKET", "medicore-docs-prod", "Access via ECS task role"],
-        ["ROOT_DOMAIN", "medicore.app", "Tenant resolution"],
+        ["S3_DOCS_BUCKET", "hms-docs-prod", "Access via ECS task role"],
+        ["ROOT_DOMAIN", "example.com", "Tenant resolution"],
         ["SMS_PROVIDER, SMS_API_KEY", "msg91 / Secrets Manager", "DLT templates in DB"],
-        ["SES_FROM", "no-reply@medicore.app", "Verified domain"],
+        ["SES_FROM", "no-reply@example.com", "Verified domain"],
         ["RAZORPAY_KEY_ID / SECRET", "Secrets Manager", "Patient and SaaS payments"],
         ["SENTRY_DSN", "Secrets Manager", "Error tracking"],
         ["VITE_SENTRY_DSN, VITE_APP_VERSION", "Build-time (web)", "No secrets in web build"],
@@ -316,7 +316,7 @@ def quality():
                                              "IDs must return 404"],
         ["Concurrency", "Custom suite", "Parallel bed allocation, stock sale and counter "
                                         "increment never double-allocate"],
-        ["End-to-end", "Playwright", "The journeys in Section 10 run on every release "
+        ["End-to-end", "Playwright", f"The journeys in Section {sec('journeys')} run on every release "
                                      "candidate"],
         ["Performance", "k6", "Load profile of a 300-bed hospital at 2x peak"],
         ["Security", "OWASP ZAP, npm audit, pen test", "No high findings open at release"],
@@ -357,11 +357,14 @@ def plan():
         ["10-11", "21-24", "Inventory and purchase; HR, rosters, attendance, leave"],
         ["12-13", "25-28", "Payroll with statutory outputs; Finance auto-posting and "
                            "statements; reports for all modules"],
-        ["14", "29-30", "Performance and security testing, pen test fixes, data "
+        ["14-15", "29-32", "Medical records and registers; diet and kitchen; housekeeping, "
+                           "linen, maintenance, biomedical, waste; quality and incidents; "
+                           "patient portal, front office, health check-ups"],
+        ["16", "33-34", "Performance and security testing, pen test fixes, data "
                         "migration tools"],
-        ["15", "31-32", "Pilot hospital go-live, hyper-care, production hardening"],
+        ["17", "35-36", "Pilot hospital go-live, hyper-care, production hardening"],
     ], widths=[0.12, 0.12, 0.76], first_col_bold=True)
-    s += callout("About 8 months with the team above. A clinic-only release (CORE, OPD, "
+    s += callout("About 9 months with the team above. A clinic-only release (CORE, OPD, "
                  "Pharmacy, Lab and billing) can go live after sprint 9 if the business "
                  "wants earlier revenue.", "tip", "Estimate.")
 
@@ -381,16 +384,16 @@ def plan():
 
     s += H2("Phase 1 acceptance criteria")
     s += bullets([
-        "Every user flow in Sections 3 to 10 runs end to end on staging with the pilot "
+        f"Every user flow in Sections {sec('saas')} to {sec('journeys')} runs end to end on staging with the pilot "
         "hospital's own masters.",
         "A module that is not subscribed is invisible in the menu and its API returns 402.",
-        "No maker can approve their own request; all rules in Section 4 are enforced.",
+        f"No maker can approve their own request; all rules in Section {sec('roles')} are enforced.",
         "Bills, receipts, lab reports, discharge summaries and payslips print correctly on "
         "A4 and, where specified, thermal printers.",
         "Payroll for one month matches the hospital's manual calculation for a sample of "
         "50 employees, including PF, ESI, PT and TDS.",
         "Trial balance balances after a full test month of transactions.",
-        "Performance targets in Section 17 met; no open high-severity security findings.",
+        f"Performance targets in Section {sec('quality')} met; no open high-severity security findings.",
         "Production on AWS with web on S3 + CloudFront, automated deploys, backups and "
         "alarms verified by a restore drill.",
     ])

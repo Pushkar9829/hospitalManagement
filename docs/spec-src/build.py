@@ -1,4 +1,4 @@
-"""Builds docs/MediCore_HMS_Phase1_Specification.pdf.  Run: python3 docs/spec-src/build.py"""
+"""Builds docs/Hospital_Management_System_Phase1_Specification.pdf.  Run: python3 docs/spec-src/build.py"""
 import os
 import sys
 from datetime import date
@@ -12,18 +12,18 @@ from reportlab.platypus.tableofcontents import TableOfContents
 from kit import *  # noqa
 from kit import Anchor
 import c1_overview, c1b_saas, c2_roles, c3_core, c4_patient_ops, c5_clinical, c6_diagnostics
-import c7_business, c8_journeys, c9_arch, c10_data, c11_code, c12_api, c13_deploy
+import c7_business, c7b_support, c8_journeys, c9_arch, c10_data, c11_code, c12_api, c13_deploy
 
-TITLE = "MediCore HMS - Phase 1 SaaS Product and Technical Specification"
+TITLE = "Hospital Management System - Phase 1 SaaS Product and Technical Specification"
 VERSION = "1.1"
-OUT = os.path.join(os.path.dirname(__file__), "..", "MediCore_HMS_Phase1_Specification.pdf")
+OUT = os.path.join(os.path.dirname(__file__), "..", "Hospital_Management_System_Phase1_Specification.pdf")
 
 
 class Doc(BaseDocTemplate):
     def __init__(self, path):
         super().__init__(path, pagesize=A4, leftMargin=MARGIN, rightMargin=MARGIN,
                          topMargin=MARGIN + 6, bottomMargin=MARGIN + 4, title=TITLE,
-                         author="MediCore HMS Product Team",
+                         author="Product Team",
                          subject="Hospital Management System Phase 1 specification")
         frame = Frame(MARGIN, MARGIN + 4, TEXT_W, PAGE_H - 2 * MARGIN - 10, id="f",
                       leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0)
@@ -50,12 +50,12 @@ def cover_page(c, doc):
     c.setFont("Body-Bold", 11)
     c.drawString(MARGIN, PAGE_H - 70, "PHASE 1  ·  CORE SYSTEM AND MVP PATIENT WORKFLOWS")
     c.setFont("Body-Bold", 34)
-    c.drawString(MARGIN, PAGE_H - 125, "MediCore HMS")
+    c.drawString(MARGIN, PAGE_H - 125, "Hospital Management System")
     c.setFont("Body", 20)
-    c.drawString(MARGIN, PAGE_H - 155, "Hospital Management SaaS Platform")
+    c.drawString(MARGIN, PAGE_H - 155, "Multi-tenant SaaS Platform")
     c.setFont("Body", 13.5)
     c.setFillColor(colors.HexColor("#C9D6E8"))
-    c.drawString(MARGIN, PAGE_H - 195, "Multi-tenant SaaS: Product, User Flow and Technical Specification")
+    c.drawString(MARGIN, PAGE_H - 195, "Product, User Flow and Technical Specification")
     c.drawString(MARGIN, PAGE_H - 214, "React  ·  Node.js  ·  MongoDB  ·  "
                                        "AWS S3 + CloudFront")
     c.setFont("Body", 10)
@@ -72,7 +72,7 @@ def body_page(c, doc):
     c.line(MARGIN, PAGE_H - MARGIN + 2, PAGE_W - MARGIN, PAGE_H - MARGIN + 2)
     c.setFont("Body", 8)
     c.setFillColor(MUTED)
-    c.drawString(MARGIN, PAGE_H - MARGIN + 6, "MediCore HMS  ·  Phase 1 Specification")
+    c.drawString(MARGIN, PAGE_H - MARGIN + 6, "Hospital Management System  ·  Phase 1 Specification")
     c.drawRightString(PAGE_W - MARGIN, PAGE_H - MARGIN + 6, f"v{VERSION}")
     c.line(MARGIN, MARGIN - 4, PAGE_W - MARGIN, MARGIN - 4)
     c.drawString(MARGIN, MARGIN - 14, "Confidential. Prepared for the hospital product "
@@ -93,6 +93,8 @@ def cover_story():
         ("Diagnostics and Core Departments", "Laboratory, radiology, pharmacy"),
         ("Billing and Reporting", "Cash, billing, printing, finance, inventory, HR, "
                                   "payroll"),
+        ("Support Services and Quality", "Medical records, diet and kitchen, housekeeping "
+                                         "and facility, quality, patient portal"),
     ]
     rows = [[Paragraph(f"<font color='#E2702A'><b>{i}</b></font>",
                        ParagraphStyle("n", parent=S["body"], fontSize=16, leading=18)),
@@ -124,16 +126,24 @@ def toc_story():
             PageBreak()]
 
 
+# One key per H1 chapter, in document order. Cross-references use kit.sec(key).
+SECTION_KEYS = ["overview", "product", "saas", "roles", "core", "patient", "clinical", "diag",
+                "business", "support", "journeys", "arch", "data", "code", "api", "deploy",
+                "security", "quality", "plan"]
+
+
 def main():
     chapters = [c1_overview, c1b_saas, c2_roles, c3_core, c4_patient_ops, c5_clinical, c6_diagnostics,
-                c7_business, c8_journeys, c9_arch, c10_data, c11_code, c12_api, c13_deploy]
+                c7_business, c7b_support, c8_journeys, c9_arch, c10_data, c11_code, c12_api, c13_deploy]
     import kit
     kit._counter.update(n=0, h1=0, h2=0)
+    kit.SEC.update({k: i + 1 for i, k in enumerate(SECTION_KEYS)})
     story = cover_story() + toc_story()
     for i, ch in enumerate(chapters):
         story += ch.story()
         if i < len(chapters) - 1:
             story.append(PageBreak())
+    assert kit._counter["h1"] == len(SECTION_KEYS), "SECTION_KEYS out of sync with chapters"
     doc = Doc(OUT)
     doc.multiBuild(story)
     print("wrote", os.path.abspath(OUT))

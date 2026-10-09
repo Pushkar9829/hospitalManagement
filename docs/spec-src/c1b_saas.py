@@ -5,7 +5,7 @@ from reportlab.platypus import PageBreak
 def story():
     s = []
     s += H1("SaaS Platform: Tenants, Subscriptions and Operations")
-    s.append(P("MediCore HMS is a <b>multi-tenant SaaS</b> product. You, the platform "
+    s.append(P("The Hospital Management System is a <b>multi-tenant SaaS</b> product. You, the platform "
                "owner, run one cloud deployment. Every hospital that signs up becomes a "
                "<b>tenant</b> on it. Hospitals never install anything. They open a browser, "
                "pay a subscription, and get updates automatically. This section covers "
@@ -15,15 +15,15 @@ def story():
     s += H2("Who uses what")
     s += table([
         ["Party", "Application", "URL", "Hosting"],
-        ["Prospects", "Marketing site, pricing, signup", "www.medicore.app",
+        ["Prospects", "Marketing site, pricing, signup", "www.example.com",
          "S3 + CloudFront"],
-        ["Platform owner staff", "Platform Console", "console.medicore.app",
+        ["Platform owner staff", "Platform Console", "console.example.com",
          "S3 + CloudFront, IP-restricted"],
-        ["Hospital staff", "Hospital app (all modules)", "{hospital}.medicore.app or "
+        ["Hospital staff", "Hospital app (all modules)", "{hospital}.example.com or "
                                                          "custom domain", "S3 + CloudFront"],
-        ["Patients", "Booking page, report and receipt links", "{hospital}.medicore.app/book",
+        ["Patients", "Booking page, report and receipt links", "{hospital}.example.com/book",
          "S3 + CloudFront"],
-        ["Integrations", "Public REST API with API keys", "api.medicore.app/v1",
+        ["Integrations", "Public REST API with API keys", "api.example.com/v1",
          "ECS behind ALB"],
     ], widths=[0.18, 0.3, 0.3, 0.22], first_col_bold=True)
     s += callout("All hospitals run the same version of the same code. A hospital's "
@@ -83,7 +83,7 @@ def story():
         ["1. Tenant record", "Tenant in platform database with status PROVISIONING, plan, "
                              "modules, limits, sub-domain"],
         ["2. Data location", "Shared cluster by default; dedicated database for Enterprise"],
-        ["3. System roles", "All standard roles and permissions from Section 4"],
+        ["3. System roles", f"All standard roles and permissions from Section {sec('roles')}"],
         ["4. Default masters", "Departments template, bed categories, tax codes, payment "
                                "modes, ICD-10, units, leave types, shift templates"],
         ["5. Finance seed", "Hospital chart of accounts and number series for the current "
@@ -121,7 +121,7 @@ def story():
         ["Payments", "Razorpay Subscriptions with e-mandate (UPI AutoPay, card, NACH) in "
                      "India; Stripe Billing abroad; bank transfer recorded manually"],
         ["Dunning", "Retry failed charges on day 1, 3 and 6 with e-mail, SMS and in-app "
-                    "banner; then status moves per the lifecycle in Section 2"],
+                    f"banner; then status moves per the lifecycle in Section {sec('product')}"],
         ["Credit notes", "For billing errors and goodwill credits, adjusted on the next "
                          "invoice"],
     ], widths=[0.2, 0.8], first_col_bold=True)
@@ -178,7 +178,7 @@ From the 31 Oct renewal invoice, Laboratory is billed in full at INR 2,500 + GST
     s += H2("Tenant isolation and fair use")
     s += bullets([
         "<b>Data.</b> Every query is scoped by tenant through the Mongoose plugin "
-        "(Section 13). Automated tests try to read other tenants' data on every endpoint.",
+        f"(Section {sec('code')}). Automated tests try to read other tenants' data on every endpoint.",
         "<b>Noisy neighbours.</b> Per-tenant API rate limits, per-tenant job queues so one "
         "hospital's payroll run cannot delay another's SMS, and 30-second query timeouts.",
         "<b>Large tenants.</b> A tenant can be moved to a dedicated database or cluster "
@@ -190,11 +190,11 @@ From the 31 Oct renewal invoice, Laboratory is billed in full at INR 2,500 + GST
     s += H2("Custom domains and white-label")
     s += table([
         ["Feature", "Clinic", "Hospital", "Enterprise"],
-        ["Sub-domain (name.medicore.app)", tick(), tick(), tick()],
+        ["Sub-domain (name.example.com)", tick(), tick(), tick()],
         ["Logo, colours, print letterhead", tick(), tick(), tick()],
         ["Custom domain (his.cityhospital.com)", tick(False), tick(), tick()],
         ["Own e-mail sender domain and SMS sender ID", tick(False), tick(), tick()],
-        ["Remove 'Powered by MediCore'", tick(False), tick(False), tick()],
+        ["Remove platform 'Powered by' branding", tick(False), tick(False), tick()],
         ["Own mobile-friendly booking page domain", tick(False), tick(), tick()],
     ], widths=[0.46, 0.18, 0.18, 0.18], first_col_bold=True)
     s.append(P("Custom domains: the hospital adds a CNAME record pointing to the platform. "
@@ -317,7 +317,7 @@ From the 31 Oct renewal invoice, Laboratory is billed in full at INR 2,500 + GST
         ["POST", "/webhooks/stripe", "Stripe (signed)", "Payment events"],
     ], widths=[0.08, 0.38, 0.22, 0.32], mono_cols=(0, 1))
     s += code("""
-POST https://www.medicore.app/public/signup
+POST https://www.example.com/public/signup
 { "contact": { "name": "Dr. Arjun Rao", "email": "arjun@cityhospital.in",
                "mobile": "9876543210", "otpToken": "otp_8f2..." },
   "hospital": { "name": "City Hospital", "city": "Nagpur", "beds": 60 },
@@ -325,7 +325,7 @@ POST https://www.medicore.app/public/signup
 
 202 Accepted
 { "tenantId": "6701ab...", "status": "PROVISIONING",
-  "loginUrl": "https://cityhospital.medicore.app/welcome?token=...",
+  "loginUrl": "https://cityhospital.example.com/welcome?token=...",
   "trialEndsAt": "2026-10-23T23:59:59+05:30" }
 
 POST /api/v1/subscription/preview

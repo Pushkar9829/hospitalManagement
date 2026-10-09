@@ -124,6 +124,35 @@ def story():
         "through short-lived signed links.",
     ])
 
+    s += H2("Front office: enquiries and visitor passes")
+    s += table([
+        ["Feature", "Details"],
+        ["Enquiry desk", "Log phone and walk-in enquiries: doctor availability, tariffs, "
+                         "packages, bed availability. Convert an enquiry to an appointment in "
+                         "one click; enquiry-to-visit conversion report"],
+        ["Attendant passes", "Issued at admission. Number allowed per bed category, photo and "
+                             "QR code, printed or sent by SMS. Revoked automatically at "
+                             "discharge"],
+        ["Visitor entry", "Security desk scans the QR pass or records a visitor with ID, "
+                          "patient, ward and time in and out. Visiting-hours rules and ICU "
+                          "restrictions enforced"],
+        ["Help desk", "Patient information desk can look up a patient's ward and bed, but "
+                      "never clinical details; VIP and medico-legal patients hidden"],
+    ], widths=[0.2, 0.8], first_col_bold=True)
+
+    s += H2("Patient portal")
+    s.append(P("A mobile-friendly web portal at {hospital}.example.com/my, built in React and "
+               "hosted on S3 like the main app. Patients log in with an OTP on their "
+               "registered mobile; one login can manage linked family members."))
+    s += bullets([
+        "Book, reschedule and cancel appointments; join tele-consultations.",
+        "Download lab and radiology reports, prescriptions, discharge summaries and bills.",
+        "Pay OPD fees, IPD deposits and outstanding dues online through the payment gateway.",
+        "View upcoming follow-ups and medicine reminders; update address and e-mail.",
+        "Give feedback and raise complaints, which go to the Quality module.",
+        "Every portal download is written to the patient's access log.",
+    ])
+
     s += H2("Staff directory")
     s.append(P("Every person who logs in or appears on a document is an employee record. "
                "CORE keeps a light staff directory. The HRM module extends the same record "
@@ -151,6 +180,8 @@ def story():
         ["Document store", "All generated PDFs and uploads go to S3 with tenant prefix. "
                            "Patients get time-limited links, never public URLs"],
         ["Delivery log", "Status per message (queued, sent, delivered, failed) with retry"],
+        ["Circulars", "Hospital-wide or department circulars and notices with read "
+                      "acknowledgement tracking"],
     ], widths=[0.22, 0.78], first_col_bold=True)
 
     s += H2("Dashboards")
@@ -165,5 +196,10 @@ def story():
         ["Lab / Radiology", "Pending samples, in-process, awaiting validation, TAT breaches"],
         ["Pharmacy / Store", "Prescriptions waiting, near expiry, reorder, pending GRN"],
         ["HR / Payroll", "Headcount, absent today, leave pending, payroll status"],
+        ["MRD", "Records pending completion, deficiencies by doctor, release requests"],
+        ["Kitchen", "Meal counts by diet for next meal, NBM patients, missed deliveries"],
+        ["Housekeeping / Facility", "Beds awaiting cleaning, open tickets, PM due, AMC "
+                                    "renewals"],
+        ["Quality", "Open incidents and complaints, indicator trends, audits due"],
     ], widths=[0.25, 0.75], first_col_bold=True)
     return s

@@ -80,6 +80,19 @@ def story():
          "components with formulas; run status; lines per employee"],
         ["FIN", "ledgers, vouchers, journalEntries, bankStatements, periods",
          "double-entry lines[], costCentre, source event ref"],
+        ["FIN", "pettyCash, expenseClaims, budgets", "imprest, vouchers; claims with "
+                                                     "receipts; budget per cost centre"],
+        ["HRM", "requisitions, candidates, trainings, appraisals", "recruitment pipeline, "
+                                                                  "certifications, reviews"],
+        ["CORE", "enquiries, visitorPasses, circulars", "front office and notices"],
+        ["MRD", "recordFiles, deficiencies, releaseRequests, births, deaths, mlcCases, "
+                "mortuary", "completion status, coding, legal registers"],
+        ["DIET", "dietTypes, dietOrders, mealRuns, mealDeliveries", "per admission, NBM "
+                                                                    "windows, counts"],
+        ["FAC", "hkTasks, linenTransactions, tickets, equipment, pmSchedules, "
+                "bmwEntries", "TAT, downtime, waste weights"],
+        ["QLT", "feedback, complaints, incidents, indicators, audits, documents",
+         "CAPA, monthly indicator values"],
     ], widths=[0.11, 0.3, 0.59], mono_cols=(1,))
 
     s += H2("Critical indexes")

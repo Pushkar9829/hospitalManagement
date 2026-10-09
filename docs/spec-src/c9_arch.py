@@ -140,7 +140,7 @@ def story():
         ["Component", "Configuration (production)"],
         ["S3 web bucket", "Block all public access. CloudFront Origin Access Control. "
                           "index.html cached 60 s, hashed assets cached 1 year"],
-        ["CloudFront", "Wildcard certificate *.medicore.app in us-east-1. Behaviours: "
+        ["CloudFront", "Wildcard certificate *.example.com in us-east-1. Behaviours: "
                        "default to S3, /api/* and /socket.io/* to ALB with caching off. "
                        "SPA fallback: 403/404 to /index.html. AWS WAF managed rules"],
         ["ECS API service", "2-6 Fargate tasks (1 vCPU, 2 GB), auto-scaling on CPU 60% and "
@@ -162,7 +162,7 @@ def story():
 
     s += H2("Multi-tenancy")
     s += bullets([
-        "<b>Tenant resolution.</b> The sub-domain (e.g. citycare.medicore.app) or a custom "
+        "<b>Tenant resolution.</b> The sub-domain (e.g. citycare.example.com) or a custom "
         "domain maps to a tenant. The API reads the Host header, looks up the tenant in "
         "a cached registry, and puts it on the request context.",
         "<b>Data isolation.</b> Shared database by default. Every tenant-owned document has "
@@ -200,6 +200,7 @@ apps/
       modules/
         core-setup/ patients/ billing/ staff/        (CORE)
         opd/ ipd/ nursing/ lab/ radiology/ pharmacy/ inventory/ hr/ payroll/ finance/
+        mrd/ diet/ facility/ quality/ portal/
           <module>/
             <module>.routes.ts      route table + permission per route
             <module>.controller.ts  HTTP in/out only
@@ -245,5 +246,10 @@ infra/                      Terraform for AWS (S3, CloudFront, ECS, ALB, Redis, 
         ["hr.leave.approved", "HRM", "Roster, OPD slot blocking, Attendance"],
         ["payroll.run.locked", "PAY", "Finance journal, Payslip PDFs, Notify"],
         ["approval.decided", "Approvals", "Owning module applies or discards change"],
+        ["ipd.bedVacated", "IPD", "FAC (bed cleaning task), DIET (stop meals)"],
+        ["facility.bedCleaned", "FAC", "IPD bed board (bed AVAILABLE)"],
+        ["diet.orderChanged", "DIET", "Kitchen production sheet, tray labels"],
+        ["patient.died", "IPD", "MRD death register, mortuary, Billing hold"],
+        ["quality.incidentReported", "QLT / any", "Quality Manager, HOD notifications"],
     ], widths=[0.36, 0.2, 0.44], mono_cols=(0,))
     return s

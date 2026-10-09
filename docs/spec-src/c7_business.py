@@ -74,6 +74,13 @@ def story():
                        "cost-centre P&amp;L by department"],
         ["Tax reports", "GSTR-1 and GSTR-3B data export, TDS summary"],
         ["Exports", "Excel and PDF; Tally-compatible XML export as an option"],
+        ["Petty cash", "Imprest per department or branch, petty cash vouchers with bills, "
+                       "replenishment request and approval"],
+        ["Expense claims", "Employees claim travel, conference and other expenses with "
+                           "receipts; manager and finance approval; paid by bank or "
+                           "through payroll"],
+        ["Budgets", "Annual budget per cost centre and ledger; actual vs budget report; "
+                    "warning when a purchase order exceeds the remaining budget"],
     ], widths=[0.22, 0.78], first_col_bold=True)
     s += H3("Management financial reports (all hospitals, CORE)")
     s += bullets(["Daily collection summary by mode, counter and cashier",
@@ -125,7 +132,7 @@ def story():
     s += module_card("HRM", "HR, Rosters and Attendance", "Add-on module", "CORE",
                      "HR Manager, HR Executive, HODs, all employees (self-service)",
                      "Manages the full employee lifecycle, attendance and leave, and feeds "
-                     "payroll. Rosters are described in Section 7.")
+                     f"payroll. Rosters are described in Section {sec('clinical')}.")
     s += H2("HR management")
     s += table([
         ["Feature", "Details"],
@@ -146,6 +153,15 @@ def story():
         ["Self-service", "Apply leave, regularise attendance, view roster, payslips, "
                          "tax declarations, update profile (with HR approval)"],
         ["Movement", "Transfers, promotions, increments with effective dates and history"],
+        ["Recruitment", "Manpower requisition with approval, job openings, candidate "
+                        "database, interview schedule and panel feedback, offer letter, "
+                        "convert selected candidate to employee"],
+        ["Training", "Training calendar, attendance, mandatory certifications (BLS, ACLS, "
+                     "fire safety, infection control) with expiry alerts"],
+        ["Credentialing", "Doctors' clinical privileges granted by the credentialing "
+                          "committee, renewal dates, linked to what they may order or perform"],
+        ["Appraisal", "Annual cycle with KRAs, self review, manager and HOD review, "
+                      "increment recommendation passed to Payroll"],
         ["Exit", "Resignation, notice period, clearance checklist across departments, "
                  "full and final settlement via Payroll, experience letter"],
     ], widths=[0.22, 0.78], first_col_bold=True)

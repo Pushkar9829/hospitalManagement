@@ -87,6 +87,13 @@ def story():
         ["HR", "Employees, onboarding, roster planner, attendance, leave, exit", "HRM"],
         ["Payroll", "Structures, inputs, payroll runs, payslips, statutory files", "PAY"],
         ["Finance", "Vouchers, payables, receivables, bank, ledgers, statements, GST", "FIN"],
+        ["Records", "Completion, deficiencies, coding, file tracking, release requests, "
+                    "birth, death, mortuary and MLC registers", "MRD"],
+        ["Diet", "Diet orders, NBM board, production sheet, tray labels, deliveries", "DIET"],
+        ["Facility", "Housekeeping board, checklists, linen, tickets, equipment, PM, AMC, "
+                     "biomedical waste", "FAC"],
+        ["Quality", "Feedback, complaints, incidents, indicators, audits, documents", "QLT"],
+        ["Front Office", "Enquiries, attendant and visitor passes, help desk", "CORE"],
         ["Reports", "Every module's reports, export to Excel / PDF, scheduled e-mail", "All"],
         ["Settings", "Hospital, branches, departments, masters, users, roles, approval "
                      "rules, templates, subscription", "CORE"],

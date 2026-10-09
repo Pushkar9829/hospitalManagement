@@ -53,7 +53,7 @@ def story():
     ], title="User flow: medication order to administration")
 
     s += H2("Doctor profiles and scheduling")
-    s.append(P("Doctor profiles are kept in CORE. Scheduling for OPD is covered in Section 6. "
+    s.append(P(f"Doctor profiles are kept in CORE. Scheduling for OPD is covered in Section {sec('patient')}. "
                "This section covers the clinical side of a doctor's day."))
     s += bullets([
         "Profile: photo, qualifications, registration number and council, specialties, "
