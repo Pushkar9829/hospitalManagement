@@ -1,0 +1,277 @@
+/*
+ * HMS design tokens (docs/implementation/PLAN.md section 4, from docs/ui-design/tokens.json with
+ * the UI/UX review fixes): 14 px body, 13 px badges, nothing under 12 px, teal accent, red only
+ * for "act now". Components use these token classes only (bg-surface, text-ink, border-line …);
+ * the default Tailwind palette is switched off so a stray `bg-red-500` does not compile.
+ */
+@import 'tailwindcss';
+
+/* Scan the UI kit's own sources for class names wherever this file is imported from. */
+@source './';
+
+@theme static {
+  --font-sans:
+    'IBM Plex Sans', 'Noto Sans Devanagari', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --color-ground: #f4f6f8;
+  --color-surface: #ffffff;
+  --color-surface-2: #f8fafb; /* table header, read-only fields, subtle panels */
+  --color-ink: #142130;
+  --color-muted: #5b6878;
+  --color-line: #dde2e8;
+  --color-line-strong: #b9c2cc; /* input borders: 3:1 against surface */
+  --color-skeleton: #e9edf1;
+  --color-overlay: rgb(14 22 33 / 0.55);
+
+  --color-menu: #13263f;
+  --color-menu-ink: #e7ecf2;
+  --color-menu-muted: #a3b1c2;
+  --color-menu-hover: #1b3352;
+  --color-menu-active: #26446b;
+  --color-menu-line: #24384f;
+  --color-menu-accent: #4fc3cc; /* active marker on navy */
+  --color-menu-field: #0e1d31;
+
+  --color-primary: #1d3557;
+  --color-primary-hover: #152843;
+  --color-on-primary: #ffffff;
+  --color-accent: #0f6e78; /* teal brand accent, never a status */
+  --color-accent-bg: #e1f1f2;
+  --color-danger: #a3201a; /* solid fill for destructive buttons and error toasts */
+  --color-danger-hover: #861a15;
+  --color-focus: #1f5fad;
+
+  --color-success: #1a6b44;
+  --color-success-bg: #e3f3ea;
+  --color-warning: #7a4e00;
+  --color-warning-bg: #fff1d6;
+  --color-critical: #a3201a; /* act-now only */
+  --color-critical-bg: #fdecea;
+  --color-info: #1f5fad;
+  --color-info-bg: #e6eef9;
+  --color-neutral: #46505c;
+  --color-neutral-bg: #e9edf1; /* occupied bed, draft, closed */
+
+  /* QR codes stay dark-on-light in every theme so phone cameras can read them. */
+  --color-qr-dark: #000000;
+  --color-qr-light: #ffffff;
+
+  --text-xs: 12px;
+  --text-xs--line-height: 16px;
+  --text-sm: 13px;
+  --text-sm--line-height: 18px;
+  --text-base: 14px;
+  --text-base--line-height: 20px;
+  --text-md: 15px;
+  --text-md--line-height: 22px;
+  --text-lg: 17px;
+  --text-lg--line-height: 24px;
+  --text-xl: 20px;
+  --text-xl--line-height: 28px;
+  --text-2xl: 24px;
+  --text-2xl--line-height: 32px;
+  --text-3xl: 32px;
+  --text-3xl--line-height: 40px;
+
+  --radius-control: 8px;
+  --radius-card: 10px;
+  --radius-dialog: 12px;
+  --radius-chip: 999px;
+
+  --shadow-card: 0 1px 2px rgb(20 33 48 / 0.06);
+  --shadow-pop: 0 8px 24px rgb(20 33 48 / 0.16), 0 2px 6px rgb(20 33 48 / 0.08);
+
+  --spacing-menu: 232px;
+  --spacing-topbar: 64px;
+  --spacing-tap: 40px; /* desktop tap target; 44 px on touch (see @media pointer: coarse) */
+
+  --animate-fade-in: fade-in 120ms ease-out;
+  --animate-pop-in: pop-in 140ms ease-out;
+  --animate-slide-in: slide-in 180ms ease-out;
+  --animate-shimmer: shimmer 1.4s ease-in-out infinite;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes pop-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes slide-in {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: none;
+    }
+  }
+  @keyframes shimmer {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.55;
+    }
+  }
+}
+
+/* Dark theme: same roles, tuned for a dark ground. Status text stays AA on its own -bg. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-ground: #0e1621;
+  --color-surface: #16202c;
+  --color-surface-2: #1b2735;
+  --color-ink: #e7ecf2;
+  --color-muted: #a1afbf;
+  --color-line: #2a3746;
+  --color-line-strong: #4a5a6c;
+  --color-skeleton: #243140;
+  --color-overlay: rgb(0 0 0 / 0.6);
+
+  --color-menu: #0b1520;
+  --color-menu-ink: #e7ecf2;
+  --color-menu-muted: #9aa9ba;
+  --color-menu-hover: #152436;
+  --color-menu-active: #1f3550;
+  --color-menu-line: #1c2b3d;
+  --color-menu-accent: #5fd0d8;
+  --color-menu-field: #111e2e;
+
+  --color-primary: #3d6fa8;
+  --color-primary-hover: #4a7db7;
+  --color-on-primary: #ffffff;
+  --color-accent: #4fbac3;
+  --color-accent-bg: #123338;
+  --color-danger: #b8322b;
+  --color-danger-hover: #c94139;
+  --color-focus: #8ab8f0;
+
+  --color-success: #7dd6a6;
+  --color-success-bg: #12352a;
+  --color-warning: #f2c46d;
+  --color-warning-bg: #3a2c0f;
+  --color-critical: #ff9b92;
+  --color-critical-bg: #421b19;
+  --color-info: #8ab8f0;
+  --color-info-bg: #172c47;
+  --color-neutral: #c0cad5;
+  --color-neutral-bg: #26313e;
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-pop: 0 8px 24px rgb(0 0 0 / 0.5), 0 2px 6px rgb(0 0 0 / 0.4);
+}
+
+/* High contrast: darker text, stronger rules, 7:1 status text, thicker focus ring. */
+:root[data-theme='contrast'] {
+  --color-ground: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-2: #f2f4f6;
+  --color-ink: #000000;
+  --color-muted: #2e3a47;
+  --color-line: #8a96a3;
+  --color-line-strong: #4a5663;
+  --color-skeleton: #d5dbe1;
+
+  --color-menu: #06111f;
+  --color-menu-ink: #ffffff;
+  --color-menu-muted: #d3dbe4;
+  --color-menu-hover: #14273f;
+  --color-menu-active: #24456e;
+  --color-menu-line: #51647a;
+  --color-menu-accent: #7fe3ea;
+  --color-menu-field: #000000;
+
+  --color-primary: #0b2545;
+  --color-primary-hover: #000000;
+  --color-accent: #07525a;
+  --color-accent-bg: #d6eef0;
+  --color-danger: #7f150f;
+  --color-danger-hover: #5c0e0a;
+  --color-focus: #000000;
+
+  --color-success: #0b4d2e;
+  --color-success-bg: #d9f0e3;
+  --color-warning: #4d3100;
+  --color-warning-bg: #ffe9bf;
+  --color-critical: #7f150f;
+  --color-critical-bg: #fde0dd;
+  --color-info: #0f3c73;
+  --color-info-bg: #dbe6f6;
+  --color-neutral: #1f262e;
+  --color-neutral-bg: #dfe4e9;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    color: var(--color-ink);
+    background: var(--color-ground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    min-height: 100dvh;
+    font-size: var(--text-base);
+  }
+
+  /* Visible keyboard focus everywhere (UI/UX review: no focus style). */
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+  :root[data-theme='contrast'] :focus-visible {
+    outline-width: 3px;
+  }
+  /* Elements on the navy menu get a light ring so it stays visible. */
+  [data-surface='menu'] :focus-visible {
+    outline-color: var(--color-menu-accent);
+  }
+
+  ::selection {
+    background: var(--color-info-bg);
+    color: var(--color-ink);
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Tap targets: 44 px on touch screens (tablets, phones). */
+  @media (pointer: coarse) {
+    :root {
+      --spacing-tap: 44px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

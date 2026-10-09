@@ -1,0 +1,19 @@
+{
+  "name": "@hms/i18n",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.7"
+  },
+  "dependencies": {
+    "i18next": "25.10.10"
+  }
+}

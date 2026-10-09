@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>HMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap"
+    />
+    <script>
+      // Apply the saved theme before first paint so there is no flash of the wrong theme.
+      try {
+        var theme = JSON.parse(localStorage.getItem('hms:theme'));
+        if (theme === 'dark' || theme === 'contrast')
+          document.documentElement.dataset.theme = theme;
+        var lang = JSON.parse(localStorage.getItem('hms:lang'));
+        if (lang === 'hi') document.documentElement.lang = 'hi';
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <noscript>The Hospital Management System needs JavaScript. Turn it on and reload.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

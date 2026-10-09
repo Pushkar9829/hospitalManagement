@@ -1,0 +1,4 @@
+@import '@hms/ui/tokens.css';
+
+/* Scan this app's sources for class names (the UI kit is scanned by tokens.css itself). */
+@source '../';

@@ -1,0 +1,46 @@
+import { lazy } from 'react';
+import { SCREENS } from '@hms/shared/catalog';
+import { routeMatches } from '@hms/ui';
+
+/*
+ * Module registry: every web screen in the design catalogue (packages/shared/catalog) gets a
+ * route. Screens built so far map to a page component; every other route shows PlannedScreen
+ * until its module is built. Each module adds its pages here when it lands.
+ */
+
+const HomePage = lazy(() => import('../modules/home/HomePage.jsx'));
+
+/** Screen key -> page component. The admin dashboard is the role home until Phase 1 fills it. */
+export const PAGES = {
+  Home: HomePage,
+  Dashboard: HomePage,
+};
+
+/** Screens served outside the signed-in shell. */
+export const PUBLIC_SCREENS = new Set(['Login']);
+
+/** Every routable web screen: { key, path, screen, Component | null }. */
+export const SCREEN_ROUTES = Object.entries(SCREENS)
+  .filter(([key, s]) => s.app === 'web' && s.route?.startsWith('/') && !PUBLIC_SCREENS.has(key))
+  .map(([key, screen]) => ({ key, path: screen.route, screen, Component: PAGES[key] ?? null }));
+
+/** The screen for a URL path (exact routes beat patterns such as /patients/:id). */
+export function screenForPath(path) {
+  let best = null;
+  let bestScore = -1;
+  for (const r of SCREEN_ROUTES) {
+    if (!routeMatches(r.path, path)) continue;
+    const score = (r.path === path ? 1000 : 0) + r.path.replace(/:[^/]+/g, '').length;
+    if (score > bestScore) {
+      best = r;
+      bestScore = score;
+    }
+  }
+  return best;
+}
+
+/** The developer component gallery is in dev builds, or when VITE_DEV_GALLERY=1 (smoke tests). */
+export const GALLERY_ENABLED =
+  import.meta.env.DEV ||
+  import.meta.env.VITE_DEV_GALLERY === '1' ||
+  import.meta.env.MODE === 'test';
