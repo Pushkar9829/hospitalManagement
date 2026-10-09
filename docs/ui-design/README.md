@@ -4,7 +4,7 @@ The full clickable design lives on a design canvas:
 https://claude.ai/artifact/Fnp7CKPFT5jbiEFyMFNRq2
 (private until the owner shares it from the canvas Share menu).
 
-It has 90 boards on 13 pages, and 22 role panels (each role has its own home page, menu and data scope):
+It has 112 boards on 15 pages, and 22 role panels (each role has its own home page, menu and data scope):
 
 | Page | Boards |
 |---|---|
@@ -12,6 +12,8 @@ It has 90 boards on 13 pages, and 22 role panels (each role has its own home pag
 | Role Panels | Role panel map and a home dashboard for each of 20 roles |
 | OPD 1 · Module flow end to end | OPD overview and competitor benchmark, swimlane flow, alternate flows, status lifecycles, rules and tests, OPD settings, OPD analytics |
 | OPD 2 · Role-wise flows | OPD flow for patient, call centre, front office, cashier, nurse, doctor, pharmacy and lab, OPD admin, management, with their screens |
+| IPD 1 · Module flow end to end | IPD overview and competitor benchmark, swimlane flow (admission advice to bed turnaround), 13 alternate flows, status lifecycles, rules and tests, IPD settings, IPD analytics |
+| IPD 2 · Role-wise flows | IPD flow for patient and attendant, admission desk, insurance (TPA) desk, bed manager, nurse, doctor, pharmacy-lab-diet, in-patient billing, housekeeping, IPD admin, management, with attendant mobile screens, bed requests, TPA desk and in-patient bill |
 | Phase 1 · SaaS Platform | Pricing and signup, setup wizard, platform console, tenant detail, hospital subscription |
 | Phase 2 · Security & Core | Dashboard, approvals, reports, audit log, hospital settings, users, roles, departments and masters |
 | Phase 3 · Patient Operations | Registration, patient profile, front office, OPD, consultation, admission, bed board, discharge desk, queue TV |
@@ -25,6 +27,7 @@ It has 90 boards on 13 pages, and 22 role panels (each role has its own home pag
 ## Files here
 
 - `../modules/OPD.md`: full OPD module specification (flows, rules, roles, tests, benchmark).
+- `../modules/IPD.md`: full IPD module specification (admission to discharge, insurance, beds, billing, roles, tests, benchmark).
 - `panels.md`: every role panel with its home page, menu and data scope. Start here.
 - `screens.md`: every screen with route, role, module, permission and APIs.
 - `tokens.json`: colours, type, spacing and radius for the MUI theme.
@@ -33,7 +36,9 @@ It has 90 boards on 13 pages, and 22 role panels (each role has its own home pag
 - `source/`: the building blocks used to generate the app-screen boards
   (shared shell, per-screen body, per-screen data). `python3 source/build.py <Name> ...`
   rebuilds one board using the arguments listed in `source/screens.tsv` and `source/homes.tsv`;
-  role menus come from `source/parts/panels.json`.
+  role menus come from `source/parts/panels.json`. `source/opd/` and `source/ipd/` generate the
+  module flow diagrams and role boards (`python3 source/ipd/flow.py boards`, and so on);
+  `python3 source/ipd/mkdoc.py ../modules/IPD.md` regenerates the IPD specification.
 
 The functional specification, API documentation and deployment guide are in
 `../Hospital_Management_System_Phase1_Specification.pdf`.

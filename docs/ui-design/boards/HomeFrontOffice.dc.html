@@ -160,7 +160,7 @@ class Component extends DCLogic {
       alerts: d.alerts.map(function (a) { return { t: a[0], s: a[1], b: a[2], bc: a[3] }; }), links: links } };
   }
   navItems(active) {
-    var P = {"frontoffice": [["Front desk", [["Home", "HomeFrontOffice"], ["Front Office", "FrontOffice"], ["OPD Check-in", "OpdCheckin"], ["Register Patient", "Patients"], ["Patient Profile", "PatientProfile"], ["Appointments", "Opd"]]], ["In-patients", [["Admissions", "Admission"], ["Bed Board", "Beds"]]], ["Personal", [["My Space", "MySpace"]]]]};
+    var P = {"frontoffice": [["Front desk", [["Home", "HomeFrontOffice"], ["Front Office", "FrontOffice"], ["OPD Check-in", "OpdCheckin"], ["Register Patient", "Patients"], ["Patient Profile", "PatientProfile"], ["Appointments", "Opd"]]], ["In-patients", [["Admissions", "Admission"], ["Bed Board", "Beds"], ["Bed Requests", "IpdBedRequests"]]], ["Personal", [["My Space", "MySpace"]]]]};
     return P['frontoffice'].map(function (g) {
       return { label: g[0], items: g[1].map(function (i) {
         var on = i[1] === active;

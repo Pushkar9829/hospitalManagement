@@ -36,3 +36,8 @@ OpdCheckin	OPD check-in	Front desk / OPD check-in	OPD check-in	Anita Sharma	Fron
 OpdTriage	OPD triage	OPD / Triage	OPD triage station	Anjali Menon	Staff Nurse · OPD triage	AM	nurse
 OpdConfig	OPD settings	Settings / OPD settings	OPD settings	Kavita Desai	Hospital Admin	KD	admin
 OpdAnalytics	OPD analytics	Overview / OPD analytics	OPD analytics	Dr. Arjun Rao	Hospital Super Admin	AR	superadmin
+IpdBedRequests	Bed requests and transfers	My ward / Bed requests	Bed requests and transfers	Lata Desai	Ward In-charge · Bed manager	LD	wardincharge
+IpdTpa	Insurance and TPA desk	Billing / Insurance desk	Insurance and TPA desk	Rahul Mehta	Billing Manager · TPA desk	RM	billingmgr
+IpdBill	In-patient bill	Counter / In-patient bills	In-patient bill	Neha Kulkarni	Cashier · Counter 1	NK	cashier
+IpdConfig	IPD settings	Settings / IPD settings	IPD settings	Kavita Desai	Hospital Admin	KD	admin
+IpdAnalytics	IPD analytics	Overview / IPD analytics	IPD analytics	Dr. Arjun Rao	Hospital Super Admin	AR	superadmin

@@ -19,6 +19,10 @@
       "OpdAnalytics"
      ],
      [
+      "IPD Analytics",
+      "IpdAnalytics"
+     ],
+     [
       "Approvals",
       "Approvals"
      ],
@@ -62,6 +66,10 @@
      [
       "Bed Board",
       "Beds"
+     ],
+     [
+      "Bed Requests",
+      "IpdBedRequests"
      ],
      [
       "Discharge Desk",
@@ -117,6 +125,14 @@
      [
       "Billing",
       "Billing"
+     ],
+     [
+      "In-patient Bills",
+      "IpdBill"
+     ],
+     [
+      "Insurance Desk",
+      "IpdTpa"
      ],
      [
       "Finance",
@@ -183,6 +199,10 @@
      [
       "OPD Settings",
       "OpdConfig"
+     ],
+     [
+      "IPD Settings",
+      "IpdConfig"
      ],
      [
       "Subscription",
@@ -269,6 +289,10 @@
      [
       "OPD Settings",
       "OpdConfig"
+     ],
+     [
+      "IPD Settings",
+      "IpdConfig"
      ]
     ]
    ],
@@ -303,6 +327,10 @@
       "OpdAnalytics"
      ],
      [
+      "IPD Analytics",
+      "IpdAnalytics"
+     ],
+     [
       "Approvals",
       "Approvals"
      ],
@@ -318,6 +346,10 @@
      [
       "Bed Board",
       "Beds"
+     ],
+     [
+      "Bed Requests",
+      "IpdBedRequests"
      ],
      [
       "Discharge Desk",
@@ -515,6 +547,10 @@
      [
       "Bed Board",
       "Beds"
+     ],
+     [
+      "Bed Requests",
+      "IpdBedRequests"
      ]
     ]
    ],
@@ -597,6 +633,10 @@
      [
       "Bed Board",
       "Beds"
+     ],
+     [
+      "Bed Requests",
+      "IpdBedRequests"
      ]
     ]
    ],
@@ -629,6 +669,10 @@
      [
       "Billing Counter",
       "Billing"
+     ],
+     [
+      "In-patient Bills",
+      "IpdBill"
      ],
      [
       "Find Patient",
@@ -674,6 +718,14 @@
      [
       "Billing",
       "Billing"
+     ],
+     [
+      "In-patient Bills",
+      "IpdBill"
+     ],
+     [
+      "Insurance Desk",
+      "IpdTpa"
      ],
      [
       "Discharge Desk",

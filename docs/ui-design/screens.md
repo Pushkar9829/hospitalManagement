@@ -25,12 +25,23 @@ Every screen on the design canvas, with its web route, main role, module gate, p
 | Patient registration | boards/Patients.dc.html | /patients/new | Front Office | CORE | patients:patient:create | GET /patients?q=, POST /patients |
 | Patient profile | boards/PatientProfile.dc.html | /patients/:id | Clinical, front office | CORE | patients:patient:read | GET /patients/{id}, /patients/{id}/timeline |
 | Front office | boards/FrontOffice.dc.html | /front-office | Front Office | CORE | frontoffice:* | POST /front-office/tokens, /passes |
+| OPD check-in | boards/OpdCheckin.dc.html | /opd/check-in | Front Office | OPD | opd:visit:create | GET /opd/appointments?date=today, POST /opd/appointments/{id}/check-in |
+| OPD triage | boards/OpdTriage.dc.html | /opd/triage | Staff Nurse | OPD | opd:vitals:create | GET /opd/queue?stage=triage, POST /opd/visits/{id}/vitals |
+| OPD settings | boards/OpdConfig.dc.html | /settings/opd | Hospital Admin | OPD | opd:schedule:*, opd:settings:* | CRUD /opd/schedules, PUT /opd/settings |
+| OPD analytics | boards/OpdAnalytics.dc.html | /opd/analytics | Management | OPD | reports:opd:read | GET /reports/opd-wait-times, /reports/opd-doctor-performance |
+| Patient mobile booking | boards/PortalBooking.dc.html | /my/book | Patient | CORE | patient OTP | GET /public/doctors, POST /portal/appointments, POST /portal/payments |
 | OPD appointments | boards/Opd.dc.html | /opd | Front Office | OPD | opd:appointment:* | GET /opd/slots, POST /opd/appointments |
 | Consultation | boards/Consult.dc.html | /opd/visits/:id | Doctor | OPD | opd:consultation:write | PUT /opd/visits/{id}/consultation |
 | In-patient rounds | boards/IpdRounds.dc.html | /ipd/rounds | Doctor | IPD | ipd:note:write, orders:* | GET /ipd/admissions?doctor=me, POST /orders |
 | Admission | boards/Admission.dc.html | /ipd/admit | Admission Desk | IPD | ipd:admission:create | POST /ipd/admissions |
 | Bed board | boards/Beds.dc.html | /ipd/beds | Admission Desk | IPD | ipd:bed:read | GET /ipd/beds + socket bed:update |
 | Discharge desk | boards/Discharge.dc.html | /ipd/discharge | Doctor, billing | IPD | ipd:discharge:* | PUT /ipd/admissions/{id}/discharge-summary |
+| Bed requests and transfers | boards/IpdBedRequests.dc.html | /ipd/bed-requests | Ward In-charge, Admission Desk | IPD | ipd:bed:allocate | GET /ipd/bed-requests, POST /ipd/bed-requests/{id}/reserve, POST /ipd/transfers |
+| Insurance and TPA desk | boards/IpdTpa.dc.html | /ipd/insurance | Billing Manager (TPA desk) | IPD | ipd:preauth:* | GET /ipd/preauths?open=true, POST /ipd/preauths/{id}/enhancements, POST /ipd/claims |
+| In-patient bill | boards/IpdBill.dc.html | /ipd/bills | Cashier | IPD | billing:ip:* | GET /ipd/admissions/{id}/bill, POST /ipd/admissions/{id}/final-bill |
+| IPD settings | boards/IpdConfig.dc.html | /settings/ipd | Hospital Admin | IPD | ipd:settings:* | CRUD /ipd/wards, /ipd/beds, /ipd/packages, PUT /ipd/settings |
+| IPD analytics | boards/IpdAnalytics.dc.html | /ipd/analytics | Management | IPD | reports:ipd:read | GET /reports/ipd-census, /reports/ipd-indicators |
+| Attendant mobile screens | boards/PortalStay.dc.html | /my/stay | Patient, attendant | CORE | patient OTP | GET /portal/admissions/current, /portal/admissions/{id}/bill, POST /portal/payments |
 | Nursing station | boards/Nursing.dc.html | /nursing/:wardId | Staff Nurse | NUR | nursing:* | GET /nursing/wards/{id}/census, POST /nursing/mar/{doseId}/administer |
 | Shift roster | boards/Roster.dc.html | /hr/rosters | Ward In-charge | HRM | hr:roster:write | GET/PUT /hr/rosters |
 | Laboratory | boards/Lab.dc.html | /lab | Lab, pathologist | LAB | lab:* | GET /lab/worklists, PUT /lab/tests/{id}/results |

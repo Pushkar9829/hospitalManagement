@@ -8,13 +8,13 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Home: boards/Dashboard.dc.html
 - Data scope: Whole hospital, all branches
 - Menu:
-  - **Overview:** Dashboard, Approvals, Reports, Audit Log
-  - **Patients:** Patients, Patient Profile, Front Office, Appointments, Admissions, Bed Board, Discharge Desk
-  - **Clinical:** Consultation, In-patient Rounds, Nursing Station, Rosters
+  - **Overview:** Dashboard, OPD Analytics, IPD Analytics, Approvals, Reports, Audit Log
+  - **Patients:** Patients, Patient Profile, Front Office, OPD Check-in, Appointments, Admissions, Bed Board, Bed Requests, Discharge Desk
+  - **Clinical:** Consultation, OPD Triage, In-patient Rounds, Nursing Station, Rosters
   - **Diagnostics:** Laboratory, Radiology, Pharmacy
-  - **Business:** Billing, Finance, Inventory, HR, Payroll
+  - **Business:** Billing, In-patient Bills, Insurance Desk, Finance, Inventory, HR, Payroll
   - **Support:** Medical Records, Diet & Kitchen, Facility, Quality, CRM
-  - **Settings:** Hospital Settings, Users, Roles & Access, Departments, Subscription
+  - **Settings:** Hospital Settings, Users, Roles & Access, Departments, OPD Settings, IPD Settings, Subscription
   - **Personal:** My Space
 
 ## Hospital Admin
@@ -25,7 +25,7 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Menu:
   - **Overview:** Home, Approvals, Reports
   - **Operations:** Patients, Front Office, Bed Board, Inventory
-  - **Settings:** Hospital Settings, Users, Roles & Access, Departments
+  - **Settings:** Hospital Settings, Users, Roles & Access, Departments, OPD Settings, IPD Settings
   - **Personal:** My Space
 
 ## Medical Superintendent
@@ -34,8 +34,8 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Home: boards/HomeMedSupt.dc.html
 - Data scope: Branch, clinical
 - Menu:
-  - **Overview:** Home, Approvals, Reports
-  - **Clinical:** Bed Board, Discharge Desk, Nursing Station, Rosters
+  - **Overview:** Home, OPD Analytics, IPD Analytics, Approvals, Reports
+  - **Clinical:** Bed Board, Bed Requests, Discharge Desk, Nursing Station, Rosters
   - **Governance:** Medical Records, Quality
   - **Personal:** My Space
 
@@ -57,6 +57,7 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Data scope: Assigned ward
 - Menu:
   - **My ward:** Home, Nursing Station, Bed Board, Patient Profile
+  - **OPD:** OPD Triage
   - **Requests:** Diet Orders, Tickets and Transport, Report Incident
   - **Personal:** My Space
 
@@ -66,7 +67,7 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Home: boards/HomeWardIncharge.dc.html
 - Data scope: Ward
 - Menu:
-  - **My ward:** Home, Nursing Station, Rosters, Bed Board
+  - **My ward:** Home, Nursing Station, Rosters, Bed Board, Bed Requests
   - **Requests:** Approvals, Store Indents, Facility, Quality
   - **Personal:** My Space
 
@@ -76,8 +77,8 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Home: boards/HomeFrontOffice.dc.html
 - Data scope: Branch
 - Menu:
-  - **Front desk:** Home, Front Office, Register Patient, Patient Profile, Appointments
-  - **In-patients:** Admissions, Bed Board
+  - **Front desk:** Home, Front Office, OPD Check-in, Register Patient, Patient Profile, Appointments
+  - **In-patients:** Admissions, Bed Board, Bed Requests
   - **Personal:** My Space
 
 ## Cashier
@@ -86,7 +87,7 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Home: boards/HomeCashier.dc.html
 - Data scope: Own counter
 - Menu:
-  - **Counter:** Home, Billing Counter, Find Patient
+  - **Counter:** Home, Billing Counter, In-patient Bills, Find Patient
   - **Reports:** Collection Reports
   - **Personal:** My Space
 
@@ -96,7 +97,7 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Home: boards/HomeBillingMgr.dc.html
 - Data scope: Branch billing
 - Menu:
-  - **Billing:** Home, Billing, Discharge Desk, Approvals
+  - **Billing:** Home, Billing, In-patient Bills, Insurance Desk, Discharge Desk, Approvals
   - **Reports:** Reports
   - **Personal:** My Space
 

@@ -24,6 +24,15 @@ specification for the multi-tenant SaaS hospital management system. It covers:
 - AWS deployment (React on S3 + CloudFront, API on ECS Fargate), CI/CD, security,
   non-functional requirements, testing, delivery plan and acceptance criteria
 
+## Module deep dives
+
+Module-by-module specifications that go deeper than the PDF, with end-to-end and role-wise flows,
+rules, settings, notifications, reports, formulas, edge cases, acceptance tests and a competitor
+benchmark. Each has matching boards on the design canvas (see `ui-design/README.md`).
+
+- `modules/OPD.md`: OPD and Appointments
+- `modules/IPD.md`: IPD, admission to discharge (beds, insurance and TPA, ward care, billing)
+
 ## Regenerating the PDF
 
 The PDF is generated from the Python sources in `spec-src/` with ReportLab.

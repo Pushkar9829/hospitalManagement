@@ -869,6 +869,207 @@
       "title": "OPD · Management · flow",
       "page": "p12",
       "is_interactive": true
+    },
+    "IpdModule.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 2720,
+      "title": "IPD 1 · Module overview and benchmark",
+      "page": "p13",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "IpdFlow.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 5612,
+      "h": 1704,
+      "title": "IPD 2 · End-to-end flow (swimlane)",
+      "page": "p13"
+    },
+    "IpdAltFlows.dc.html": {
+      "x": 1520,
+      "y": 1824,
+      "w": 1880,
+      "h": 1996,
+      "title": "IPD 3 · Alternate and exception flows",
+      "page": "p13"
+    },
+    "IpdStates.dc.html": {
+      "x": 3480,
+      "y": 1824,
+      "w": 1836,
+      "h": 1612,
+      "title": "IPD 4 · Status lifecycles",
+      "page": "p13"
+    },
+    "IpdRules.dc.html": {
+      "x": 7212,
+      "y": 0,
+      "w": 1440,
+      "h": 4380,
+      "title": "IPD 5 · Rules, messages, reports, tests",
+      "page": "p13",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "IpdConfig.dc.html": {
+      "x": 8732,
+      "y": 0,
+      "w": 1440,
+      "h": 1320,
+      "title": "IPD 6 · IPD settings (Admin)",
+      "page": "p13",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "IpdAnalytics.dc.html": {
+      "x": 8732,
+      "y": 1440,
+      "w": 1440,
+      "h": 1640,
+      "title": "IPD 7 · IPD analytics (Management)",
+      "page": "p13",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "IpdRolePatient.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1600,
+      "h": 1180,
+      "title": "IPD · Patient and attendant · flow",
+      "page": "p14",
+      "is_interactive": true
+    },
+    "PortalStay.dc.html": {
+      "x": 1680,
+      "y": 0,
+      "w": 1832,
+      "h": 1040,
+      "title": "IPD · Patient and attendant · mobile screens",
+      "page": "p14"
+    },
+    "IpdRoleAdmissionDesk.dc.html": {
+      "x": 3592,
+      "y": 0,
+      "w": 1600,
+      "h": 1180,
+      "title": "IPD · Admission desk · flow",
+      "page": "p14",
+      "is_interactive": true
+    },
+    "IpdRoleTpa.dc.html": {
+      "x": 0,
+      "y": 1300,
+      "w": 1600,
+      "h": 1180,
+      "title": "IPD · Insurance (TPA) desk · flow",
+      "page": "p14",
+      "is_interactive": true
+    },
+    "IpdTpa.dc.html": {
+      "x": 1680,
+      "y": 1300,
+      "w": 1440,
+      "h": 1320,
+      "title": "IPD · Insurance (TPA) desk · screen",
+      "page": "p14",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "IpdRoleNurse.dc.html": {
+      "x": 3200,
+      "y": 1300,
+      "w": 1600,
+      "h": 1180,
+      "title": "IPD · Staff nurse · flow",
+      "page": "p14",
+      "is_interactive": true
+    },
+    "IpdRoleBedManager.dc.html": {
+      "x": 0,
+      "y": 2740,
+      "w": 1600,
+      "h": 1180,
+      "title": "IPD · Bed manager · flow",
+      "page": "p14",
+      "is_interactive": true
+    },
+    "IpdBedRequests.dc.html": {
+      "x": 1680,
+      "y": 2740,
+      "w": 1440,
+      "h": 1320,
+      "title": "IPD · Bed manager · bed requests and transfers",
+      "page": "p14",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "IpdRoleDoctor.dc.html": {
+      "x": 3200,
+      "y": 2740,
+      "w": 1600,
+      "h": 1180,
+      "title": "IPD · Doctor · flow",
+      "page": "p14",
+      "is_interactive": true
+    },
+    "IpdRoleBilling.dc.html": {
+      "x": 0,
+      "y": 4180,
+      "w": 1600,
+      "h": 1180,
+      "title": "IPD · In-patient billing · flow",
+      "page": "p14",
+      "is_interactive": true
+    },
+    "IpdBill.dc.html": {
+      "x": 1680,
+      "y": 4180,
+      "w": 1440,
+      "h": 1420,
+      "title": "IPD · In-patient billing · running bill",
+      "page": "p14",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "IpdRolePharmacy.dc.html": {
+      "x": 3200,
+      "y": 4180,
+      "w": 1600,
+      "h": 1180,
+      "title": "IPD · Pharmacy, lab and diet · flow",
+      "page": "p14",
+      "is_interactive": true
+    },
+    "IpdRoleHousekeeping.dc.html": {
+      "x": 0,
+      "y": 5720,
+      "w": 1600,
+      "h": 1180,
+      "title": "IPD · Housekeeping · flow",
+      "page": "p14",
+      "is_interactive": true
+    },
+    "IpdRoleAdmin.dc.html": {
+      "x": 1680,
+      "y": 5720,
+      "w": 1600,
+      "h": 1180,
+      "title": "IPD · IPD admin · flow",
+      "page": "p14",
+      "is_interactive": true
+    },
+    "IpdRoleManagement.dc.html": {
+      "x": 3360,
+      "y": 5720,
+      "w": 1600,
+      "h": 1180,
+      "title": "IPD · Management · flow",
+      "page": "p14",
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -997,6 +1198,24 @@
       "maxW": 5192,
       "page": "p12",
       "w": 240
+    },
+    "t_p13": {
+      "x": 0,
+      "y": -300,
+      "text": "IPD 1 · Module flow end to end",
+      "kind": "title1",
+      "maxW": 10172,
+      "page": "p13",
+      "w": 240
+    },
+    "t_p14": {
+      "x": 0,
+      "y": -300,
+      "text": "IPD 2 · Role-wise flows",
+      "kind": "title1",
+      "maxW": 5112,
+      "page": "p14",
+      "w": 240
     }
   },
   "order": [
@@ -1089,7 +1308,29 @@
     "OpdRoleDoctor.dc.html",
     "OpdRolePharmacyLab.dc.html",
     "OpdRoleAdmin.dc.html",
-    "OpdRoleManagement.dc.html"
+    "OpdRoleManagement.dc.html",
+    "IpdModule.dc.html",
+    "IpdFlow.dc.html",
+    "IpdAltFlows.dc.html",
+    "IpdStates.dc.html",
+    "IpdRules.dc.html",
+    "IpdConfig.dc.html",
+    "IpdAnalytics.dc.html",
+    "IpdRolePatient.dc.html",
+    "PortalStay.dc.html",
+    "IpdRoleAdmissionDesk.dc.html",
+    "IpdRoleTpa.dc.html",
+    "IpdTpa.dc.html",
+    "IpdRoleNurse.dc.html",
+    "IpdRoleBedManager.dc.html",
+    "IpdBedRequests.dc.html",
+    "IpdRoleDoctor.dc.html",
+    "IpdRoleBilling.dc.html",
+    "IpdBill.dc.html",
+    "IpdRolePharmacy.dc.html",
+    "IpdRoleHousekeeping.dc.html",
+    "IpdRoleAdmin.dc.html",
+    "IpdRoleManagement.dc.html"
   ],
   "pages": [
     {
@@ -1107,6 +1348,14 @@
     {
       "id": "p12",
       "name": "OPD 2 · Role-wise flows"
+    },
+    {
+      "id": "p13",
+      "name": "IPD 1 · Module flow end to end"
+    },
+    {
+      "id": "p14",
+      "name": "IPD 2 · Role-wise flows"
     },
     {
       "id": "p1",
