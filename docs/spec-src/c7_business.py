@@ -125,7 +125,7 @@ def story():
     s += module_card("HRM", "HR, Rosters and Attendance", "Add-on module", "CORE",
                      "HR Manager, HR Executive, HODs, all employees (self-service)",
                      "Manages the full employee lifecycle, attendance and leave, and feeds "
-                     "payroll. Rosters are described in Section 6.")
+                     "payroll. Rosters are described in Section 7.")
     s += H2("HR management")
     s += table([
         ["Feature", "Details"],

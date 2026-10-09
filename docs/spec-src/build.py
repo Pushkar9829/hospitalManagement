@@ -11,11 +11,11 @@ from reportlab.platypus.tableofcontents import TableOfContents
 
 from kit import *  # noqa
 from kit import Anchor
-import c1_overview, c2_roles, c3_core, c4_patient_ops, c5_clinical, c6_diagnostics
+import c1_overview, c1b_saas, c2_roles, c3_core, c4_patient_ops, c5_clinical, c6_diagnostics
 import c7_business, c8_journeys, c9_arch, c10_data, c11_code, c12_api, c13_deploy
 
-TITLE = "MediCore HMS - Phase 1 Product and Technical Specification"
-VERSION = "1.0"
+TITLE = "MediCore HMS - Phase 1 SaaS Product and Technical Specification"
+VERSION = "1.1"
 OUT = os.path.join(os.path.dirname(__file__), "..", "MediCore_HMS_Phase1_Specification.pdf")
 
 
@@ -52,10 +52,10 @@ def cover_page(c, doc):
     c.setFont("Body-Bold", 34)
     c.drawString(MARGIN, PAGE_H - 125, "MediCore HMS")
     c.setFont("Body", 20)
-    c.drawString(MARGIN, PAGE_H - 155, "Hospital Management System")
+    c.drawString(MARGIN, PAGE_H - 155, "Hospital Management SaaS Platform")
     c.setFont("Body", 13.5)
     c.setFillColor(colors.HexColor("#C9D6E8"))
-    c.drawString(MARGIN, PAGE_H - 195, "Product, User Flow and Technical Specification")
+    c.drawString(MARGIN, PAGE_H - 195, "Multi-tenant SaaS: Product, User Flow and Technical Specification")
     c.drawString(MARGIN, PAGE_H - 214, "React  ·  Node.js  ·  MongoDB  ·  "
                                        "AWS S3 + CloudFront")
     c.setFont("Body", 10)
@@ -107,9 +107,10 @@ def cover_story():
                        ParagraphStyle("x", parent=S["h2"], spaceBefore=0)))
     s.append(t)
     s.append(Spacer(1, 14))
-    s += callout("One product replaces separate billing, pharmacy, lab, HR, payroll, "
-                 "inventory and accounting software. Hospitals subscribe module by module "
-                 "and switch modules on as they grow.", "warn", "Promise.")
+    s += callout("One cloud product replaces separate billing, pharmacy, lab, HR, payroll, "
+                 "inventory and accounting software. Hospitals sign up online, subscribe "
+                 "module by module, and switch modules on as they grow. Nothing to "
+                 "install.", "warn", "SaaS promise.")
     s.append(NextPageTemplate("body"))
     s.append(PageBreak())
     return s
@@ -124,7 +125,7 @@ def toc_story():
 
 
 def main():
-    chapters = [c1_overview, c2_roles, c3_core, c4_patient_ops, c5_clinical, c6_diagnostics,
+    chapters = [c1_overview, c1b_saas, c2_roles, c3_core, c4_patient_ops, c5_clinical, c6_diagnostics,
                 c7_business, c8_journeys, c9_arch, c10_data, c11_code, c12_api, c13_deploy]
     import kit
     kit._counter.update(n=0, h1=0, h2=0)

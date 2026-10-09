@@ -1,9 +1,12 @@
 # MediCore HMS - Phase 1 Specification
 
 `MediCore_HMS_Phase1_Specification.pdf` is the full Phase 1 product and technical
-specification for the hospital management system. It covers:
+specification for the multi-tenant SaaS hospital management system. It covers:
 
 - Module catalogue, module-wise subscription plans, pricing model and enforcement rules
+- SaaS platform: self-service signup, tenant provisioning, subscription billing with
+  proration and GST, metering, custom domains, Platform Console, SaaS metrics, SLAs,
+  platform APIs and code
 - Roles, permissions, logins, maker-checker and Super Admin approvals
 - Every Phase 1 module with features, user flows, business rules and reports:
   Core setup and departments, patient registration, OPD, IPD and real-time beds,

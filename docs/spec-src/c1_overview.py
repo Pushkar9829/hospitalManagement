@@ -8,7 +8,7 @@ def story():
     s += H1("Executive Summary and Scope")
     s.append(P(
         "This document is the complete Phase 1 specification for <b>MediCore HMS</b> "
-        "(working name), a cloud hospital management system that runs every operational, "
+        "(working name), a multi-tenant SaaS hospital management system that runs every operational, "
         "clinical, financial and people process of a hospital from one product. The goal is "
         "simple: once a hospital goes live, it should not need a separate billing tool, "
         "pharmacy package, HR tool, payroll tool, inventory tool or accounting package."))
@@ -28,19 +28,22 @@ def story():
         ["Section", "Contents", "Primary reader"],
         ["1-2", "Scope, product model, module catalogue and subscription rules",
          "Founders, sales, product"],
-        ["3", "Roles, permissions, maker-checker and Super Admin approvals",
+        ["3", "SaaS platform: signup, provisioning, subscription billing, metering, "
+              "custom domains, platform console, SaaS metrics",
+         "Founders, sales, finance, developers"],
+        ["4", "Roles, permissions, maker-checker and Super Admin approvals",
          "Product, security, QA"],
-        ["4-8", "Module-by-module features, user flows, business rules, data and screens",
+        ["5-9", "Module-by-module features, user flows, business rules, data and screens",
          "Product, developers, QA, trainers"],
-        ["9", "End-to-end patient, money and people journeys across modules",
+        ["10", "End-to-end patient, money and people journeys across modules",
          "Everyone"],
-        ["10-12", "Architecture, database design and reference source code",
+        ["11-13", "Architecture, database design and reference source code",
          "Developers, architects"],
-        ["13", "REST API documentation with request and response examples",
+        ["14", "REST API documentation with request and response examples",
          "Frontend and backend developers"],
-        ["14-15", "AWS deployment on S3 and CloudFront, CI/CD, security and operations",
+        ["15-16", "AWS deployment on S3 and CloudFront, CI/CD, security and operations",
          "DevOps, security"],
-        ["16-17", "Non-functional requirements, testing, delivery plan and acceptance",
+        ["17-18", "Non-functional requirements, testing, delivery plan and acceptance",
          "Project managers, QA, client"],
     ], widths=[0.1, 0.62, 0.28])
 
@@ -220,22 +223,7 @@ def story():
                  "medication chart and lab results remain viewable. Patient safety overrides "
                  "commercial enforcement.", "warn", "Clinical safety rule.")
 
-    s += H2("Platform console (SaaS owner)")
-    s.append(P("The company that sells the product uses a separate Platform Console. It is a "
-               "different React app on its own sub-domain with its own users."))
-    s += table([
-        ["Function", "Description"],
-        ["Tenant onboarding", "Create hospital, legal details, GSTIN, domain or sub-domain, "
-                              "first Hospital Super Admin, plan and modules"],
-        ["Subscription management", "Change plan, enable or disable modules, set limits, apply "
-                                    "discounts and coupons, extend trial"],
-        ["SaaS invoicing", "Generate invoices, record payments, dunning e-mails, payment "
-                           "gateway webhooks"],
-        ["Usage metering", "Daily snapshot of users, beds, employees, payslips and storage "
-                           "per tenant, used for metered billing"],
-        ["Support access", "Time-boxed, audited impersonation that needs the hospital's "
-                           "approval. Every action is logged with the support agent's name"],
-        ["Platform health", "Tenant activity, error rates, job queues, storage growth"],
-        ["Release control", "Feature flags per tenant for gradual rollout"],
-    ], widths=[0.26, 0.74])
+    s += callout("Signup, tenant provisioning, subscription billing, metering, custom "
+                 "domains and the Platform Console are specified in Section 3.", "note",
+                 "SaaS operations.")
     return s

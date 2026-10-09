@@ -316,7 +316,7 @@ def quality():
                                              "IDs must return 404"],
         ["Concurrency", "Custom suite", "Parallel bed allocation, stock sale and counter "
                                         "increment never double-allocate"],
-        ["End-to-end", "Playwright", "The journeys in Section 9 run on every release "
+        ["End-to-end", "Playwright", "The journeys in Section 10 run on every release "
                                      "candidate"],
         ["Performance", "k6", "Load profile of a 300-bed hospital at 2x peak"],
         ["Security", "OWASP ZAP, npm audit, pen test", "No high findings open at release"],
@@ -381,16 +381,16 @@ def plan():
 
     s += H2("Phase 1 acceptance criteria")
     s += bullets([
-        "Every user flow in Sections 3 to 9 runs end to end on staging with the pilot "
+        "Every user flow in Sections 3 to 10 runs end to end on staging with the pilot "
         "hospital's own masters.",
         "A module that is not subscribed is invisible in the menu and its API returns 402.",
-        "No maker can approve their own request; all rules in Section 3 are enforced.",
+        "No maker can approve their own request; all rules in Section 4 are enforced.",
         "Bills, receipts, lab reports, discharge summaries and payslips print correctly on "
         "A4 and, where specified, thermal printers.",
         "Payroll for one month matches the hospital's manual calculation for a sample of "
         "50 employees, including PF, ESI, PT and TDS.",
         "Trial balance balances after a full test month of transactions.",
-        "Performance targets in Section 16 met; no open high-severity security findings.",
+        "Performance targets in Section 17 met; no open high-severity security findings.",
         "Production on AWS with web on S3 + CloudFront, automated deploys, backups and "
         "alarms verified by a restore drill.",
     ])
