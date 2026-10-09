@@ -1,95 +1,1286 @@
 {
- "superadmin": {"name": "Super Admin", "roles": "Hospital Super Admin", "user": "Dr. Arjun Rao", "init": "AR", "home": "Dashboard", "scope": "Whole hospital, all branches", "menu": [
-  ["Overview", [["Dashboard", "Dashboard"], ["Approvals", "Approvals"], ["Reports", "Reports"], ["Audit Log", "AuditLog"]]],
-  ["Patients", [["Patients", "Patients"], ["Patient Profile", "PatientProfile"], ["Front Office", "FrontOffice"], ["Appointments", "Opd"], ["Admissions", "Admission"], ["Bed Board", "Beds"], ["Discharge Desk", "Discharge"]]],
-  ["Clinical", [["Consultation", "Consult"], ["In-patient Rounds", "IpdRounds"], ["Nursing Station", "Nursing"], ["Rosters", "Roster"]]],
-  ["Diagnostics", [["Laboratory", "Lab"], ["Radiology", "Radiology"], ["Pharmacy", "Pharmacy"]]],
-  ["Business", [["Billing", "Billing"], ["Finance", "Finance"], ["Inventory", "Inventory"], ["HR", "Hr"], ["Payroll", "Payroll"]]],
-  ["Support", [["Medical Records", "Records"], ["Diet & Kitchen", "Diet"], ["Facility", "Facility"], ["Quality", "Quality"], ["CRM", "Crm"]]],
-  ["Settings", [["Hospital Settings", "Settings"], ["Users", "Users"], ["Roles & Access", "Roles"], ["Departments", "Departments"], ["Subscription", "Subscription"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "admin": {"name": "Hospital Admin", "roles": "Hospital Admin", "user": "Kavita Desai", "init": "KD", "home": "HomeAdmin", "scope": "Branch", "menu": [
-  ["Overview", [["Home", "HomeAdmin"], ["Approvals", "Approvals"], ["Reports", "Reports"]]],
-  ["Operations", [["Patients", "Patients"], ["Front Office", "FrontOffice"], ["Bed Board", "Beds"], ["Inventory", "Inventory"]]],
-  ["Settings", [["Hospital Settings", "Settings"], ["Users", "Users"], ["Roles & Access", "Roles"], ["Departments", "Departments"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "medsupt": {"name": "Medical Superintendent", "roles": "Medical Superintendent", "user": "Dr. S. Kulkarni", "init": "SK", "home": "HomeMedSupt", "scope": "Branch, clinical", "menu": [
-  ["Overview", [["Home", "HomeMedSupt"], ["Approvals", "Approvals"], ["Reports", "Reports"]]],
-  ["Clinical", [["Bed Board", "Beds"], ["Discharge Desk", "Discharge"], ["Nursing Station", "Nursing"], ["Rosters", "Roster"]]],
-  ["Governance", [["Medical Records", "Records"], ["Quality", "Quality"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "doctor": {"name": "Doctor", "roles": "Consultant, Resident", "user": "Dr. Meera Iyer", "init": "MI", "home": "HomeDoctor", "scope": "Own patients and department", "menu": [
-  ["My day", [["Home", "HomeDoctor"], ["OPD Consultation", "Consult"], ["In-patient Rounds", "IpdRounds"], ["Discharge Desk", "Discharge"]]],
-  ["Patients", [["Patient Profile", "PatientProfile"], ["Bed Board", "Beds"]]],
-  ["Results", [["Laboratory", "Lab"], ["Radiology", "Radiology"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "nurse": {"name": "Staff Nurse", "roles": "Staff Nurse", "user": "Anjali Menon", "init": "AM", "home": "HomeNurse", "scope": "Assigned ward", "menu": [
-  ["My ward", [["Home", "HomeNurse"], ["Nursing Station", "Nursing"], ["Bed Board", "Beds"], ["Patient Profile", "PatientProfile"]]],
-  ["Requests", [["Diet Orders", "Diet"], ["Tickets and Transport", "Facility"], ["Report Incident", "Quality"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "wardincharge": {"name": "Ward In-charge", "roles": "Ward In-charge, Nursing Superintendent", "user": "Lata Desai", "init": "LD", "home": "HomeWardIncharge", "scope": "Ward", "menu": [
-  ["My ward", [["Home", "HomeWardIncharge"], ["Nursing Station", "Nursing"], ["Rosters", "Roster"], ["Bed Board", "Beds"]]],
-  ["Requests", [["Approvals", "Approvals"], ["Store Indents", "Inventory"], ["Facility", "Facility"], ["Quality", "Quality"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "frontoffice": {"name": "Front Office", "roles": "Front Office, Admission Desk", "user": "Anita Sharma", "init": "AS", "home": "HomeFrontOffice", "scope": "Branch", "menu": [
-  ["Front desk", [["Home", "HomeFrontOffice"], ["Front Office", "FrontOffice"], ["Register Patient", "Patients"], ["Patient Profile", "PatientProfile"], ["Appointments", "Opd"]]],
-  ["In-patients", [["Admissions", "Admission"], ["Bed Board", "Beds"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "cashier": {"name": "Cashier", "roles": "Cashier", "user": "Neha Kulkarni", "init": "NK", "home": "HomeCashier", "scope": "Own counter", "menu": [
-  ["Counter", [["Home", "HomeCashier"], ["Billing Counter", "Billing"], ["Find Patient", "PatientProfile"]]],
-  ["Reports", [["Collection Reports", "Reports"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "billingmgr": {"name": "Billing Manager", "roles": "Billing Manager", "user": "Rahul Mehta", "init": "RM", "home": "HomeBillingMgr", "scope": "Branch billing", "menu": [
-  ["Billing", [["Home", "HomeBillingMgr"], ["Billing", "Billing"], ["Discharge Desk", "Discharge"], ["Approvals", "Approvals"]]],
-  ["Reports", [["Reports", "Reports"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "lab": {"name": "Laboratory", "roles": "Lab Technician, Pathologist", "user": "Dr. N. Rao", "init": "NR", "home": "HomeLab", "scope": "Laboratory", "menu": [
-  ["Laboratory", [["Home", "HomeLab"], ["Worklists", "Lab"], ["Patient Profile", "PatientProfile"]]],
-  ["Requests", [["Store Indents", "Inventory"], ["Quality", "Quality"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "radiology": {"name": "Radiology", "roles": "Radiology Technician, Radiologist", "user": "Dr. V. Singh", "init": "VS", "home": "HomeRadiology", "scope": "Radiology", "menu": [
-  ["Radiology", [["Home", "HomeRadiology"], ["Worklist and Reporting", "Radiology"], ["Patient Profile", "PatientProfile"]]],
-  ["Requests", [["Equipment Tickets", "Facility"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "pharmacy": {"name": "Pharmacy", "roles": "Pharmacist, Pharmacy In-charge", "user": "Suresh Patil", "init": "SP", "home": "HomePharmacy", "scope": "Pharmacy stores", "menu": [
-  ["Pharmacy", [["Home", "HomePharmacy"], ["Dispensing", "Pharmacy"], ["Stock", "Inventory"]]],
-  ["Reports", [["Reports", "Reports"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "store": {"name": "Store and Purchase", "roles": "Store Keeper, Purchase Manager", "user": "Vikram Rane", "init": "VR", "home": "HomeStore", "scope": "Stores", "menu": [
-  ["Stores", [["Home", "HomeStore"], ["Inventory", "Inventory"], ["Approvals", "Approvals"]]],
-  ["Reports", [["Reports", "Reports"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "hr": {"name": "HR", "roles": "HR Manager, HR Executive", "user": "Shalini Rao", "init": "SR", "home": "HomeHr", "scope": "All employees", "menu": [
-  ["People", [["Home", "HomeHr"], ["HR and Attendance", "Hr"], ["Rosters", "Roster"], ["Payroll", "Payroll"]]],
-  ["Work", [["Approvals", "Approvals"], ["Reports", "Reports"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "payroll": {"name": "Payroll", "roles": "Payroll Officer", "user": "Kiran Joshi", "init": "KJ", "home": "HomePayroll", "scope": "Payroll entity", "menu": [
-  ["Payroll", [["Home", "HomePayroll"], ["Payroll Run", "Payroll"], ["Attendance", "Hr"]]],
-  ["Reports", [["Reports", "Reports"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "accounts": {"name": "Accounts", "roles": "Accountant, Finance Controller", "user": "Ramesh Iyer", "init": "RI", "home": "HomeAccounts", "scope": "Legal entity", "menu": [
-  ["Finance", [["Home", "HomeAccounts"], ["Finance", "Finance"], ["Approvals", "Approvals"]]],
-  ["Source modules", [["Billing", "Billing"], ["Payroll", "Payroll"], ["Inventory", "Inventory"]]],
-  ["Reports", [["Reports", "Reports"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "mrd": {"name": "Medical Records", "roles": "MRD Officer, Medical Coder", "user": "Sunil More", "init": "SM", "home": "HomeMrd", "scope": "All records, no billing", "menu": [
-  ["Records", [["Home", "HomeMrd"], ["Medical Records", "Records"], ["Patient Profile", "PatientProfile"]]],
-  ["Reports", [["Reports", "Reports"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "kitchen": {"name": "Kitchen", "roles": "Dietitian, Kitchen Supervisor", "user": "Nisha Bhat", "init": "NB", "home": "HomeKitchen", "scope": "Kitchen", "menu": [
-  ["Kitchen", [["Home", "HomeKitchen"], ["Diet and Kitchen", "Diet"], ["Kitchen Store", "Inventory"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "facility": {"name": "Facility", "roles": "Housekeeping Supervisor, Maintenance, Biomedical Engineer", "user": "Maria Fernandes", "init": "MF", "home": "HomeFacility", "scope": "Branch facilities", "menu": [
-  ["Facility", [["Home", "HomeFacility"], ["Housekeeping and Facility", "Facility"], ["Bed Board", "Beds"], ["Store Indents", "Inventory"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "quality": {"name": "Quality", "roles": "Quality Manager, Infection Control Nurse", "user": "Dr. Kavita Shah", "init": "KS", "home": "HomeQuality", "scope": "Whole hospital, read-only clinical", "menu": [
-  ["Quality", [["Home", "HomeQuality"], ["Quality and Incidents", "Quality"], ["Medical Records", "Records"]]],
-  ["Reports", [["Reports", "Reports"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "crm": {"name": "CRM and Call Centre", "roles": "CRM Executive, Call Centre", "user": "Pooja Nair", "init": "PN", "home": "HomeCrm", "scope": "Patients, no clinical notes", "menu": [
-  ["Engagement", [["Home", "HomeCrm"], ["CRM", "Crm"], ["Appointments", "Opd"], ["Patients", "Patients"]]],
-  ["Reports", [["Reports", "Reports"]]],
-  ["Personal", [["My Space", "MySpace"]]]]},
- "employee": {"name": "Employee", "roles": "Every staff login", "user": "Anjali Menon", "init": "AM", "home": "MySpace", "scope": "Own records", "menu": [
-  ["Personal", [["My Space", "MySpace"]]]]}
+ "superadmin": {
+  "name": "Super Admin",
+  "roles": "Hospital Super Admin",
+  "user": "Dr. Arjun Rao",
+  "init": "AR",
+  "home": "Dashboard",
+  "scope": "Whole hospital, all branches",
+  "menu": [
+   [
+    "Overview",
+    [
+     [
+      "Dashboard",
+      "Dashboard"
+     ],
+     [
+      "OPD Analytics",
+      "OpdAnalytics"
+     ],
+     [
+      "Approvals",
+      "Approvals"
+     ],
+     [
+      "Reports",
+      "Reports"
+     ],
+     [
+      "Audit Log",
+      "AuditLog"
+     ]
+    ]
+   ],
+   [
+    "Patients",
+    [
+     [
+      "Patients",
+      "Patients"
+     ],
+     [
+      "Patient Profile",
+      "PatientProfile"
+     ],
+     [
+      "Front Office",
+      "FrontOffice"
+     ],
+     [
+      "OPD Check-in",
+      "OpdCheckin"
+     ],
+     [
+      "Appointments",
+      "Opd"
+     ],
+     [
+      "Admissions",
+      "Admission"
+     ],
+     [
+      "Bed Board",
+      "Beds"
+     ],
+     [
+      "Discharge Desk",
+      "Discharge"
+     ]
+    ]
+   ],
+   [
+    "Clinical",
+    [
+     [
+      "Consultation",
+      "Consult"
+     ],
+     [
+      "OPD Triage",
+      "OpdTriage"
+     ],
+     [
+      "In-patient Rounds",
+      "IpdRounds"
+     ],
+     [
+      "Nursing Station",
+      "Nursing"
+     ],
+     [
+      "Rosters",
+      "Roster"
+     ]
+    ]
+   ],
+   [
+    "Diagnostics",
+    [
+     [
+      "Laboratory",
+      "Lab"
+     ],
+     [
+      "Radiology",
+      "Radiology"
+     ],
+     [
+      "Pharmacy",
+      "Pharmacy"
+     ]
+    ]
+   ],
+   [
+    "Business",
+    [
+     [
+      "Billing",
+      "Billing"
+     ],
+     [
+      "Finance",
+      "Finance"
+     ],
+     [
+      "Inventory",
+      "Inventory"
+     ],
+     [
+      "HR",
+      "Hr"
+     ],
+     [
+      "Payroll",
+      "Payroll"
+     ]
+    ]
+   ],
+   [
+    "Support",
+    [
+     [
+      "Medical Records",
+      "Records"
+     ],
+     [
+      "Diet & Kitchen",
+      "Diet"
+     ],
+     [
+      "Facility",
+      "Facility"
+     ],
+     [
+      "Quality",
+      "Quality"
+     ],
+     [
+      "CRM",
+      "Crm"
+     ]
+    ]
+   ],
+   [
+    "Settings",
+    [
+     [
+      "Hospital Settings",
+      "Settings"
+     ],
+     [
+      "Users",
+      "Users"
+     ],
+     [
+      "Roles & Access",
+      "Roles"
+     ],
+     [
+      "Departments",
+      "Departments"
+     ],
+     [
+      "OPD Settings",
+      "OpdConfig"
+     ],
+     [
+      "Subscription",
+      "Subscription"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "admin": {
+  "name": "Hospital Admin",
+  "roles": "Hospital Admin",
+  "user": "Kavita Desai",
+  "init": "KD",
+  "home": "HomeAdmin",
+  "scope": "Branch",
+  "menu": [
+   [
+    "Overview",
+    [
+     [
+      "Home",
+      "HomeAdmin"
+     ],
+     [
+      "Approvals",
+      "Approvals"
+     ],
+     [
+      "Reports",
+      "Reports"
+     ]
+    ]
+   ],
+   [
+    "Operations",
+    [
+     [
+      "Patients",
+      "Patients"
+     ],
+     [
+      "Front Office",
+      "FrontOffice"
+     ],
+     [
+      "Bed Board",
+      "Beds"
+     ],
+     [
+      "Inventory",
+      "Inventory"
+     ]
+    ]
+   ],
+   [
+    "Settings",
+    [
+     [
+      "Hospital Settings",
+      "Settings"
+     ],
+     [
+      "Users",
+      "Users"
+     ],
+     [
+      "Roles & Access",
+      "Roles"
+     ],
+     [
+      "Departments",
+      "Departments"
+     ],
+     [
+      "OPD Settings",
+      "OpdConfig"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "medsupt": {
+  "name": "Medical Superintendent",
+  "roles": "Medical Superintendent",
+  "user": "Dr. S. Kulkarni",
+  "init": "SK",
+  "home": "HomeMedSupt",
+  "scope": "Branch, clinical",
+  "menu": [
+   [
+    "Overview",
+    [
+     [
+      "Home",
+      "HomeMedSupt"
+     ],
+     [
+      "OPD Analytics",
+      "OpdAnalytics"
+     ],
+     [
+      "Approvals",
+      "Approvals"
+     ],
+     [
+      "Reports",
+      "Reports"
+     ]
+    ]
+   ],
+   [
+    "Clinical",
+    [
+     [
+      "Bed Board",
+      "Beds"
+     ],
+     [
+      "Discharge Desk",
+      "Discharge"
+     ],
+     [
+      "Nursing Station",
+      "Nursing"
+     ],
+     [
+      "Rosters",
+      "Roster"
+     ]
+    ]
+   ],
+   [
+    "Governance",
+    [
+     [
+      "Medical Records",
+      "Records"
+     ],
+     [
+      "Quality",
+      "Quality"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "doctor": {
+  "name": "Doctor",
+  "roles": "Consultant, Resident",
+  "user": "Dr. Meera Iyer",
+  "init": "MI",
+  "home": "HomeDoctor",
+  "scope": "Own patients and department",
+  "menu": [
+   [
+    "My day",
+    [
+     [
+      "Home",
+      "HomeDoctor"
+     ],
+     [
+      "OPD Consultation",
+      "Consult"
+     ],
+     [
+      "In-patient Rounds",
+      "IpdRounds"
+     ],
+     [
+      "Discharge Desk",
+      "Discharge"
+     ]
+    ]
+   ],
+   [
+    "Patients",
+    [
+     [
+      "Patient Profile",
+      "PatientProfile"
+     ],
+     [
+      "Bed Board",
+      "Beds"
+     ]
+    ]
+   ],
+   [
+    "Results",
+    [
+     [
+      "Laboratory",
+      "Lab"
+     ],
+     [
+      "Radiology",
+      "Radiology"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "nurse": {
+  "name": "Staff Nurse",
+  "roles": "Staff Nurse",
+  "user": "Anjali Menon",
+  "init": "AM",
+  "home": "HomeNurse",
+  "scope": "Assigned ward",
+  "menu": [
+   [
+    "My ward",
+    [
+     [
+      "Home",
+      "HomeNurse"
+     ],
+     [
+      "Nursing Station",
+      "Nursing"
+     ],
+     [
+      "Bed Board",
+      "Beds"
+     ],
+     [
+      "Patient Profile",
+      "PatientProfile"
+     ]
+    ]
+   ],
+   [
+    "OPD",
+    [
+     [
+      "OPD Triage",
+      "OpdTriage"
+     ]
+    ]
+   ],
+   [
+    "Requests",
+    [
+     [
+      "Diet Orders",
+      "Diet"
+     ],
+     [
+      "Tickets and Transport",
+      "Facility"
+     ],
+     [
+      "Report Incident",
+      "Quality"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "wardincharge": {
+  "name": "Ward In-charge",
+  "roles": "Ward In-charge, Nursing Superintendent",
+  "user": "Lata Desai",
+  "init": "LD",
+  "home": "HomeWardIncharge",
+  "scope": "Ward",
+  "menu": [
+   [
+    "My ward",
+    [
+     [
+      "Home",
+      "HomeWardIncharge"
+     ],
+     [
+      "Nursing Station",
+      "Nursing"
+     ],
+     [
+      "Rosters",
+      "Roster"
+     ],
+     [
+      "Bed Board",
+      "Beds"
+     ]
+    ]
+   ],
+   [
+    "Requests",
+    [
+     [
+      "Approvals",
+      "Approvals"
+     ],
+     [
+      "Store Indents",
+      "Inventory"
+     ],
+     [
+      "Facility",
+      "Facility"
+     ],
+     [
+      "Quality",
+      "Quality"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "frontoffice": {
+  "name": "Front Office",
+  "roles": "Front Office, Admission Desk",
+  "user": "Anita Sharma",
+  "init": "AS",
+  "home": "HomeFrontOffice",
+  "scope": "Branch",
+  "menu": [
+   [
+    "Front desk",
+    [
+     [
+      "Home",
+      "HomeFrontOffice"
+     ],
+     [
+      "Front Office",
+      "FrontOffice"
+     ],
+     [
+      "OPD Check-in",
+      "OpdCheckin"
+     ],
+     [
+      "Register Patient",
+      "Patients"
+     ],
+     [
+      "Patient Profile",
+      "PatientProfile"
+     ],
+     [
+      "Appointments",
+      "Opd"
+     ]
+    ]
+   ],
+   [
+    "In-patients",
+    [
+     [
+      "Admissions",
+      "Admission"
+     ],
+     [
+      "Bed Board",
+      "Beds"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "cashier": {
+  "name": "Cashier",
+  "roles": "Cashier",
+  "user": "Neha Kulkarni",
+  "init": "NK",
+  "home": "HomeCashier",
+  "scope": "Own counter",
+  "menu": [
+   [
+    "Counter",
+    [
+     [
+      "Home",
+      "HomeCashier"
+     ],
+     [
+      "Billing Counter",
+      "Billing"
+     ],
+     [
+      "Find Patient",
+      "PatientProfile"
+     ]
+    ]
+   ],
+   [
+    "Reports",
+    [
+     [
+      "Collection Reports",
+      "Reports"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "billingmgr": {
+  "name": "Billing Manager",
+  "roles": "Billing Manager",
+  "user": "Rahul Mehta",
+  "init": "RM",
+  "home": "HomeBillingMgr",
+  "scope": "Branch billing",
+  "menu": [
+   [
+    "Billing",
+    [
+     [
+      "Home",
+      "HomeBillingMgr"
+     ],
+     [
+      "Billing",
+      "Billing"
+     ],
+     [
+      "Discharge Desk",
+      "Discharge"
+     ],
+     [
+      "Approvals",
+      "Approvals"
+     ]
+    ]
+   ],
+   [
+    "Reports",
+    [
+     [
+      "Reports",
+      "Reports"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "lab": {
+  "name": "Laboratory",
+  "roles": "Lab Technician, Pathologist",
+  "user": "Dr. N. Rao",
+  "init": "NR",
+  "home": "HomeLab",
+  "scope": "Laboratory",
+  "menu": [
+   [
+    "Laboratory",
+    [
+     [
+      "Home",
+      "HomeLab"
+     ],
+     [
+      "Worklists",
+      "Lab"
+     ],
+     [
+      "Patient Profile",
+      "PatientProfile"
+     ]
+    ]
+   ],
+   [
+    "Requests",
+    [
+     [
+      "Store Indents",
+      "Inventory"
+     ],
+     [
+      "Quality",
+      "Quality"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "radiology": {
+  "name": "Radiology",
+  "roles": "Radiology Technician, Radiologist",
+  "user": "Dr. V. Singh",
+  "init": "VS",
+  "home": "HomeRadiology",
+  "scope": "Radiology",
+  "menu": [
+   [
+    "Radiology",
+    [
+     [
+      "Home",
+      "HomeRadiology"
+     ],
+     [
+      "Worklist and Reporting",
+      "Radiology"
+     ],
+     [
+      "Patient Profile",
+      "PatientProfile"
+     ]
+    ]
+   ],
+   [
+    "Requests",
+    [
+     [
+      "Equipment Tickets",
+      "Facility"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "pharmacy": {
+  "name": "Pharmacy",
+  "roles": "Pharmacist, Pharmacy In-charge",
+  "user": "Suresh Patil",
+  "init": "SP",
+  "home": "HomePharmacy",
+  "scope": "Pharmacy stores",
+  "menu": [
+   [
+    "Pharmacy",
+    [
+     [
+      "Home",
+      "HomePharmacy"
+     ],
+     [
+      "Dispensing",
+      "Pharmacy"
+     ],
+     [
+      "Stock",
+      "Inventory"
+     ]
+    ]
+   ],
+   [
+    "Reports",
+    [
+     [
+      "Reports",
+      "Reports"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "store": {
+  "name": "Store and Purchase",
+  "roles": "Store Keeper, Purchase Manager",
+  "user": "Vikram Rane",
+  "init": "VR",
+  "home": "HomeStore",
+  "scope": "Stores",
+  "menu": [
+   [
+    "Stores",
+    [
+     [
+      "Home",
+      "HomeStore"
+     ],
+     [
+      "Inventory",
+      "Inventory"
+     ],
+     [
+      "Approvals",
+      "Approvals"
+     ]
+    ]
+   ],
+   [
+    "Reports",
+    [
+     [
+      "Reports",
+      "Reports"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "hr": {
+  "name": "HR",
+  "roles": "HR Manager, HR Executive",
+  "user": "Shalini Rao",
+  "init": "SR",
+  "home": "HomeHr",
+  "scope": "All employees",
+  "menu": [
+   [
+    "People",
+    [
+     [
+      "Home",
+      "HomeHr"
+     ],
+     [
+      "HR and Attendance",
+      "Hr"
+     ],
+     [
+      "Rosters",
+      "Roster"
+     ],
+     [
+      "Payroll",
+      "Payroll"
+     ]
+    ]
+   ],
+   [
+    "Work",
+    [
+     [
+      "Approvals",
+      "Approvals"
+     ],
+     [
+      "Reports",
+      "Reports"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "payroll": {
+  "name": "Payroll",
+  "roles": "Payroll Officer",
+  "user": "Kiran Joshi",
+  "init": "KJ",
+  "home": "HomePayroll",
+  "scope": "Payroll entity",
+  "menu": [
+   [
+    "Payroll",
+    [
+     [
+      "Home",
+      "HomePayroll"
+     ],
+     [
+      "Payroll Run",
+      "Payroll"
+     ],
+     [
+      "Attendance",
+      "Hr"
+     ]
+    ]
+   ],
+   [
+    "Reports",
+    [
+     [
+      "Reports",
+      "Reports"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "accounts": {
+  "name": "Accounts",
+  "roles": "Accountant, Finance Controller",
+  "user": "Ramesh Iyer",
+  "init": "RI",
+  "home": "HomeAccounts",
+  "scope": "Legal entity",
+  "menu": [
+   [
+    "Finance",
+    [
+     [
+      "Home",
+      "HomeAccounts"
+     ],
+     [
+      "Finance",
+      "Finance"
+     ],
+     [
+      "Approvals",
+      "Approvals"
+     ]
+    ]
+   ],
+   [
+    "Source modules",
+    [
+     [
+      "Billing",
+      "Billing"
+     ],
+     [
+      "Payroll",
+      "Payroll"
+     ],
+     [
+      "Inventory",
+      "Inventory"
+     ]
+    ]
+   ],
+   [
+    "Reports",
+    [
+     [
+      "Reports",
+      "Reports"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "mrd": {
+  "name": "Medical Records",
+  "roles": "MRD Officer, Medical Coder",
+  "user": "Sunil More",
+  "init": "SM",
+  "home": "HomeMrd",
+  "scope": "All records, no billing",
+  "menu": [
+   [
+    "Records",
+    [
+     [
+      "Home",
+      "HomeMrd"
+     ],
+     [
+      "Medical Records",
+      "Records"
+     ],
+     [
+      "Patient Profile",
+      "PatientProfile"
+     ]
+    ]
+   ],
+   [
+    "Reports",
+    [
+     [
+      "Reports",
+      "Reports"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "kitchen": {
+  "name": "Kitchen",
+  "roles": "Dietitian, Kitchen Supervisor",
+  "user": "Nisha Bhat",
+  "init": "NB",
+  "home": "HomeKitchen",
+  "scope": "Kitchen",
+  "menu": [
+   [
+    "Kitchen",
+    [
+     [
+      "Home",
+      "HomeKitchen"
+     ],
+     [
+      "Diet and Kitchen",
+      "Diet"
+     ],
+     [
+      "Kitchen Store",
+      "Inventory"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "facility": {
+  "name": "Facility",
+  "roles": "Housekeeping Supervisor, Maintenance, Biomedical Engineer",
+  "user": "Maria Fernandes",
+  "init": "MF",
+  "home": "HomeFacility",
+  "scope": "Branch facilities",
+  "menu": [
+   [
+    "Facility",
+    [
+     [
+      "Home",
+      "HomeFacility"
+     ],
+     [
+      "Housekeeping and Facility",
+      "Facility"
+     ],
+     [
+      "Bed Board",
+      "Beds"
+     ],
+     [
+      "Store Indents",
+      "Inventory"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "quality": {
+  "name": "Quality",
+  "roles": "Quality Manager, Infection Control Nurse",
+  "user": "Dr. Kavita Shah",
+  "init": "KS",
+  "home": "HomeQuality",
+  "scope": "Whole hospital, read-only clinical",
+  "menu": [
+   [
+    "Quality",
+    [
+     [
+      "Home",
+      "HomeQuality"
+     ],
+     [
+      "Quality and Incidents",
+      "Quality"
+     ],
+     [
+      "Medical Records",
+      "Records"
+     ]
+    ]
+   ],
+   [
+    "Reports",
+    [
+     [
+      "Reports",
+      "Reports"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "crm": {
+  "name": "CRM and Call Centre",
+  "roles": "CRM Executive, Call Centre",
+  "user": "Pooja Nair",
+  "init": "PN",
+  "home": "HomeCrm",
+  "scope": "Patients, no clinical notes",
+  "menu": [
+   [
+    "Engagement",
+    [
+     [
+      "Home",
+      "HomeCrm"
+     ],
+     [
+      "CRM",
+      "Crm"
+     ],
+     [
+      "Appointments",
+      "Opd"
+     ],
+     [
+      "Patients",
+      "Patients"
+     ]
+    ]
+   ],
+   [
+    "Reports",
+    [
+     [
+      "Reports",
+      "Reports"
+     ]
+    ]
+   ],
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ },
+ "employee": {
+  "name": "Employee",
+  "roles": "Every staff login",
+  "user": "Anjali Menon",
+  "init": "AM",
+  "home": "MySpace",
+  "scope": "Own records",
+  "menu": [
+   [
+    "Personal",
+    [
+     [
+      "My Space",
+      "MySpace"
+     ]
+    ]
+   ]
+  ]
+ }
 }

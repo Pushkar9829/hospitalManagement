@@ -4,12 +4,14 @@ The full clickable design lives on a design canvas:
 https://claude.ai/artifact/Fnp7CKPFT5jbiEFyMFNRq2
 (private until the owner shares it from the canvas Share menu).
 
-It has 71 boards on 11 pages, and 22 role panels (each role has its own home page, menu and data scope):
+It has 90 boards on 13 pages, and 22 role panels (each role has its own home page, menu and data scope):
 
 | Page | Boards |
 |---|---|
 | Phase 0 · Foundations | Overview, design system, login and 2FA |
 | Role Panels | Role panel map and a home dashboard for each of 20 roles |
+| OPD 1 · Module flow end to end | OPD overview and competitor benchmark, swimlane flow, alternate flows, status lifecycles, rules and tests, OPD settings, OPD analytics |
+| OPD 2 · Role-wise flows | OPD flow for patient, call centre, front office, cashier, nurse, doctor, pharmacy and lab, OPD admin, management, with their screens |
 | Phase 1 · SaaS Platform | Pricing and signup, setup wizard, platform console, tenant detail, hospital subscription |
 | Phase 2 · Security & Core | Dashboard, approvals, reports, audit log, hospital settings, users, roles, departments and masters |
 | Phase 3 · Patient Operations | Registration, patient profile, front office, OPD, consultation, admission, bed board, discharge desk, queue TV |
@@ -22,6 +24,7 @@ It has 71 boards on 11 pages, and 22 role panels (each role has its own home pag
 
 ## Files here
 
+- `../modules/OPD.md`: full OPD module specification (flows, rules, roles, tests, benchmark).
 - `panels.md`: every role panel with its home page, menu and data scope. Start here.
 - `screens.md`: every screen with route, role, module, permission and APIs.
 - `tokens.json`: colours, type, spacing and radius for the MUI theme.
