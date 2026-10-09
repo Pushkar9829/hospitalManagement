@@ -8,7 +8,7 @@ import { cn } from '../lib/cn.js';
  */
 export function QrCode({ value, label, size = 192, className }) {
   const { path, count } = useMemo(() => {
-    const qr = encode(value ?? '', { ecc: 'M', border: 2 });
+    const qr = encode(value ?? '', { ecc: 'M', border: 4 });
     const parts = [];
     qr.data.forEach((row, y) =>
       row.forEach((dark, x) => {

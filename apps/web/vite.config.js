@@ -18,15 +18,8 @@ export default defineConfig({
     target: 'es2022',
     chunkSizeWarningLimit: 900,
     sourcemap: true,
-    rollupOptions: {
-      output: {
-        // One long-lived vendor chunk so a deploy of app code does not bust the library cache.
-        // (Splitting React from the libraries that use it creates circular chunk imports.)
-        manualChunks(id) {
-          return id.includes('node_modules') ? 'vendor' : undefined;
-        },
-      },
-    },
+    // No manual vendor chunk: Rollup splits libraries along the lazy routes, so a screen's
+    // libraries (tables, charts, QR) load with that screen. Budget: scripts/initial-js-size.mjs.
   },
   test: {
     environment: 'jsdom',

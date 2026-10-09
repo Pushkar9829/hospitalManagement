@@ -41,7 +41,11 @@ export default [
     rules: { 'no-restricted-imports': ['error', { patterns: crossModule }] },
   },
   {
-    files: ['apps/api/scripts/**/*.js', 'packages/shared/scripts/**/*.js'],
+    files: [
+      'apps/*/scripts/**/*.{js,mjs}',
+      'packages/*/scripts/**/*.js',
+      'apps/*/e2e/**/*.{js,mjs}',
+    ],
     rules: { 'no-console': 'off' },
   },
   {

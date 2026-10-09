@@ -95,6 +95,7 @@ export { routeMatches, findActiveItem } from './shell/routes.js';
 export { TopBar } from './shell/TopBar.jsx';
 export { THEMES } from './shell/themes.js';
 export { CommandPalette } from './shell/CommandPalette.jsx';
+export { paletteFilter } from './shell/palette-filter.js';
 export { ShortcutsDialog } from './shell/ShortcutsDialog.jsx';
 export { HotkeysProvider } from './shell/HotkeysProvider.jsx';
 export {

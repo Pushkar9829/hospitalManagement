@@ -3,12 +3,13 @@ import { CornerDownLeft, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import * as RadixDialog from '@radix-ui/react-dialog';
 import { Kbd } from '../primitives/Kbd.jsx';
+import { paletteFilter } from './palette-filter.js';
 
 const groupClass =
   '[&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pt-3 [&_[cmdk-group-heading]]:pb-1 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:tracking-wide [&_[cmdk-group-heading]]:text-muted [&_[cmdk-group-heading]]:uppercase';
 
 /**
- * Ctrl+K / Cmd+K: jump to any screen the user can open, or run an action. Fuzzy search (cmdk),
+ * Ctrl+K / Cmd+K: jump to any screen the user can open, or run an action. Word-prefix search,
  * arrow keys, Enter, Esc.
  *
  * `groups`: [{ heading, items: [{ id, label, hint?, keywords?, shortcut?, icon?, onSelect }] }]
@@ -28,7 +29,7 @@ export function CommandPalette({ open, onOpenChange, groups = [] }) {
           className="fixed top-[12vh] left-1/2 z-50 w-[min(640px,calc(100vw-32px))] -translate-x-1/2 animate-pop-in overflow-hidden rounded-dialog border border-line bg-surface text-ink shadow-pop"
         >
           <RadixDialog.Title className="sr-only">{t('palette.title')}</RadixDialog.Title>
-          <Command label={t('palette.title')} loop className="flex flex-col">
+          <Command label={t('palette.title')} loop filter={paletteFilter} className="flex flex-col">
             <div className="flex items-center gap-2 border-b border-line px-4">
               <Search size={18} aria-hidden="true" className="shrink-0 text-muted" />
               <Command.Input

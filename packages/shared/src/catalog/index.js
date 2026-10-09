@@ -1,16 +1,20 @@
 import { SCREENS } from './screens.js';
 import { PANELS } from './panels.js';
-import { hasPermission } from '../permissions.js';
+import { hasPermission, toReadOnly } from '../permissions.js';
 
 export { SCREENS, PANELS };
 
-/** A screen is visible when its module is subscribed (or it has none) and any permission matches. */
+/**
+ * A screen is visible when its module is subscribed (or it has none) and the user holds its
+ * permission or the read-only form of it: read access is enough to open a screen, and the
+ * actions on it are checked one by one (a nurse with `lab:*:read` sees Laboratory results).
+ */
 export function canSeeScreen(screen, { modules, permissions }) {
   if (!screen) return false;
   const mods = modules instanceof Set ? modules : new Set(modules);
   if (screen.module && screen.module !== 'CORE' && !mods.has(screen.module)) return false;
   if (!screen.permissions.length) return true;
-  return screen.permissions.some((k) => hasPermission(permissions, k));
+  return screen.permissions.some((k) => hasPermission(permissions, k) || hasPermission(permissions, toReadOnly(k)));
 }
 
 /**

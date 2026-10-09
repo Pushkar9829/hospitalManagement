@@ -1,3 +1,4 @@
+/* global document, window -- used inside page.evaluate(), which runs in the browser */
 /**
  * Phase 0 smoke test (Playwright, Chromium). Serves the production build with `vite preview` and
  * answers /api/v1/** from fixtures that conform to sessionSchema, so it needs no API.
@@ -27,7 +28,11 @@ const REAL = process.argv.includes('--real');
 mkdirSync(SHOTS, { recursive: true });
 
 function loadPlaywright() {
-  for (const id of [process.env.PLAYWRIGHT_MODULE, 'playwright', '/opt/node22/lib/node_modules/playwright']) {
+  for (const id of [
+    process.env.PLAYWRIGHT_MODULE,
+    'playwright',
+    '/opt/node22/lib/node_modules/playwright',
+  ]) {
     if (!id) continue;
     try {
       return require(id);
@@ -154,6 +159,22 @@ async function mockApi(context, users) {
 
 // ---------------------------------------------------------------------------------------------
 
+/**
+ * Web fonts come from Google Fonts. When the environment has an HTTPS proxy, send only those
+ * hosts through it (a PAC script), so the app on *.localhost is still reached directly.
+ */
+function fontProxyArgs() {
+  const proxy = process.env.HTTPS_PROXY || process.env.https_proxy;
+  if (!proxy) return [];
+  const pac = `function FindProxyForURL(url, host) {
+    if (dnsDomainIs(host, '.googleapis.com') || dnsDomainIs(host, '.gstatic.com')) return 'PROXY ${new URL(proxy).host}';
+    return 'DIRECT';
+  }`;
+  return [
+    `--proxy-pac-url=data:application/x-ns-proxy-autoconfig;base64,${Buffer.from(pac).toString('base64')}`,
+  ];
+}
+
 async function startPreview() {
   const vite = resolve(webRoot, 'node_modules/.bin/vite');
   const child = spawn(vite, ['preview', '--port', String(PORT), '--strictPort'], {
@@ -165,7 +186,9 @@ async function startPreview() {
   child.stderr.on('data', (d) => (output += d));
   for (let i = 0; i < 100; i++) {
     try {
-      const res = await fetch(`http://127.0.0.1:${PORT}/`, { headers: { Host: `demo.localhost:${PORT}` } });
+      const res = await fetch(`http://127.0.0.1:${PORT}/`, {
+        headers: { Host: `demo.localhost:${PORT}` },
+      });
       if (res.ok) return child;
     } catch {
       /* not up yet */
@@ -182,7 +205,11 @@ async function newPage(browser, viewport, users) {
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
-  page.on('console', (m) => m.type() === 'error' && !/Failed to load resource/.test(m.text()) && errors.push(m.text()));
+  page.on(
+    'console',
+    (m) =>
+      m.type() === 'error' && !/Failed to load resource/.test(m.text()) && errors.push(m.text()),
+  );
   return { context, page, state, errors };
 }
 
@@ -211,11 +238,10 @@ async function signIn(page, username) {
 async function run() {
   const users = { superadmin: SUPERADMIN, nurse: NURSE, accounts: ENROL };
   const preview = await startPreview();
-  const proxy = process.env.HTTPS_PROXY || process.env.https_proxy;
   const browser = await chromium.launch({
-    executablePath: process.env.CHROMIUM_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
-    // Web fonts come from Google Fonts; use the environment's proxy when there is one.
-    ...(proxy ? { proxy: { server: proxy, bypass: 'localhost,*.localhost,127.0.0.1' } } : {}),
+    executablePath:
+      process.env.CHROMIUM_PATH ?? '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
+    args: fontProxyArgs(),
   });
   const failures = [];
   const step = async (name, fn) => {
@@ -245,10 +271,15 @@ async function run() {
       await shot(page, 'login-errors');
 
       await signIn(page, 'superadmin');
-      await page.getByRole('heading', { name: /Good (morning|afternoon|evening), Arjun/ }).waitFor();
+      await page
+        .getByRole('heading', { name: /Good (morning|afternoon|evening), Arjun/ })
+        .waitFor();
       assert(new URL(page.url()).pathname === '/', 'superadmin lands on / (dashboard)');
       const nav = page.getByRole('navigation', { name: 'Main menu' });
-      assert((await nav.getByRole('link', { name: 'Pharmacy' }).count()) === 0, 'unsubscribed Pharmacy hidden');
+      assert(
+        (await nav.getByRole('link', { name: 'Pharmacy' }).count()) === 0,
+        'unsubscribed Pharmacy hidden',
+      );
       const aside = await page.locator('aside').first().boundingBox();
       assert(Math.round(aside.width) === 232, `sidebar is 232 px (got ${aside.width})`);
       await noHorizontalScroll(page, 'home 1440');
@@ -257,7 +288,10 @@ async function run() {
       // Sidebar search.
       await page.getByRole('searchbox', { name: 'Search menu' }).fill('bed');
       const labels = await nav.getByRole('link').allTextContents();
-      assert(labels.length > 0 && labels.every((l) => /bed/i.test(l)), `search filters menu: ${labels}`);
+      assert(
+        labels.length > 0 && labels.every((l) => /bed/i.test(l)),
+        `search filters menu: ${labels}`,
+      );
       await shot(page, 'sidebar-search');
       await page.keyboard.press('Enter');
       await page.waitForURL(`${ORIGIN}/ipd/beds`);
@@ -265,12 +299,20 @@ async function run() {
       await shot(page, 'planned-screen');
 
       // Favourite + collapse persistence.
-      await nav.getByRole('button', { name: 'Add Bed Board to favourites' }).first().click({ force: true });
-      await nav.getByRole('button', { name: 'Clinical' }).click();
+      await nav
+        .getByRole('button', { name: 'Add Bed Board to favourites' })
+        .first()
+        .click({ force: true });
+      await nav.getByRole('button', { name: 'Clinical', exact: true }).click();
       await page.reload();
-      await page.getByRole('navigation', { name: 'Main menu' }).getByRole('button', { name: 'Favourites' }).waitFor();
+      await page
+        .getByRole('navigation', { name: 'Main menu' })
+        .getByRole('button', { name: 'Favourites', exact: true })
+        .waitFor();
       assert(
-        (await page.getByRole('button', { name: 'Clinical' }).getAttribute('aria-expanded')) === 'false',
+        (await page
+          .getByRole('button', { name: 'Clinical', exact: true })
+          .getAttribute('aria-expanded')) === 'false',
         'collapsed group remembered',
       );
 
@@ -401,7 +443,11 @@ async function run() {
 
     if (REAL) {
       await step('real API: superadmin sign-in through the preview proxy', async () => {
-        const { page, errors, context } = await newPage(browser, { width: 1440, height: 900 }, null);
+        const { page, errors, context } = await newPage(
+          browser,
+          { width: 1440, height: 900 },
+          null,
+        );
         await signIn(page, 'superadmin');
         await page.getByRole('heading', { name: /Good (morning|afternoon|evening)/ }).waitFor();
         await shot(page, 'real-api-home');

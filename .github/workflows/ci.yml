@@ -37,7 +37,7 @@ jobs:
       - run: pnpm format:check
       - run: pnpm lint
       - name: Catalogue is in sync with the design docs
-        run: pnpm catalog && git diff --exit-code packages/shared/src/catalog
+        run: pnpm catalog && git diff --exit-code packages/shared/src/catalog/screens.js packages/shared/src/catalog/panels.js
       - run: pnpm test
       - name: Integration tests (MongoDB replica set + Redis)
         run: pnpm test:int

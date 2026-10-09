@@ -24,7 +24,12 @@ export function AppShell({
         {t('app.skipToContent')}
       </a>
       <aside className="fixed inset-y-0 left-0 z-20 hidden w-menu lg:block">{sidebar}</aside>
-      <Drawer open={drawerOpen} onOpenChange={onDrawerOpenChange} title={t('menu.navigation')}>
+      <Drawer
+        open={drawerOpen}
+        onOpenChange={onDrawerOpenChange}
+        title={t('menu.navigation')}
+        closeLabel={t('common.closeMenu')}
+      >
         {drawerSidebar ?? sidebar}
       </Drawer>
       <div className="flex min-h-dvh min-w-0 flex-col lg:pl-menu">

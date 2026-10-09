@@ -24,7 +24,7 @@ export function AuthLayout({ children }) {
         <div className="flex items-center gap-3">
           <span
             aria-hidden="true"
-            className="inline-flex size-10 items-center justify-center rounded-control bg-accent text-lg font-bold text-on-primary"
+            className="inline-flex size-10 items-center justify-center rounded-control bg-accent text-lg font-bold text-on-accent"
           >
             H
           </span>
@@ -48,7 +48,7 @@ export function AuthLayout({ children }) {
           <span className="flex items-center gap-2 text-md font-semibold text-ink">
             <span
               aria-hidden="true"
-              className="inline-flex size-8 items-center justify-center rounded-control bg-accent text-base font-bold text-on-primary"
+              className="inline-flex size-8 items-center justify-center rounded-control bg-accent text-base font-bold text-on-accent"
             >
               H
             </span>

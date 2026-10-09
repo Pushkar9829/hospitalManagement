@@ -130,7 +130,7 @@ export function Sidebar({
       <div className="flex items-center gap-3 px-4 pt-4 pb-3">
         <span
           aria-hidden="true"
-          className="inline-flex size-9 shrink-0 items-center justify-center rounded-control bg-accent text-md font-bold text-on-primary"
+          className="inline-flex size-9 shrink-0 items-center justify-center rounded-control bg-accent text-md font-bold text-on-accent"
         >
           {(tenantName ?? 'H').trim().charAt(0).toUpperCase()}
         </span>

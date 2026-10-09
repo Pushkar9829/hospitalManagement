@@ -42,6 +42,7 @@
   --color-on-primary: #ffffff;
   --color-accent: #0f6e78; /* teal brand accent, never a status */
   --color-accent-bg: #e1f1f2;
+  --color-on-accent: #ffffff;
   --color-danger: #a3201a; /* solid fill for destructive buttons and error toasts */
   --color-danger-hover: #861a15;
   --color-focus: #1f5fad;
@@ -159,6 +160,7 @@
   --color-on-primary: #ffffff;
   --color-accent: #4fbac3;
   --color-accent-bg: #123338;
+  --color-on-accent: #0b1520;
   --color-danger: #b8322b;
   --color-danger-hover: #c94139;
   --color-focus: #8ab8f0;

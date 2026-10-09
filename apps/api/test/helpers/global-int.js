@@ -7,6 +7,7 @@ import { MongoMemoryReplSet } from 'mongodb-memory-server';
 export default async function setup(project) {
   let replSet;
   let uri = process.env.MONGO_TEST_URI;
+  process.env.MONGOMS_VERSION ??= '8.0.4';
   if (!uri) {
     replSet = await MongoMemoryReplSet.create({
       replSet: { count: 1, storageEngine: 'wiredTiger' },

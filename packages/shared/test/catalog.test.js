@@ -22,6 +22,16 @@ describe('catalogue', () => {
     expect(labels).not.toContain('OPD Triage');
   });
 
+  it('shows screens to roles with read-only access to them', () => {
+    const nurse = { modules: ['IPD', 'NUR', 'LAB'], permissions: PANELS.nurse.permissions };
+    expect(PANELS.nurse.permissions).toContain('lab:*:read');
+    expect(canSeeScreen(SCREENS.Lab, nurse)).toBe(true);
+    expect(canSeeScreen(SCREENS.Lab, { ...nurse, permissions: ['opd:visit:read'] })).toBe(false);
+    expect(
+      canSeeScreen(SCREENS.OpdCheckin, { modules: ['OPD'], permissions: ['opd:visit:read'] }),
+    ).toBe(true);
+  });
+
   it('keeps read-only panels read-only', () => {
     const writes = PANELS.auditor.permissions.filter(
       (k) => !/:read$|^audit:log:export$|^myspace:\*$/.test(k),

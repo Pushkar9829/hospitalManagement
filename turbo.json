@@ -1,6 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "agentGuidance": false,
+  "globalDependencies": ["eslint.config.js", ".prettierrc.json", "packages/ui/src/tokens.css"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -8,10 +9,12 @@
     },
     "lint": {},
     "test": {
-      "outputs": []
+      "outputs": [],
+      "env": ["REDIS_URL"]
     },
     "test:int": {
-      "cache": false
+      "cache": false,
+      "env": ["REDIS_URL", "MONGO_TEST_URI", "MONGOMS_VERSION"]
     },
     "dev": {
       "cache": false,

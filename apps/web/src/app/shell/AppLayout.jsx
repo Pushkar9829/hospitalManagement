@@ -157,7 +157,7 @@ export function AppLayout() {
             id: `screen:${it.screen}`,
             label: it.label,
             hint: g.group,
-            keywords: [it.screen, it.route],
+            keywords: [it.screen],
             onSelect: () => go(it.route),
           })),
         ),

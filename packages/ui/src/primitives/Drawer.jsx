@@ -1,8 +1,20 @@
 import * as RadixDialog from '@radix-ui/react-dialog';
+import { X } from 'lucide-react';
 import { cn } from '../lib/cn.js';
 
-/** Side sheet (Radix Dialog). Used for the menu on tablets and for detail panels. */
-export function Drawer({ open, onOpenChange, title, side = 'left', className, children }) {
+/**
+ * Side sheet (Radix Dialog) for the menu on tablets. Esc, a tap outside, or the close button
+ * (`closeLabel`) closes it.
+ */
+export function Drawer({
+  open,
+  onOpenChange,
+  title,
+  closeLabel,
+  side = 'left',
+  className,
+  children,
+}) {
   return (
     <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
       <RadixDialog.Portal>
@@ -17,6 +29,14 @@ export function Drawer({ open, onOpenChange, title, side = 'left', className, ch
         >
           <RadixDialog.Title className="sr-only">{title}</RadixDialog.Title>
           {children}
+          {closeLabel && (
+            <RadixDialog.Close
+              aria-label={closeLabel}
+              className="absolute top-3 right-3 inline-flex size-9 cursor-pointer items-center justify-center rounded-control text-menu-muted hover:bg-menu-hover hover:text-menu-ink"
+            >
+              <X size={18} aria-hidden="true" />
+            </RadixDialog.Close>
+          )}
         </RadixDialog.Content>
       </RadixDialog.Portal>
     </RadixDialog.Root>
