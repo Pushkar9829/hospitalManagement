@@ -100,10 +100,11 @@ def story():
     s += H2("Technology stack")
     s += table([
         ["Layer", "Choice", "Why"],
-        ["Web app", "React 18, TypeScript, Vite", "Fast builds, static output for S3, typed "
+        ["Web app", "React 19, TypeScript, Vite", "Fast builds, static output for S3, typed "
                                                   "code shared with API"],
-        ["UI kit", "MUI 6 + MUI X Data Grid", "Accessible components and heavy data tables "
-                                             "for billing, stock, payroll"],
+        ["UI kit", "Tailwind CSS v4 + Radix UI primitives + TanStack Table",
+         "Design tokens as CSS variables (light, dark, high contrast), accessible "
+         "headless components, fast data tables for billing, stock, payroll"],
         ["State and data", "Redux Toolkit + RTK Query", "Caching, auto-refetch, typed API "
                                                         "hooks"],
         ["Forms", "React Hook Form + Zod", "Same Zod schemas validate on client and server"],
@@ -186,34 +187,38 @@ def story():
                "service later if load demands it."))
     s += code("""
 apps/
-  web/                      React app (hospital users)          -> S3 + CloudFront
-  console/                  React app (platform owner)          -> S3 + CloudFront
-  booking/                  Public appointment booking page      -> S3 + CloudFront
+  web/                      React + Tailwind (hospital staff)    -> S3 + CloudFront
+  portal/                   Patient portal + public booking      -> S3 + CloudFront
+  console/                  React + Tailwind (platform owner)    -> S3 + CloudFront
   api/
     src/
-      app.ts                Express app, middleware chain
-      server.ts             HTTP + Socket.IO bootstrap
+      app.ts  server.ts     Express app, HTTP + Socket.IO bootstrap
       worker.ts             BullMQ worker entry
       config/               env loading and validation (Zod)
-      core/                 shared kernel
-        auth/ tenancy/ rbac/ approvals/ audit/ sequences/ files/ notify/ events/
+      core/                 shared kernel (never imports modules)
+        tenancy/ auth/ rbac/ approvals/ audit/ sequences/ db/ events/
+        files/ notify/ print/ realtime/ jobs/ security/ errors/ http/
       modules/
-        core-setup/ patients/ billing/ staff/        (CORE)
-        opd/ ipd/ nursing/ lab/ radiology/ pharmacy/ inventory/ hr/ payroll/ finance/
-        mrd/ diet/ facility/ quality/ crm/ portal/ abdm/
+        platform/ setup/ users/ patients/ billing/ insurance/
+        opd/ ipd/ nursing/ lab/ radiology/ pharmacy/ inventory/
+        hr/ payroll/ finance/ mrd/ diet/ facility/ quality/ crm/
+        portal/ abdm/ reports/
           <module>/
-            <module>.routes.ts      route table + permission per route
-            <module>.controller.ts  HTTP in/out only
-            <module>.service.ts     business rules, transactions
-            <module>.schemas.ts     Zod request/response schemas (=> OpenAPI)
-            models/                 Mongoose models
-            events.ts               domain events published / consumed
-            jobs.ts                 background jobs
-            __tests__/
+            index.ts                public surface: router, service API, events
+            <module>.routes.ts      module gate + permission + schema per route
+            controllers/            HTTP in/out only
+            services/               business rules, transactions
+            models/                 Mongoose models and indexes
+            events.ts  jobs.ts      domain events, background jobs
+            print/  reports/  seed/ PDF templates, reports, tenant defaults
+            __tests__/              unit, API, isolation, concurrency
 packages/
-  shared/                   Zod schemas, enums, permission constants used by web + api
-  ui/                       shared React components (PatientBanner, DataTable, PrintFrame)
-infra/                      Terraform for AWS (S3, CloudFront, ECS, ALB, Redis, IAM)
+  shared/                   Zod schemas, enums, permission keys (web + api)
+  ui/                       Tailwind tokens + components (PatientBanner, DataTable)
+  i18n/                     English and Hindi translations
+  config/                   tsconfig, eslint, prettier, tailwind presets
+infra/                      Terraform (S3, CloudFront, ECS, ALB, Redis, IAM), Docker
+e2e/  perf/                 Playwright journeys, k6 load tests
 .github/workflows/          CI/CD pipelines
 """, "Repository layout (pnpm monorepo)")
 

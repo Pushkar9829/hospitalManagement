@@ -92,21 +92,25 @@ Every screen on the design canvas, with its web route, main role, module gate, p
 12. Accessibility: WCAG 2.1 AA contrast, visible focus ring, labels on every input, colour never the only signal.
 13. Sample data on boards is illustrative. Use the real API; never ship sample names.
 
-## Components to MUI
+## Components (React + Tailwind, `packages/ui`)
+
+See `docs/implementation/PLAN.md` for the package layout. Colours, type and radius come from `packages/ui/src/tokens.css` (Tailwind v4 `@theme`), never from hex values in components.
 
 | Pattern | Build with | Notes |
 |---|---|---|
-| Side menu | Drawer (permanent) + List | Built from subscribed modules and permissions; active item = filled + accent marker |
-| Top bar | AppBar + Autocomplete | Global search by UHID, name, mobile, bill no.; approvals badge; user menu |
-| Tabs (segmented) | Tabs or ToggleButtonGroup | Sync the tab to the URL: ?tab=gst |
-| Card with header | Card + CardHeader | Title left, actions right; wraps on small screens |
-| Data table | MUI X DataGrid | Server-side paging, sorting and filters; sticky header; row click opens detail |
-| Status chip | Chip size="small" | Always colour + text; colour pairs from tokens |
-| Stat tile | Card + Typography | Label, value, one-line context; links to the detail screen |
-| Forms | React Hook Form + Zod + TextField | Same Zod schema as the API; errors under fields; 44 px controls |
-| Stepper flows | Stepper | Admission, payroll run, setup wizard; steps clickable when allowed |
-| Bed tiles, slot grid | Grid + ButtonBase | Keyboard reachable; live updates via Socket.IO |
-| Kanban boards | Grid columns + Card | Housekeeping, CRM leads; move buttons as well as drag |
-| Dialogs | Dialog | Confirm risky actions; reason field when required |
-| Toasts | notistack Snackbar | 5 s; never the only place an error is shown |
+| Side menu | `Sidebar` (packages/ui/layout) | Built from subscribed modules and permissions; search box, collapsible groups, favourites; active item = filled + accent marker |
+| Top bar | `TopBar` + `CommandPalette` (cmdk) | Global search by UHID, name, mobile, bill no.; Ctrl+K; approvals badge; branch and role switcher; user menu |
+| Tabs (segmented) | Radix Tabs styled with Tailwind | Sync the tab to the URL: ?tab=gst |
+| Card with header | `Card` + `PageHeader` | Title left, actions right; wraps on small screens |
+| Data table | `DataTable` (TanStack Table + TanStack Virtual) | Server-side paging, sorting and filters; sticky header; column chooser; density toggle; row click opens detail |
+| Status chip | `StatusBadge` | Always colour + text (13 px semibold); tone from the shared status enum; red only for act-now |
+| Patient identity | `PatientBanner`, `PatientCell` | Mandatory on every patient-context screen; lists show full name + UHID or age |
+| Stat tile | `StatTile` | Label, value, one-line context; links to the detail screen |
+| Forms | React Hook Form + Zod + `FormField` | Same Zod schema as the API; errors under fields; 40 px controls on desktop, 44 px on touch |
+| Stepper flows | `Stepper` | Admission, payroll run, setup wizard; steps clickable when allowed |
+| Bed tiles, slot grid | `BedTile`, `SlotGrid` (buttons) | Keyboard reachable; live updates via Socket.IO |
+| Kanban boards | `Kanban` | Housekeeping, CRM leads; move buttons as well as drag |
+| Dialogs | Radix Dialog → `ConfirmDialog` | Confirm risky actions; reason field when required |
+| Toasts | `Toast` (Radix Toast) | 5 s; never the only place an error is shown |
+| Critical alerts | `CriticalAlert` | Stays until acknowledged (who, when); escalates after the timeout |
 | Print layouts | Server-side PDF (pdfmake) | Match the Print templates page; A4, A5, 80 mm thermal |

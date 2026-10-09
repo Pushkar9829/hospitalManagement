@@ -35,6 +35,14 @@ benchmark. Each has matching boards on the design canvas (see `ui-design/README.
 - `modules/BILLING.md`: Billing, Payments and Insurance (charge to ledger, cashier shifts, corporate credit, GST)
 - `modules/LAB.md`: Laboratory (order to report, sample receipt, QC, microbiology, histopathology, home collection)
 
+## Implementation plan
+
+`implementation/PLAN.md` turns the spec and the UI design into code: the React + Tailwind,
+Node + Express and MongoDB stack; the monorepo, backend module and frontend module folder
+structures; design tokens; the shared building blocks every module uses; build phases in
+dependency order; the per-module "production-ready" checklist; CI/CD; and the first Phase 0
+tasks.
+
 ## Regenerating the PDF
 
 The PDF is generated from the Python sources in `spec-src/` with ReportLab.

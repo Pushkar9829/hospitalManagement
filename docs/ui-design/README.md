@@ -36,7 +36,7 @@ It has 158 boards on 19 pages, and 28 role panels (each role has its own home pa
 - `../modules/BILLING.md`: full Billing, Payments and Insurance specification (charge to ledger, shifts, corporate credit, GST, roles, tests, benchmark).
 - `panels.md`: every role panel with its home page, menu and data scope. Start here.
 - `screens.md`: every screen with route, role, module, permission and APIs.
-- `tokens.json`: colours, type, spacing and radius for the MUI theme.
+- `tokens.json`: colours, type, spacing and radius. In code they become `packages/ui/src/tokens.css` (Tailwind v4); see `../implementation/PLAN.md`. Where a board still mentions MUI, the plan's Tailwind stack replaces it.
 - `boards/`: the source of every board (`.dc.html`). They run inside the design canvas,
   not as standalone pages; open the canvas link to view and click through them.
 - `source/`: the building blocks used to generate the app-screen boards
