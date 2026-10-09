@@ -37,7 +37,7 @@ OpdTriage	OPD triage	OPD / Triage	OPD triage station	Anjali Menon	Staff Nurse ·
 OpdConfig	OPD settings	Settings / OPD settings	OPD settings	Kavita Desai	Hospital Admin	KD	admin
 OpdAnalytics	OPD analytics	Overview / OPD analytics	OPD analytics	Dr. Arjun Rao	Hospital Super Admin	AR	superadmin
 IpdBedRequests	Bed requests and transfers	My ward / Bed requests	Bed requests and transfers	Lata Desai	Ward In-charge · Bed manager	LD	wardincharge
-IpdTpa	Insurance and TPA desk	Billing / Insurance desk	Insurance and TPA desk	Rahul Mehta	Billing Manager · TPA desk	RM	billingmgr
+IpdTpa	Insurance and TPA desk	Insurance / Insurance desk	Insurance and TPA desk	Neelam Joshi	Insurance Desk · TPA coordinator	NJ	tpa
 IpdBill	In-patient bill	Counter / In-patient bills	In-patient bill	Neha Kulkarni	Cashier · Counter 1	NK	cashier
 IpdConfig	IPD settings	Settings / IPD settings	IPD settings	Kavita Desai	Hospital Admin	KD	admin
 IpdAnalytics	IPD analytics	Overview / IPD analytics	IPD analytics	Dr. Arjun Rao	Hospital Super Admin	AR	superadmin
@@ -46,3 +46,9 @@ BillShift	Cashier shift and day-end	Counter / Cashier shift	Cashier shift and da
 BillCorporate	Corporate and credit	Billing / Corporate and credit	Corporate and credit desk	Rahul Mehta	Billing Manager · Corporate desk	RM	billingmgr
 BillConfig	Billing settings	Settings / Billing settings	Billing settings	Kavita Desai	Hospital Admin	KD	admin
 BillAnalytics	Billing analytics	Overview / Billing analytics	Billing analytics	Dr. Arjun Rao	Hospital Super Admin	AR	superadmin
+LabSample	Sample collection and receipt	Laboratory / Sample collection	Sample collection and receipt	Priya Sawant	Lab Technician · Reception	PS	lab
+LabQC	Quality control	Laboratory / Quality control	Quality control	Dr. N. Rao	Pathologist · Lab In-charge	NR	lab
+LabMicro	Microbiology	Laboratory / Microbiology	Microbiology	Dr. S. Kale	Microbiologist	SK	lab
+LabHisto	Histopathology	Laboratory / Histopathology	Histopathology	Dr. N. Rao	Pathologist	NR	lab
+LabConfig	Lab settings	Laboratory / Lab settings	Lab settings	Dr. N. Rao	Pathologist · Lab In-charge	NR	lab
+LabAnalytics	Lab analytics	Overview / Lab analytics	Lab analytics	Dr. Arjun Rao	Hospital Super Admin	AR	superadmin

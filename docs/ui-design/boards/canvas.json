@@ -1293,6 +1293,209 @@
       "title": "Billing · Management · flow",
       "page": "p16",
       "is_interactive": true
+    },
+    "HomeTpa.dc.html": {
+      "x": 1520,
+      "y": 12320,
+      "w": 1440,
+      "h": 1320,
+      "title": "29 Home · Insurance Desk",
+      "page": "p10",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "LabModule.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 2720,
+      "title": "Lab 1 · Module overview and benchmark",
+      "page": "p17",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "LabFlow.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 4754,
+      "h": 1572,
+      "title": "Lab 2 · End-to-end flow (swimlane)",
+      "page": "p17"
+    },
+    "LabAltFlows.dc.html": {
+      "x": 1520,
+      "y": 1692,
+      "w": 1624,
+      "h": 1996,
+      "title": "Lab 3 · Alternate and exception flows",
+      "page": "p17"
+    },
+    "LabStates.dc.html": {
+      "x": 3224,
+      "y": 1692,
+      "w": 2096,
+      "h": 1416,
+      "title": "Lab 4 · Status lifecycles",
+      "page": "p17"
+    },
+    "LabRules.dc.html": {
+      "x": 6354,
+      "y": 0,
+      "w": 1440,
+      "h": 4300,
+      "title": "Lab 5 · Rules, messages, reports, tests",
+      "page": "p17",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "LabConfig.dc.html": {
+      "x": 7874,
+      "y": 0,
+      "w": 1440,
+      "h": 1320,
+      "title": "Lab 6 · Lab settings (Lab in-charge)",
+      "page": "p17",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "LabAnalytics.dc.html": {
+      "x": 7874,
+      "y": 1440,
+      "w": 1440,
+      "h": 1820,
+      "title": "Lab 7 · Lab analytics (Management)",
+      "page": "p17",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "LabRolePatient.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1600,
+      "h": 1180,
+      "title": "Lab · Patient · flow",
+      "page": "p18",
+      "is_interactive": true
+    },
+    "LabRoleDoctor.dc.html": {
+      "x": 1680,
+      "y": 0,
+      "w": 1600,
+      "h": 1180,
+      "title": "Lab · Doctor · flow",
+      "page": "p18",
+      "is_interactive": true
+    },
+    "LabRoleNurse.dc.html": {
+      "x": 3360,
+      "y": 0,
+      "w": 1600,
+      "h": 1180,
+      "title": "Lab · Ward nurse · flow",
+      "page": "p18",
+      "is_interactive": true
+    },
+    "LabRolePhlebotomist.dc.html": {
+      "x": 0,
+      "y": 1300,
+      "w": 1600,
+      "h": 1180,
+      "title": "Lab · Home collection · flow",
+      "page": "p18",
+      "is_interactive": true
+    },
+    "PhleboPhone.dc.html": {
+      "x": 1680,
+      "y": 1300,
+      "w": 1832,
+      "h": 1040,
+      "title": "Lab · Home collection · phone screens",
+      "page": "p18"
+    },
+    "LabRoleReception.dc.html": {
+      "x": 3592,
+      "y": 1300,
+      "w": 1600,
+      "h": 1180,
+      "title": "Lab · Lab reception · flow",
+      "page": "p18",
+      "is_interactive": true
+    },
+    "LabSample.dc.html": {
+      "x": 0,
+      "y": 2600,
+      "w": 1440,
+      "h": 1320,
+      "title": "Lab · Lab reception · sample collection and receipt",
+      "page": "p18",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "LabRoleTechnician.dc.html": {
+      "x": 1520,
+      "y": 2600,
+      "w": 1600,
+      "h": 1180,
+      "title": "Lab · Lab technician · flow",
+      "page": "p18",
+      "is_interactive": true
+    },
+    "LabQC.dc.html": {
+      "x": 3200,
+      "y": 2600,
+      "w": 1440,
+      "h": 1320,
+      "title": "Lab · Lab technician · quality control",
+      "page": "p18",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "LabRolePathologist.dc.html": {
+      "x": 0,
+      "y": 4040,
+      "w": 1600,
+      "h": 1180,
+      "title": "Lab · Pathologist · flow",
+      "page": "p18",
+      "is_interactive": true
+    },
+    "LabHisto.dc.html": {
+      "x": 1680,
+      "y": 4040,
+      "w": 1440,
+      "h": 1320,
+      "title": "Lab · Pathologist · histopathology",
+      "page": "p18",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "LabMicro.dc.html": {
+      "x": 3200,
+      "y": 4040,
+      "w": 1440,
+      "h": 1320,
+      "title": "Lab · Microbiologist · microbiology",
+      "page": "p18",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "LabRoleIncharge.dc.html": {
+      "x": 0,
+      "y": 5480,
+      "w": 1600,
+      "h": 1180,
+      "title": "Lab · Lab in-charge · flow",
+      "page": "p18",
+      "is_interactive": true
+    },
+    "LabRoleManagement.dc.html": {
+      "x": 1680,
+      "y": 5480,
+      "w": 1600,
+      "h": 1180,
+      "title": "Lab · Management · flow",
+      "page": "p18",
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -1457,6 +1660,24 @@
       "maxW": 5192,
       "page": "p16",
       "w": 240
+    },
+    "t_p17": {
+      "x": 0,
+      "y": -300,
+      "text": "Lab 1 · Module flow end to end",
+      "kind": "title1",
+      "maxW": 9314,
+      "page": "p17",
+      "w": 240
+    },
+    "t_p18": {
+      "x": 0,
+      "y": -300,
+      "text": "Lab 2 · Role-wise flows",
+      "kind": "title1",
+      "maxW": 5192,
+      "page": "p18",
+      "w": 240
     }
   },
   "order": [
@@ -1489,6 +1710,7 @@
     "HomeSecurity.dc.html",
     "HomePhlebo.dc.html",
     "HomeAuditor.dc.html",
+    "HomeTpa.dc.html",
     "Signup.dc.html",
     "SetupWizard.dc.html",
     "Console.dc.html",
@@ -1595,7 +1817,28 @@
     "BillRolePharmacy.dc.html",
     "BillRoleAccounts.dc.html",
     "BillRoleAuditor.dc.html",
-    "BillRoleManagement.dc.html"
+    "BillRoleManagement.dc.html",
+    "LabModule.dc.html",
+    "LabFlow.dc.html",
+    "LabAltFlows.dc.html",
+    "LabStates.dc.html",
+    "LabRules.dc.html",
+    "LabConfig.dc.html",
+    "LabAnalytics.dc.html",
+    "LabRolePatient.dc.html",
+    "LabRoleDoctor.dc.html",
+    "LabRoleNurse.dc.html",
+    "LabRolePhlebotomist.dc.html",
+    "PhleboPhone.dc.html",
+    "LabRoleReception.dc.html",
+    "LabSample.dc.html",
+    "LabRoleTechnician.dc.html",
+    "LabQC.dc.html",
+    "LabRolePathologist.dc.html",
+    "LabHisto.dc.html",
+    "LabMicro.dc.html",
+    "LabRoleIncharge.dc.html",
+    "LabRoleManagement.dc.html"
   ],
   "pages": [
     {
@@ -1629,6 +1872,14 @@
     {
       "id": "p16",
       "name": "Billing 2 · Role-wise flows"
+    },
+    {
+      "id": "p17",
+      "name": "Lab 1 · Module flow end to end"
+    },
+    {
+      "id": "p18",
+      "name": "Lab 2 · Role-wise flows"
     },
     {
       "id": "p1",

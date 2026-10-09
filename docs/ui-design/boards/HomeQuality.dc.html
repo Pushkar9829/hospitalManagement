@@ -86,6 +86,7 @@ summary::-webkit-details-marker{display:none}
 <a class="nvl" href="HomeSecurity.dc.html">Security Desk</a>
 <a class="nvl" href="HomeCashier.dc.html">Cashier</a>
 <a class="nvl" href="HomeBillingMgr.dc.html">Billing Manager</a>
+<a class="nvl" href="HomeTpa.dc.html">Insurance Desk</a>
 <a class="nvl" href="HomeLab.dc.html">Laboratory</a>
 <a class="nvl" href="HomePhlebo.dc.html">Home Collection</a>
 <a class="nvl" href="HomeRadiology.dc.html">Radiology</a>
@@ -165,7 +166,7 @@ class Component extends DCLogic {
       alerts: d.alerts.map(function (a) { return { t: a[0], s: a[1], b: a[2], bc: a[3] }; }), links: links } };
   }
   navItems(active) {
-    var P = {"quality": [["Quality", [["Home", "HomeQuality"], ["Quality and Incidents", "Quality"], ["Medical Records", "Records"], ["Approvals", "Approvals"]]], ["Reports", [["Reports", "Reports"]]], ["Services (read)", [["Diet & Kitchen", "Diet"], ["Facility", "Facility"], ["CRM", "Crm"]]], ["Personal", [["My Space", "MySpace"]]]]};
+    var P = {"quality": [["Quality", [["Home", "HomeQuality"], ["Quality and Incidents", "Quality"], ["Medical Records", "Records"], ["Approvals", "Approvals"]]], ["Reports", [["Reports", "Reports"]]], ["Services (read)", [["Diet & Kitchen", "Diet"], ["Facility", "Facility"], ["CRM", "Crm"], ["Microbiology (antibiogram)", "LabMicro"]]], ["Personal", [["My Space", "MySpace"]]]]};
     return P['quality'].map(function (g) {
       return { label: g[0], items: g[1].map(function (i) {
         var on = i[1] === active;

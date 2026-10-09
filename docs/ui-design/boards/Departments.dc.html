@@ -86,6 +86,7 @@ summary::-webkit-details-marker{display:none}
 <a class="nvl" href="HomeSecurity.dc.html">Security Desk</a>
 <a class="nvl" href="HomeCashier.dc.html">Cashier</a>
 <a class="nvl" href="HomeBillingMgr.dc.html">Billing Manager</a>
+<a class="nvl" href="HomeTpa.dc.html">Insurance Desk</a>
 <a class="nvl" href="HomeLab.dc.html">Laboratory</a>
 <a class="nvl" href="HomePhlebo.dc.html">Home Collection</a>
 <a class="nvl" href="HomeRadiology.dc.html">Radiology</a>
@@ -190,7 +191,7 @@ class Component extends DCLogic {
       alerts: d.alerts.map(function (a) { return { t: a[0], s: a[1], b: a[2], bc: a[3] }; }), links: links } };
   }
   navItems(active) {
-    var P = {"admin": [["Overview", [["Home", "HomeAdmin"], ["Approvals", "Approvals"], ["Reports", "Reports"], ["Finance", "Finance"]]], ["Operations", [["Patients", "Patients"], ["Front Office", "FrontOffice"], ["Bed Board", "Beds"], ["Inventory", "Inventory"]]], ["Settings", [["Hospital Settings", "Settings"], ["Users", "Users"], ["Roles & Access", "Roles"], ["Departments", "Departments"], ["OPD Settings", "OpdConfig"], ["IPD Settings", "IpdConfig"], ["Billing Settings", "BillConfig"]]], ["Services", [["Medical Records", "Records"], ["Diet & Kitchen", "Diet"], ["Facility", "Facility"], ["Quality", "Quality"], ["CRM", "Crm"]]], ["Departments setup", [["Laboratory", "Lab"], ["Radiology", "Radiology"], ["Pharmacy", "Pharmacy"]]], ["Personal", [["My Space", "MySpace"]]]]};
+    var P = {"admin": [["Overview", [["Home", "HomeAdmin"], ["Approvals", "Approvals"], ["Reports", "Reports"], ["Finance", "Finance"]]], ["Operations", [["Patients", "Patients"], ["Front Office", "FrontOffice"], ["Bed Board", "Beds"], ["Inventory", "Inventory"], ["Appointments", "Opd"], ["Admissions", "Admission"], ["Nursing Station", "Nursing"], ["HR", "Hr"]]], ["Settings", [["Hospital Settings", "Settings"], ["Users", "Users"], ["Roles & Access", "Roles"], ["Departments", "Departments"], ["OPD Settings", "OpdConfig"], ["IPD Settings", "IpdConfig"], ["Billing Settings", "BillConfig"]]], ["Services", [["Medical Records", "Records"], ["Diet & Kitchen", "Diet"], ["Facility", "Facility"], ["Quality", "Quality"], ["CRM", "Crm"]]], ["Departments setup", [["Laboratory", "Lab"], ["Radiology", "Radiology"], ["Pharmacy", "Pharmacy"]]], ["Personal", [["My Space", "MySpace"]]]]};
     return P['admin'].map(function (g) {
       return { label: g[0], items: g[1].map(function (i) {
         var on = i[1] === active;

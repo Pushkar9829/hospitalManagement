@@ -86,6 +86,7 @@ summary::-webkit-details-marker{display:none}
 <a class="nvl" href="HomeSecurity.dc.html">Security Desk</a>
 <a class="nvl" href="HomeCashier.dc.html">Cashier</a>
 <a class="nvl" href="HomeBillingMgr.dc.html">Billing Manager</a>
+<a class="nvl" href="HomeTpa.dc.html">Insurance Desk</a>
 <a class="nvlA" href="HomeLab.dc.html">Laboratory</a>
 <a class="nvl" href="HomePhlebo.dc.html">Home Collection</a>
 <a class="nvl" href="HomeRadiology.dc.html">Radiology</a>
@@ -178,7 +179,7 @@ class Component extends DCLogic {
       alerts: d.alerts.map(function (a) { return { t: a[0], s: a[1], b: a[2], bc: a[3] }; }), links: links } };
   }
   navItems(active) {
-    var P = {"lab": [["Laboratory", [["Home", "HomeLab"], ["Worklists", "Lab"], ["Patient Profile", "PatientProfile"]]], ["Requests", [["Store Indents", "Inventory"], ["Quality", "Quality"]]], ["Personal", [["My Space", "MySpace"]]]]};
+    var P = {"lab": [["Laboratory", [["Home", "HomeLab"], ["Worklists", "Lab"], ["Sample Collection", "LabSample"], ["Quality Control", "LabQC"], ["Microbiology", "LabMicro"], ["Histopathology", "LabHisto"], ["Lab Settings", "LabConfig"], ["Lab Analytics", "LabAnalytics"], ["Patient Profile", "PatientProfile"]]], ["Requests", [["Store Indents", "Inventory"], ["Quality", "Quality"]]], ["Personal", [["My Space", "MySpace"]]]]};
     return P['lab'].map(function (g) {
       return { label: g[0], items: g[1].map(function (i) {
         var on = i[1] === active;
@@ -192,7 +193,7 @@ class Component extends DCLogic {
     return {
       nav: this.navItems('Lab'), stage: stage + ' worklist',
       stages: S.map((s) => ({ l: s[0], n: s[1], on: s[0] === stage, off: s[0] !== stage, pick: () => this.setState({ stage: s[0] }) })),
-      samples: [['LB-26-018842', 'F. Ali', 'CBC · W2-204-A', 'Critical', 'br'], ['LB-26-018851', 'Ravi Kumar', 'Lipid profile · OPD', 'Routine', 'bn'], ['LB-26-018853', 'Ravi Kumar', 'HbA1c · OPD', 'Routine', 'bn'], ['LB-26-018860', 'Baby Ishan', 'CRP · Paeds', 'Urgent', 'bo'], ['LB-26-018861', 'K. Nair', 'ABG · ICU', 'STAT', 'br'], ['LB-26-018870', 'Home · Meena J.', 'Thyroid profile', 'Routine', 'bn'], ['LB-26-018874', 'S. Patil', 'Blood culture · prelim', 'Micro', 'bb']].map(function (s, i) { return { bc: s[0], n: s[1], t: s[2], p: s[3], pc: s[4], bg: i === 0 ? '#E6EEF9' : 'transparent' }; }),
+      samples: [['LB-26-018842', 'F. Ali', 'CBC · W2-204-A', 'Critical', 'br', 'Validate'], ['LB-26-018851', 'Ravi Kumar', 'Lipid profile · W2-204-B', 'Routine', 'bn', 'Validate'], ['LB-26-018853', 'Ravi Kumar', 'HbA1c · W2-204-B', 'Routine', 'bn', 'Result entry'], ['LB-26-018860', 'Baby Ishan', 'CRP · Paeds', 'Urgent', 'bo', 'Result entry'], ['LB-26-018861', 'R. Shetty', 'ABG · ICU-04', 'STAT', 'br', 'Result entry'], ['LB-26-018870', 'Home · Meena J.', 'Thyroid profile', 'Routine', 'bn', 'Receive'], ['LB-26-018874', 'S. Patil', 'Blood culture · prelim', 'Micro', 'bb', 'Validate'], ['LB-26-018880', 'G. Kale', 'KFT · ICU-02', 'Urgent', 'bo', 'Collect'], ['LB-26-018881', 'Sunita Pawar', 'CBC, sugar · OPD', 'Routine', 'bn', 'Collect'], ['LB-26-018866', 'M. Lal', 'Wound swab · W2-203-A', 'Micro', 'bb', 'Receive'], ['LB-26-018821', 'K. Nair', 'Sputum culture · W2-205-A', 'Micro', 'bb', 'Released'], ['LB-26-018830', 'A. Joshi', 'Electrolytes · W2-202-A', 'Routine', 'bn', 'Released'], ['HC-26-000412', 'Rahul Shah', 'Thyroid profile · Baner', 'Fasting', 'ba', 'Home collection'], ['HC-26-000413', 'Meera Pai', 'Vitamin D, B12 · Baner', 'Routine', 'bn', 'Home collection']].filter(function (s) { return s[5] === stage; }).map(function (s, i) { return { bc: s[0], n: s[1], t: s[2], p: s[3], pc: s[4], bg: s[0] === 'LB-26-018842' ? '#E6EEF9' : 'transparent' }; }),
       params: [['Haemoglobin', '9.1', 'g/dL', '12.0 to 15.0', 'Low', 'ba', '10.4'], ['WBC count', '14,200', '/µL', '4,000 to 11,000', 'High', 'ba', '9,800'], ['Platelets', '38,000', '/µL', '1,50,000 to 4,10,000', 'Critical low', 'br', '92,000'], ['Haematocrit', '28', '%', '36 to 46', 'Low', 'ba', '31'], ['MCV', '84', 'fL', '80 to 100', 'Normal', 'bg', '85'], ['Neutrophils', '78', '%', '40 to 75', 'High', 'ba', '70'], ['Lymphocytes', '16', '%', '20 to 45', 'Low', 'ba', '24'], ['ESR', '28', 'mm/h', '0 to 20', 'High', 'ba', '-']].map(function (p) { return { n: p[0], v: p[1], u: p[2], r: p[3], f: p[4], fc: p[5], prev: p[6] }; })
     };
   }

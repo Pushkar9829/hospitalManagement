@@ -1,6 +1,6 @@
   renderVals() {
     var st = (this.state && this.state.st) || {};
-    var T = [['W2-202-B', 'Discharged 10:20 · bed clean and linen change', 'P', '40 min', 'ba'], ['PVT-07', 'Discharged 10:55 · terminal clean', 'P', '5 min', 'bn'], ['ICU-06', 'Isolation clean after transfer', 'I', '25 min', 'bo'],
+    var T = [['W2-202-B', 'Discharged 10:20 · bed clean and linen change', 'P', '40 min', 'ba'], ['PVT-06', 'Discharged 10:35 · routine clean', 'P', '5 min', 'bn'], ['ISO-01', 'Isolation terminal clean after transfer', 'I', '25 min', 'bo'],
       ['OPD toilets, floor 1', 'Scheduled 2-hourly checklist', 'I', '10 min', 'bn'], ['W1-105-A', 'Cleaned by Suresh · needs supervisor check', 'V', '38 min', 'bg']];
     var COL = [['P', 'Pending', 'Start'], ['I', 'In progress', 'Mark cleaned'], ['V', 'To verify', 'Verify, bed available']];
     var cur = T.map(function (t, i) { return st[i] || t[2]; });

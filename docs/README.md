@@ -33,6 +33,7 @@ benchmark. Each has matching boards on the design canvas (see `ui-design/README.
 - `modules/OPD.md`: OPD and Appointments
 - `modules/IPD.md`: IPD, admission to discharge (beds, insurance and TPA, ward care, billing)
 - `modules/BILLING.md`: Billing, Payments and Insurance (charge to ledger, cashier shifts, corporate credit, GST)
+- `modules/LAB.md`: Laboratory (order to report, sample receipt, QC, microbiology, histopathology, home collection)
 
 ## Regenerating the PDF
 

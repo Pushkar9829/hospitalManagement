@@ -52,7 +52,7 @@ summary::-webkit-details-marker{display:none}
 <nav aria-label="Main menu" style="flex:1 1 232px;background:#13263F;color:#fff;padding:18px 12px 28px;box-sizing:border-box">
 <div style="display:flex;align-items:center;gap:10px;padding:0 8px 14px;border-bottom:1px solid #24406A;margin-bottom:4px">
 <div style="width:34px;height:34px;border-radius:8px;background:#B4501A;display:flex;align-items:center;justify-content:center;font-weight:700">H</div>
-<div><div style="font-weight:700;font-size:14px">Demo Hospital</div><div style="font-size:12px;color:#8FA3BD">Main Branch · Billing Manager panel</div></div>
+<div><div style="font-weight:700;font-size:14px">Demo Hospital</div><div style="font-size:12px;color:#8FA3BD">Main Branch · Insurance Desk panel</div></div>
 </div>
 <sc-for list="{{nav}}" as="g" hint-placeholder-count="7">
 <div class="ng">{{g.label}}</div>
@@ -66,12 +66,12 @@ summary::-webkit-details-marker{display:none}
 <div style="flex:999 1 560px;min-width:0;display:flex;flex-direction:column">
 <header style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:12px 28px;background:#fff;border-bottom:1px solid #DDE2E8">
 <div style="flex:1 1 260px;min-width:0">
-<div class="cap">Billing / Insurance desk</div>
+<div class="cap">Insurance / Insurance desk</div>
 <h1 style="margin:2px 0 0;font-size:20px;font-weight:700">Insurance and TPA desk</h1>
 </div>
 <input class="inp" aria-label="Search patients, bills and records" placeholder="Search UHID, name, mobile, bill no." style="flex:0 1 320px;width:auto">
 <details style="position:relative">
-<summary class="btn2" style="list-style:none">View as: Billing Manager ▾</summary>
+<summary class="btn2" style="list-style:none">View as: Insurance Desk ▾</summary>
 <div style="position:absolute;right:0;top:50px;z-index:20;background:#fff;border:1px solid #DDE2E8;border-radius:10px;box-shadow:0 12px 32px rgba(20,33,48,.16);padding:6px;width:270px;max-height:460px;overflow:auto;display:flex;flex-direction:column">
 <div class="cap" style="padding:6px 10px">Prototype: switch role panel. Real users see only the roles they hold.</div>
 <a class="nvl" href="Dashboard.dc.html">Super Admin</a>
@@ -85,7 +85,8 @@ summary::-webkit-details-marker{display:none}
 <a class="nvl" href="HomeFrontOffice.dc.html">Front Office</a>
 <a class="nvl" href="HomeSecurity.dc.html">Security Desk</a>
 <a class="nvl" href="HomeCashier.dc.html">Cashier</a>
-<a class="nvlA" href="HomeBillingMgr.dc.html">Billing Manager</a>
+<a class="nvl" href="HomeBillingMgr.dc.html">Billing Manager</a>
+<a class="nvlA" href="HomeTpa.dc.html">Insurance Desk</a>
 <a class="nvl" href="HomeLab.dc.html">Laboratory</a>
 <a class="nvl" href="HomePhlebo.dc.html">Home Collection</a>
 <a class="nvl" href="HomeRadiology.dc.html">Radiology</a>
@@ -104,8 +105,8 @@ summary::-webkit-details-marker{display:none}
 <a class="nvl" href="Console.dc.html">Platform owner (console)</a>
 <a class="nvl" href="Portal.dc.html">Patient (portal)</a>
 </div></details>
-<a class="btn2" href="Approvals.dc.html">Approvals <span class="b bo">5</span></a>
-<div style="display:flex;align-items:center;gap:10px"><div class="av">RM</div><div><div style="font-weight:600;font-size:13px">Rahul Mehta</div><div class="cap">Billing Manager · TPA desk</div></div></div>
+
+<div style="display:flex;align-items:center;gap:10px"><div class="av">NJ</div><div><div style="font-weight:600;font-size:13px">Neelam Joshi</div><div class="cap">Insurance Desk · TPA coordinator</div></div></div>
 </header>
 <main style="padding:24px 28px 40px;display:flex;flex-direction:column;gap:20px">
 <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px">
@@ -200,8 +201,8 @@ class Component extends DCLogic {
       alerts: d.alerts.map(function (a) { return { t: a[0], s: a[1], b: a[2], bc: a[3] }; }), links: links } };
   }
   navItems(active) {
-    var P = {"billingmgr": [["Billing", [["Home", "HomeBillingMgr"], ["Billing", "Billing"], ["Shifts and Day-end", "BillShift"], ["In-patient Bills", "IpdBill"], ["Insurance Desk", "IpdTpa"], ["Corporate and Credit", "BillCorporate"], ["Discharge Desk", "Discharge"], ["Approvals", "Approvals"]]], ["Reports", [["Reports", "Reports"], ["Billing Analytics", "BillAnalytics"]]], ["Finance (read)", [["Finance", "Finance"]]], ["Personal", [["My Space", "MySpace"]]]]};
-    return P['billingmgr'].map(function (g) {
+    var P = {"tpa": [["Insurance", [["Home", "HomeTpa"], ["Insurance Desk", "IpdTpa"], ["In-patient Bills", "IpdBill"], ["Discharge Desk", "Discharge"]]], ["Patients (read)", [["Admissions", "Admission"], ["Patient Profile", "PatientProfile"]]], ["Reports", [["Reports", "Reports"]]], ["Personal", [["My Space", "MySpace"]]]]};
+    return P['tpa'].map(function (g) {
       return { label: g[0], items: g[1].map(function (i) {
         var on = i[1] === active;
         return { label: i[0], href: i[1] + '.dc.html', on: on, off: !on };

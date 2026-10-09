@@ -13,7 +13,7 @@
  "cannot": ["Admit without a doctor's admission order", "Change tariffs or packages", "Give discounts", "Hold an emergency for deposit"],
  "notify": ["New admission request", "Bed ready for reserved patient", "Reservation about to expire", "Planned admissions for tomorrow"],
  "kpis": [["Advice to admitted", "Under 60 min"], ["Estimates signed", "100%"], ["Deposit at admission", "95% of planned"], ["Reservation expiries", "Under 5%"]]},
-{"file": "IpdRoleTpa", "name": "Insurance (TPA) desk", "panel": "Billing Manager", "home": "HomeBillingMgr", "sub": "Gets cashless approvals on time and turns them into paid claims. Works with insurers, TPAs and government schemes.",
+{"file": "IpdRoleTpa", "name": "Insurance (TPA) desk", "panel": "Insurance Desk", "home": "HomeTpa", "sub": "Gets cashless approvals on time and turns them into paid claims. Works with insurers, TPAs and government schemes.",
  "steps": ["Verifies policy, ID and room-rent limit", "Sends pre-auth with documents", "Tracks 1-hour insurer reply; answers queries", "Records approved amount on the bill", "Watches bill vs approval every day", "Sends enhancement at 90% of approval", "Sends final bill for discharge approval", "Tracks 3-hour final approval", "Files claim with documents", "Matches settlement; books deductions"],
  "screens": [["Insurance and TPA desk", "IpdTpa"], ["In-patient bill", "IpdBill"], ["Discharge desk", "Discharge"], ["Approvals", "Approvals"]],
  "can": ["Create and send pre-auth and enhancement", "Record insurer replies and amounts", "Split bill between insurer and patient", "File claims and record settlements", "Flag non-payable items to patient share"],

@@ -108,7 +108,7 @@ H = {
   quick=[['Housekeeping board', 'Facility'], ['Raise ticket', 'Facility'], ['Bed board', 'Beds']],
   kpis=[['Beds to clean', '3', 'target 45 min', 'Facility'], ['Open tickets', '3', '1 high', 'Facility'], ['PM overdue', '1', 'Ventilator V-03', 'Facility'], ['Linen short', '22 pcs', 'from laundry', 'Facility'], ['Waste today', '88 kg', 'handed over', 'Facility']],
   q=['Cleaning queue', 'Beds wait for you before the next admission', 'Facility'], head=['Bed / area', 'Task', 'Waiting', 'Assigned', 'Status'],
-  rows=[['#W2-202-B', 'Discharge clean', '40 min', 'Suresh', '~ba:Pending'], ['#PVT-07', 'Terminal clean', '5 min', '-', '~ba:Pending'], ['#ICU-06', 'Isolation clean', '25 min', 'Leela', '~bo:In progress'], ['#W1-105-A', 'Verify cleaned', '38 min', 'You', '~bg:To verify']],
+  rows=[['#W2-202-B', 'Discharge clean', '40 min', 'Suresh', '~ba:Pending'], ['#PVT-06', 'Discharge clean', '5 min', '-', '~ba:Pending'], ['#ISO-01', 'Isolation clean', '25 min', 'Leela', '~bo:In progress'], ['#W1-105-A', 'Verify cleaned', '38 min', 'You', '~bg:To verify']],
   alerts=[['Bed delaying admission', 'W2-202-B needed by 12:00', 'Urgent', 'br'], ['AMC renewal', 'USG machine, 30 Nov', 'Contract', 'bo'], ['Linen below par', 'Ward 2 bedsheets', 'Linen', 'ba']]),
 'quality': dict(role='Quality Manager', greet='Good morning, Dr. Shah', sub='NABH indicators · September published',
   quick=[['Incidents', 'Quality'], ['Indicators', 'Quality'], ['Start audit', 'Quality']],
@@ -146,6 +146,12 @@ H = {
   q=['Exceptions to review', 'Picked by the system from the audit trail', 'AuditLog'], head=['Exception', 'Module', 'By', 'When', 'Status'],
   rows=[['Bill cancelled after printing', 'Billing', 'Neha Kulkarni', '08 Oct', '~ba:To review'], ['Journal posted on a holiday', 'Finance', 'Ramesh Iyer', '02 Oct', '~ba:To review'], ['Stock adjustment below cost', 'Pharmacy', 'Suresh Patil', '30 Sep', '~bg:Explained'], ['Salary changed twice in a month', 'Payroll', 'Kiran Joshi', '28 Sep', '~bg:Explained']],
   alerts=[['Read-only', 'You cannot change any record', 'Access', 'bn'], ['Access ends', '31 Dec 2026', 'Access', 'bb'], ['Period closed', 'September books locked', 'Finance', 'bg']]),
+'tpa': dict(role='Insurance Desk · TPA coordinator', greet='Good morning, Neelam', sub='38 insured and scheme patients in hospital',
+  quick=[['Insurance desk', 'IpdTpa'], ['Payer split', 'IpdBill'], ['Discharges today', 'Discharge']],
+  kpis=[['Waiting for insurer', '3', 'oldest 44 min', 'IpdTpa'], ['Queries open', '1', 'Mohan Rao', 'IpdTpa'], ['Enhancements due', '1', 'J. Dsouza at 92%', 'IpdTpa'], ['Final approvals pending', '1', 'L. Das · 1 h 05 min', 'IpdTpa'], ['Claims to file', '3', 'oldest due 21 Oct', 'IpdTpa']],
+  q=['Most urgent', 'Insurer timers and bills near their approval', 'IpdTpa'], head=['Patient', 'Payer', 'What is due', 'Timer', 'Status'],
+  rows=[['Mohan Rao', 'Niva Bupa', 'Reply to query: ECG and troponin', 'since 09:40', '~br:Query'], ['J. Dsouza', 'HDFC Ergo via Medi Assist', 'Enhancement request', 'bill at 92%', '~br:Due'], ['L. Das', 'ICICI Lombard', 'Final approval', '1 h 05 min of 3 h', '~ba:Waiting'], ['Ramesh Gupta', 'Star Health', 'Pre-auth reply', '44 min of 1 h', '~ba:Waiting']],
+  alerts=[['Insurer slow', 'Star Health: no reply in 44 min', 'Timer', 'ba'], ['Deduction to review', 'Medi Assist short-paid ₹8,500', 'Settlement', 'bo'], ['Panel renewal', 'Bajaj Allianz agreement ends 15 Nov', 'Contract', 'bn']]),
 }
 lines = []
 for k, d in H.items():

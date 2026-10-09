@@ -86,6 +86,7 @@ summary::-webkit-details-marker{display:none}
 <a class="nvl" href="HomeSecurity.dc.html">Security Desk</a>
 <a class="nvl" href="HomeCashier.dc.html">Cashier</a>
 <a class="nvl" href="HomeBillingMgr.dc.html">Billing Manager</a>
+<a class="nvl" href="HomeTpa.dc.html">Insurance Desk</a>
 <a class="nvl" href="HomeLab.dc.html">Laboratory</a>
 <a class="nvl" href="HomePhlebo.dc.html">Home Collection</a>
 <a class="nvl" href="HomeRadiology.dc.html">Radiology</a>
@@ -188,7 +189,7 @@ class Component extends DCLogic {
       alerts: d.alerts.map(function (a) { return { t: a[0], s: a[1], b: a[2], bc: a[3] }; }), links: links } };
   }
   navItems(active) {
-    var P = {"doctor": [["My day", [["Home", "HomeDoctor"], ["OPD Consultation", "Consult"], ["In-patient Rounds", "IpdRounds"], ["Discharge Desk", "Discharge"]]], ["Patients", [["Patient Profile", "PatientProfile"], ["Bed Board", "Beds"]]], ["Results", [["Laboratory", "Lab"], ["Radiology", "Radiology"]]], ["Records and orders", [["Medical Records", "Records"], ["Diet Orders", "Diet"]]], ["Personal", [["My Space", "MySpace"]]]]};
+    var P = {"doctor": [["My day", [["Home", "HomeDoctor"], ["OPD Consultation", "Consult"], ["In-patient Rounds", "IpdRounds"], ["Discharge Desk", "Discharge"]]], ["Patients", [["Patient Profile", "PatientProfile"], ["Bed Board", "Beds"]]], ["Results", [["Laboratory", "Lab"], ["Radiology", "Radiology"], ["Microbiology", "LabMicro"], ["Histopathology", "LabHisto"]]], ["Records and orders", [["Medical Records", "Records"], ["Diet Orders", "Diet"], ["CRM", "Crm"]]], ["Personal", [["My Space", "MySpace"]]]]};
     return P['doctor'].map(function (g) {
       return { label: g[0], items: g[1].map(function (i) {
         var on = i[1] === active;
@@ -198,7 +199,7 @@ class Component extends DCLogic {
   }
   baseVals() {
     var Y = ['bg', 'Clear'], N = ['ba', 'Pending'], R = ['br', 'Dues'];
-    var D = [['K. Nair', 'W2-205-A', '14:00', Y, Y, Y, N], ['T. Shah', 'W1-112-B', '12:30', Y, Y, Y, Y], ['L. Das', 'PVT-05', '14:00', N, Y, N, N], ['ICU-02 patient', 'ICU-02', '11:00', Y, N, Y, N], ['A. Joshi', 'W2-202-A', '16:00', N, Y, Y, R], ['S. Patil', 'W2-201-A', '17:00', N, N, N, N]];
+    var D = [['K. Nair', 'W2-205-A', '14:00', Y, Y, Y, N], ['T. Shah', 'W1-112-B', '12:30', Y, Y, Y, Y], ['L. Das', 'PVT-05', '14:00', N, Y, N, N], ['ICU-02 patient', 'ICU-02', '11:00', Y, N, Y, N], ['A. Joshi', 'W2-202-A', '16:00', N, Y, Y, R], ['T. Kulkarni', 'W1-104-A', '17:00', N, N, N, N]];
     return {
       nav: this.navItems('Discharge'),
       dis: D.map(function (d, i) { return { n: d[0], b: d[1], t: d[2], p: d[3][0], pt: d[3][1], l: d[4][0], lt: d[4][1], u: d[5][0], ut: d[5][1], f: d[6][0], ft: d[6][1], bg: i === 0 ? '#E6EEF9' : 'transparent' }; })

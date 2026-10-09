@@ -27,7 +27,7 @@
  "cannot": ["Extend credit above the limit without approval", "Write off balances"],
  "notify": ["Credit limit 90% used", "Invoice overdue", "Payment received", "e-Invoice failed"],
  "kpis": [["Invoices sent by the 5th", "100%"], ["Days to collect", "Under 45"], ["Disputed amount", "Under 3%"], ["Over-limit visits", "Zero without approval"]]},
-{"file": "BillRoleInsurance", "name": "Insurance desk", "panel": "Billing Manager", "home": "HomeBillingMgr", "sub": "Turns insurer and scheme approvals into paid claims. The full in-patient flow is on the IPD pages.",
+{"file": "BillRoleInsurance", "name": "Insurance desk", "panel": "Insurance Desk", "home": "HomeTpa", "sub": "Turns insurer and scheme approvals into paid claims. The full in-patient flow is on the IPD pages.",
  "steps": ["Pre-authorisation and reply timers", "Approved amount sits on the bill", "Bill split into insurer and patient share", "Final approval before discharge", "Claim filed with documents", "Settlement matched; deductions booked", "Denials reviewed and reasons coded"],
  "screens": [["Insurance and TPA desk", "IpdTpa"], ["In-patient bill", "IpdBill"], ["IPD role flow", "IpdRoleTpa"]],
  "can": ["Send pre-authorisations and claims", "Split bills by payer", "Record settlements and deductions"],

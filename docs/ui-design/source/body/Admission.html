@@ -28,8 +28,15 @@
 <sc-if value="{{s3}}" hint-placeholder-val="{{false}}">
 <h2 class="h2">Payer and attendant</h2>
 <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
-<div><label class="lbl" for="ad-py">Payer</label><select id="ad-py" class="inp"><option>Self</option><option>Corporate</option></select></div>
-<div><label class="lbl" for="ad-pl">Price list</label><input id="ad-pl" class="inp" value="General"></div>
+<div style="grid-column:span 2"><span class="lbl">Payer</span><div class="seg"><sc-for list="{{payers}}" as="p" hint-placeholder-count="4"><button class="{{p.k}}" type="button" onClick="{{p.pick}}">{{p.l}}</button></sc-for></div></div>
+<sc-if value="{{isIns}}" hint-placeholder-val="{{false}}">
+<div><label class="lbl" for="ad-in">Insurer or TPA</label><input id="ad-in" class="inp" value="{{ins.n}}"></div>
+<div><label class="lbl" for="ad-po">Policy or card number</label><input id="ad-po" class="inp" value="{{ins.p}}"></div>
+<div><label class="lbl" for="ad-si">Sum insured left</label><input id="ad-si" class="inp" value="{{ins.s}}"></div>
+<div><label class="lbl" for="ad-rr">Room-rent limit</label><input id="ad-rr" class="inp" value="{{ins.r}}"></div>
+<div style="grid-column:span 2;padding:10px 12px;border-radius:8px;background:#FFF1D6;color:#7A4E00;font-size:13px">{{ins.note}}</div>
+</sc-if>
+<div><label class="lbl" for="ad-pl">Price list</label><input id="ad-pl" class="inp" value="{{priceList}}"></div>
 <div><label class="lbl" for="ad-an">Attendant name</label><input id="ad-an" class="inp" value="Sunita Kumar"></div>
 <div><label class="lbl" for="ad-am">Attendant mobile</label><input id="ad-am" class="inp" value="98765 00000"></div>
 <label style="display:flex;gap:8px;align-items:center;font-size:14px;min-height:44px"><input type="checkbox"> Medico-legal case</label>
@@ -62,7 +69,7 @@
 <div style="display:flex;justify-content:space-between"><span class="muted">Consultant</span><span>Dr. Meera Iyer</span></div>
 <div style="display:flex;justify-content:space-between"><span class="muted">Bed</span><span class="mono">{{bed}}</span></div>
 <div style="display:flex;justify-content:space-between"><span class="muted">Category</span><span>Semi-private</span></div>
-<div style="display:flex;justify-content:space-between"><span class="muted">Payer</span><span>Self</span></div>
+<div style="display:flex;justify-content:space-between"><span class="muted">Payer</span><span>{{payer}}</span></div>
 <div style="display:flex;justify-content:space-between"><span class="muted">Deposit</span><span>₹20,000</span></div>
 <div style="padding:10px 12px;border-radius:8px;background:#E6EEF9;color:#163F73;font-size:13px">On admit: IP number generated, bed charges start, ward and doctor notified, nursing station shows the patient.</div>
 </aside>

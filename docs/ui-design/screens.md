@@ -12,7 +12,7 @@ Every screen on the design canvas, with its web route, main role, module gate, p
 | Platform console | boards/Console.dc.html | console/ | Platform owner | Platform | platform:* | GET /platform/tenants, /platform/metrics |
 | Tenant detail | boards/ConsoleTenant.dc.html | console/tenants/:id | Platform owner | Platform | platform:tenant:* | GET /platform/tenants/{id}, POST /platform/tenants/{id}/subscription |
 | Role panel map | boards/PanelMap.dc.html | - | Everyone | CORE | - | GET /auth/me (roles, panels, menu) |
-| Role home pages (24) | boards/HomeDoctor.dc.html | /home | Each role | CORE | per role | GET /me/home (queue, counts, alerts) |
+| Role home pages (25) | boards/HomeDoctor.dc.html | /home | Each role | CORE | per role | GET /me/home (queue, counts, alerts) |
 | Clinic desk (one-screen mode) | boards/ClinicDesk.dc.html | /clinic | Clinic doctor and admin | OPD | opd:*, billing:bill:create | GET /opd/queue, PUT /opd/visits/{id}/consultation, POST /billing/bills |
 | Subscription | boards/Subscription.dc.html | /settings/subscription | Super Admin | CORE | settings:subscription:read | GET /subscription, POST /subscription/preview |
 | Admin dashboard | boards/Dashboard.dc.html | / | Admin | CORE | dashboard:admin:read | GET /dashboard/summary |
@@ -48,6 +48,13 @@ Every screen on the design canvas, with its web route, main role, module gate, p
 | Billing settings | boards/BillConfig.dc.html | /settings/billing | Hospital Admin | CORE | billing:settings:* | PUT /billing/settings, CRUD /billing/series, /billing/price-lists |
 | Billing analytics | boards/BillAnalytics.dc.html | /billing/analytics | Management, Accounts | CORE | reports:billing:read | GET /reports/revenue, /reports/receivables-ageing, /reports/leakage |
 | Patient payments on the phone | boards/PortalPay.dc.html | /my/bills | Patient | CORE | patient OTP | GET /portal/bills, POST /portal/payments, GET /portal/receipts |
+| Sample collection and receipt | boards/LabSample.dc.html | /lab/samples | Lab reception, nurse | LAB | lab:sample:* | GET /lab/samples?status=in-transit, POST /lab/samples/{id}/accept, POST /lab/samples/{id}/reject |
+| Quality control | boards/LabQC.dc.html | /lab/qc | Lab technician, pathologist | LAB | lab:qc:* | POST /lab/qc/runs, GET /lab/qc/levey-jennings?control= |
+| Microbiology | boards/LabMicro.dc.html | /lab/micro | Microbiologist | LAB | lab:micro:* | GET /lab/cultures, POST /lab/cultures/{id}/readings, POST /lab/cultures/{id}/sensitivity |
+| Histopathology | boards/LabHisto.dc.html | /lab/histo | Pathologist | LAB | lab:histo:* | GET /lab/histo/cases, PUT /lab/histo/cases/{id}, POST /lab/histo/cases/{id}/release |
+| Lab settings | boards/LabConfig.dc.html | /settings/lab | Lab in-charge | LAB | lab:settings:* | CRUD /lab/tests, /lab/ranges, /lab/critical-values, /lab/partners |
+| Lab analytics | boards/LabAnalytics.dc.html | /lab/analytics | Management, lab in-charge | LAB | reports:lab:read | GET /reports/lab-tat, /reports/lab-indicators |
+| Phlebotomist phone screens | boards/PhleboPhone.dc.html | app /visits | Phlebotomist | LAB | lab:homevisit:* | GET /lab/home-visits?mine=today, POST /lab/home-visits/{id}/collect |
 | Nursing station | boards/Nursing.dc.html | /nursing/:wardId | Staff Nurse | NUR | nursing:* | GET /nursing/wards/{id}/census, POST /nursing/mar/{doseId}/administer |
 | Shift roster | boards/Roster.dc.html | /hr/rosters | Ward In-charge | HRM | hr:roster:write | GET/PUT /hr/rosters |
 | Laboratory | boards/Lab.dc.html | /lab | Lab, pathologist | LAB | lab:* | GET /lab/worklists, PUT /lab/tests/{id}/results |
