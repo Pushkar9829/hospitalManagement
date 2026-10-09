@@ -4,15 +4,16 @@ The full clickable design lives on a design canvas:
 https://claude.ai/artifact/Fnp7CKPFT5jbiEFyMFNRq2
 (private until the owner shares it from the canvas Share menu).
 
-It has 48 boards on 10 pages:
+It has 71 boards on 11 pages, and 22 role panels (each role has its own home page, menu and data scope):
 
 | Page | Boards |
 |---|---|
 | Phase 0 · Foundations | Overview, design system, login and 2FA |
-| Phase 1 · SaaS Platform | Pricing and signup, setup wizard, platform console, hospital subscription |
+| Role Panels | Role panel map and a home dashboard for each of 20 roles |
+| Phase 1 · SaaS Platform | Pricing and signup, setup wizard, platform console, tenant detail, hospital subscription |
 | Phase 2 · Security & Core | Dashboard, approvals, reports, audit log, hospital settings, users, roles, departments and masters |
 | Phase 3 · Patient Operations | Registration, patient profile, front office, OPD, consultation, admission, bed board, discharge desk, queue TV |
-| Phase 4 · Clinical | Nursing station, shift roster |
+| Phase 4 · Clinical | Doctor in-patient rounds, nursing station, shift roster |
 | Phase 5 · Diagnostics | Laboratory, radiology, pharmacy |
 | Phase 6 · Billing, Finance & People | Billing, finance, inventory, HR, payroll, employee self-service |
 | Phase 7 · Support & Engagement | Medical records, diet, facility, quality, CRM, patient portal (mobile) |
@@ -21,13 +22,15 @@ It has 48 boards on 10 pages:
 
 ## Files here
 
-- `screens.md`: every screen with route, role, module, permission and APIs. Start here.
+- `panels.md`: every role panel with its home page, menu and data scope. Start here.
+- `screens.md`: every screen with route, role, module, permission and APIs.
 - `tokens.json`: colours, type, spacing and radius for the MUI theme.
 - `boards/`: the source of every board (`.dc.html`). They run inside the design canvas,
   not as standalone pages; open the canvas link to view and click through them.
 - `source/`: the building blocks used to generate the app-screen boards
   (shared shell, per-screen body, per-screen data). `python3 source/build.py <Name> ...`
-  rebuilds one board using the arguments listed in `source/screens.tsv`.
+  rebuilds one board using the arguments listed in `source/screens.tsv` and `source/homes.tsv`;
+  role menus come from `source/parts/panels.json`.
 
 The functional specification, API documentation and deployment guide are in
 `../Hospital_Management_System_Phase1_Specification.pdf`.

@@ -23,12 +23,12 @@ a{color:#1F5FAD}a:hover{color:#163F73}
 <div style="flex:1 1 520px">
 <div style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#F2A46F;font-weight:600">UI / UX prototype · Phase 1</div>
 <h1 style="margin:10px 0 8px;font-size:44px;line-height:1.1;font-weight:700">Hospital Management System</h1>
-<p style="margin:0;font-size:17px;color:#C9D4E3;max-width:640px">Multi-tenant SaaS for clinics and hospitals. 16 modules, role-based panels, one shared design language. Press Play and use the left menu on any screen to move between modules. Developers: start with the Developer handoff board.</p>
+<p style="margin:0;font-size:17px;color:#C9D4E3;max-width:640px">Multi-tenant SaaS for clinics and hospitals. 16 modules, role-based panels, one shared design language. Press Play and use the left menu on any screen to move between modules. Each role has its own panel with its own menu: open the Role panels page. Developers: start with the Developer handoff board.</p>
 </div>
 <div style="display:flex;gap:28px;flex-wrap:wrap">
-<div><div style="font-size:32px;font-weight:700">47</div><div style="font-size:13px;color:#C9D4E3">boards</div></div>
+<div><div style="font-size:32px;font-weight:700">71</div><div style="font-size:13px;color:#C9D4E3">boards</div></div>
 <div><div style="font-size:32px;font-weight:700">16</div><div style="font-size:13px;color:#C9D4E3">modules</div></div>
-<div><div style="font-size:32px;font-weight:700">10</div><div style="font-size:13px;color:#C9D4E3">pages</div></div>
+<div><div style="font-size:32px;font-weight:700">22</div><div style="font-size:13px;color:#C9D4E3">role panels</div></div>
 </div>
 </div>
 </div>
@@ -56,11 +56,12 @@ a{color:#1F5FAD}a:hover{color:#163F73}
 class Component extends DCLogic {
   renderVals() {
     var P = [
+      ['Panels', 'Role panels (one per role)', [["Role panel map", "PanelMap", "Everyone"], ["Super Admin", "Dashboard", "Hospital Super Admin"], ["Hospital Admin", "HomeAdmin", "Hospital Admin"], ["Medical Superintendent", "HomeMedSupt", "Medical Superintendent"], ["Doctor", "HomeDoctor", "Consultant"], ["Staff Nurse", "HomeNurse", "Staff Nurse"], ["Ward In-charge", "HomeWardIncharge", "Ward In-charge"], ["Front Office", "HomeFrontOffice", "Front Office"], ["Cashier", "HomeCashier", "Cashier"], ["Billing Manager", "HomeBillingMgr", "Billing Manager"], ["Laboratory", "HomeLab", "Lab Technician"], ["Radiology", "HomeRadiology", "Radiology Technician"], ["Pharmacy", "HomePharmacy", "Pharmacist"], ["Store and Purchase", "HomeStore", "Store Keeper"], ["HR", "HomeHr", "HR Manager"], ["Payroll", "HomePayroll", "Payroll Officer"], ["Accounts", "HomeAccounts", "Accountant"], ["Medical Records", "HomeMrd", "MRD Officer"], ["Kitchen", "HomeKitchen", "Dietitian"], ["Facility", "HomeFacility", "Housekeeping Supervisor"], ["Quality", "HomeQuality", "Quality Manager"], ["CRM and Call Centre", "HomeCrm", "CRM Executive"], ["Employee", "MySpace", "Every staff login"]]],
       ['Phase 0', 'Foundations', [['Design system', 'DesignSystem', 'All'], ['Login and 2FA', 'Login', 'All users']]],
-      ['Phase 1', 'SaaS Platform', [['Pricing and signup', 'Signup', 'Prospect'], ['Setup wizard', 'SetupWizard', 'Super Admin'], ['Platform console', 'Console', 'Platform owner'], ['Hospital subscription', 'Subscription', 'Super Admin']]],
+      ['Phase 1', 'SaaS Platform', [['Pricing and signup', 'Signup', 'Prospect'], ['Setup wizard', 'SetupWizard', 'Super Admin'], ['Platform console', 'Console', 'Platform owner'], ['Tenant detail', 'ConsoleTenant', 'Platform owner'], ['Hospital subscription', 'Subscription', 'Super Admin']]],
       ['Phase 2', 'Security and Core', [['Admin dashboard', 'Dashboard', 'Hospital Admin'], ['Approvals inbox', 'Approvals', 'Checkers'], ['Reports centre', 'Reports', 'Managers'], ['Audit log', 'AuditLog', 'Super Admin'], ['Hospital settings', 'Settings', 'Super Admin'], ['Users', 'Users', 'Hospital Admin'], ['Roles and access', 'Roles', 'Super Admin'], ['Departments and masters', 'Departments', 'Hospital Admin']]],
       ['Phase 3', 'Patient Operations', [['Patient registration', 'Patients', 'Front Office'], ['Patient profile', 'PatientProfile', 'All clinical'], ['Front office', 'FrontOffice', 'Front Office'], ['OPD appointments', 'Opd', 'Front Office'], ['Doctor consultation', 'Consult', 'Doctor'], ['IPD admission', 'Admission', 'Admission Desk'], ['Live bed board', 'Beds', 'Admission Desk'], ['Discharge desk', 'Discharge', 'Doctor, billing'], ['Queue TV display', 'QueueTV', 'Waiting area']]],
-      ['Phase 4', 'Clinical Workflows', [['Nursing station', 'Nursing', 'Staff Nurse'], ['Shift roster', 'Roster', 'Ward In-charge']]],
+      ['Phase 4', 'Clinical Workflows', [['In-patient rounds', 'IpdRounds', 'Doctor'], ['Nursing station', 'Nursing', 'Staff Nurse'], ['Shift roster', 'Roster', 'Ward In-charge']]],
       ['Phase 5', 'Diagnostics and Pharmacy', [['Laboratory', 'Lab', 'Lab / Pathologist'], ['Radiology', 'Radiology', 'Radiologist'], ['Pharmacy', 'Pharmacy', 'Pharmacist']]],
       ['Phase 6', 'Billing, Finance and People', [['Billing counter', 'Billing', 'Cashier'], ['Finance', 'Finance', 'Accountant'], ['Inventory', 'Inventory', 'Store Keeper'], ['HR and attendance', 'Hr', 'HR Manager'], ['Payroll', 'Payroll', 'Payroll Officer'], ['My space (self-service)', 'MySpace', 'Every employee']]],
       ['Phase 7', 'Support and Engagement', [['Medical records', 'Records', 'MRD Officer'], ['Diet and kitchen', 'Diet', 'Dietitian'], ['Housekeeping and facility', 'Facility', 'Supervisor'], ['Quality and incidents', 'Quality', 'Quality Manager'], ['Patient CRM', 'Crm', 'CRM Executive'], ['Patient portal', 'Portal', 'Patient']]],

@@ -1,7 +1,8 @@
 <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:center">
-<div class="seg"><button class="tab" type="button">Breakfast 07:30</button><button class="taba" type="button">Lunch 12:30</button><button class="tab" type="button">Evening 16:30</button><button class="tab" type="button">Dinner 19:30</button></div>
+@@TABS@@
 <div style="display:flex;gap:8px"><button class="btn2" type="button">Print tray labels</button><button class="btn" type="button">Print production sheet</button></div>
 </div>
+<sc-if value="{{main}}" hint-placeholder-val="{{true}}">
 <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
 <section class="card" style="flex:999 1 640px;min-width:0">
 <div class="ch"><h2 class="h2">Lunch production sheet · Thu 9 Oct</h2><span class="cap">Updates live when doctors change diets</span></div>
@@ -34,3 +35,7 @@
 </section>
 </aside>
 </div>
+</sc-if>
+<sc-if value="{{other}}" hint-placeholder-val="{{false}}">
+@@PANEL@@
+</sc-if>

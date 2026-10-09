@@ -22,18 +22,20 @@ class Component extends DCLogic {
       hasTable: !!d.head, head: d.head || [], rows: (d.rows || []).map(function (r) { return r.map(function (c) { return self.cell(c); }); }),
       hasNote: !!d.note, note: d.note || '' };
   }
+  home(d) {
+    var self = this;
+    var links = [];
+    this.navItems('').forEach(function (g) { g.items.forEach(function (i) { if (i.label !== 'Home') links.push({ l: i.label, href: i.href }); }); });
+    return { h: { date: 'Thursday, 9 October 2026', greet: d.greet, sub: d.sub,
+      quick: d.quick.map(function (q, i) { return { l: q[0], href: q[1] + '.dc.html', k: i === 0 ? 'btn' : 'btn2' }; }),
+      kpis: d.kpis.map(function (k) { return { l: k[0], v: k[1], n: k[2], href: k[3] + '.dc.html' }; }),
+      qTitle: d.q[0], qSub: d.q[1], qHref: d.q[2] + '.dc.html', head: d.head,
+      rows: d.rows.map(function (r) { return r.map(function (c) { return self.cell(c); }); }),
+      alerts: d.alerts.map(function (a) { return { t: a[0], s: a[1], b: a[2], bc: a[3] }; }), links: links } };
+  }
   navItems(active) {
-    var NAV = [
-      ['Overview', [['Dashboard', 'Dashboard'], ['Approvals', 'Approvals'], ['Reports', 'Reports'], ['Audit Log', 'AuditLog']]],
-      ['Patients', [['Patients', 'Patients'], ['Patient Profile', 'PatientProfile'], ['Front Office', 'FrontOffice'], ['Appointments', 'Opd'], ['Consultation', 'Consult'], ['Admissions', 'Admission'], ['Bed Board', 'Beds'], ['Discharge Desk', 'Discharge']]],
-      ['Clinical', [['Nursing Station', 'Nursing'], ['Rosters', 'Roster']]],
-      ['Diagnostics', [['Laboratory', 'Lab'], ['Radiology', 'Radiology'], ['Pharmacy', 'Pharmacy']]],
-      ['Business', [['Billing', 'Billing'], ['Finance', 'Finance'], ['Inventory', 'Inventory'], ['HR', 'Hr'], ['Payroll', 'Payroll']]],
-      ['Support', [['Medical Records', 'Records'], ['Diet & Kitchen', 'Diet'], ['Facility', 'Facility'], ['Quality', 'Quality'], ['CRM', 'Crm']]],
-      ['Settings', [['Hospital Settings', 'Settings'], ['Users', 'Users'], ['Roles & Access', 'Roles'], ['Departments', 'Departments'], ['Subscription', 'Subscription']]],
-      ['Personal', [['My Space', 'MySpace']]]
-    ];
-    return NAV.map(function (g) {
+    var P = __PANELS_JSON__;
+    return P['__PANELKEY__'].map(function (g) {
       return { label: g[0], items: g[1].map(function (i) {
         var on = i[1] === active;
         return { label: i[0], href: i[1] + '.dc.html', on: on, off: !on };

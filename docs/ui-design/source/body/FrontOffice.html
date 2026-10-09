@@ -1,3 +1,5 @@
+@@TABS@@
+<sc-if value="{{main}}" hint-placeholder-val="{{true}}">
 <section class="card">
 <div class="ch"><h2 class="h2">Counter tokens · now serving</h2><div style="display:flex;gap:8px"><button class="btn2" type="button">Open TV display</button><button class="btn" type="button">Issue token</button></div></div>
 <div style="padding:16px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px">
@@ -36,3 +38,7 @@
 </tbody></table></div>
 </section>
 </div>
+</sc-if>
+<sc-if value="{{other}}" hint-placeholder-val="{{false}}">
+@@PANEL@@
+</sc-if>

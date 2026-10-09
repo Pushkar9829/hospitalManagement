@@ -1,5 +1,5 @@
   tabDefs() {
-    return { main: 'Overview', tabs: ['Overview', 'Vouchers', 'Payables', 'Receivables', 'Bank', 'Statements', 'GST', 'Budgets', 'Petty cash and claims'], panels: {
+    return { main: 'Overview', tabs: ['Overview', 'Vouchers', 'Payables', 'Receivables', 'Bank', 'Statements', 'GST', 'Budgets', 'Petty cash and claims', 'Doctor payouts'], panels: {
       'Vouchers': { title: 'Vouchers', sub: 'Most entries post automatically from bills, receipts, GRNs and payroll', acts: ['New voucher'], head: ['Voucher', 'Date', 'Type', 'Narration', 'Debit', 'Credit', 'Source', 'Status'],
         rows: [['#JV/0418', '09 Oct', 'Journal', 'Provision for doctor payouts', '₹2,40,000', '₹2,40,000', 'Manual', '~ba:Approval'], ['#RV/12081', '09 Oct', 'Receipt', 'OPD collections, Counter 1', '₹1,12,480', '₹1,12,480', 'Billing', '~bg:Posted'], ['#PV/0933', '08 Oct', 'Payment', 'Medline Pharma, GRN 317', '₹1,12,050', '₹1,12,050', 'Payables', '~bg:Posted'], ['#JV/0417', '08 Oct', 'Journal', 'Pharmacy COGS', '₹38,420', '₹38,420', 'Pharmacy', '~bg:Posted']] },
       'Payables': { title: 'Vendor payables', acts: ['Payment run'], head: ['Vendor', 'Invoices', 'Due this week', 'Overdue', 'TDS', 'Total due'],
@@ -16,5 +16,8 @@
         rows: [['Surgery consumables', '₹36,00,000', '₹29,90,000', '₹6,10,000', '~bg:83%'], ['Pharmacy purchases', '₹1,80,00,000', '₹1,71,20,000', '₹8,80,000', '~ba:95%'], ['Maintenance', '₹24,00,000', '₹26,10,000', '- ₹2,10,000', '~br:109%'], ['Marketing and camps', '₹6,00,000', '₹3,40,000', '₹2,60,000', '~bg:57%']] },
       'Petty cash and claims': { title: 'Petty cash and expense claims', acts: ['New claim', 'Replenish petty cash'], head: ['Ref', 'Type', 'Employee / custodian', 'Purpose', 'Amount', 'Status'],
         rows: [['#PC-0221', 'Petty cash', 'OPD custodian', 'Courier and stationery', '₹1,840', '~bg:Approved'], ['#EC-0108', 'Expense claim', 'Dr. Meera Iyer', 'Cardiology conference travel', '₹18,400', '~ba:Finance approval'], ['#EC-0107', 'Expense claim', 'Pooja Nair', 'Health camp transport', '₹2,600', '~bb:Manager approval']] }
+      ,'Doctor payouts': { title: 'Doctor payouts · September 2026', sub: 'Computed from bills by each consultant\u2019s payout rule; posted to Finance as a payout voucher', acts: ['Generate statements', 'Post payout voucher'],
+        head: ['Doctor', 'Type', 'Rule', 'Billed', 'Payout', 'TDS', 'Net', 'Status'],
+        rows: [['Dr. S. Bhide', 'Visiting', '60% of consultation, ₹2,000 per procedure', '₹2,84,000', '₹1,52,400', '₹15,240', '₹1,37,160', '~ba:Approval'], ['Dr. N. Kale', 'Visiting', '₹700 per visit', '₹96,000', '₹67,200', '₹6,720', '₹60,480', '~bb:Statement sent'], ['Dr. Meera Iyer', 'Full-time', 'Salary + 10% of procedures over target', '₹18,40,000', '₹38,000', 'via payroll', '-', '~bg:To payroll']] }
     } };
   }

@@ -1,6 +1,6 @@
 # Screen inventory
 
-Every board on the design canvas, with its web route, main role, module gate, permission and main APIs.
+Every screen on the design canvas, with its web route, main role, module gate, permission and main APIs. Role menus are in panels.md.
 
 | Board | File | Route | Primary role | Module | Permission | Main APIs |
 |---|---|---|---|---|---|---|
@@ -10,6 +10,9 @@ Every board on the design canvas, with its web route, main role, module gate, pe
 | Pricing and signup | boards/Signup.dc.html | www/pricing | Prospect | Platform | public | GET /public/plans, POST /public/signup |
 | Setup wizard | boards/SetupWizard.dc.html | /setup | Super Admin | CORE | settings:* | PUT /branches, /departments, POST /masters/{type}/import |
 | Platform console | boards/Console.dc.html | console/ | Platform owner | Platform | platform:* | GET /platform/tenants, /platform/metrics |
+| Tenant detail | boards/ConsoleTenant.dc.html | console/tenants/:id | Platform owner | Platform | platform:tenant:* | GET /platform/tenants/{id}, POST /platform/tenants/{id}/subscription |
+| Role panel map | boards/PanelMap.dc.html | - | Everyone | CORE | - | GET /auth/me (roles, panels, menu) |
+| Role home pages (20) | boards/HomeDoctor.dc.html | /home | Each role | CORE | per role | GET /me/home (queue, counts, alerts) |
 | Subscription | boards/Subscription.dc.html | /settings/subscription | Super Admin | CORE | settings:subscription:read | GET /subscription, POST /subscription/preview |
 | Admin dashboard | boards/Dashboard.dc.html | / | Admin | CORE | dashboard:admin:read | GET /dashboard/summary |
 | Approvals | boards/Approvals.dc.html | /approvals | Checkers | CORE | approvals:inbox:read | GET /approvals, POST /approvals/{id}/decision |
@@ -24,6 +27,7 @@ Every board on the design canvas, with its web route, main role, module gate, pe
 | Front office | boards/FrontOffice.dc.html | /front-office | Front Office | CORE | frontoffice:* | POST /front-office/tokens, /passes |
 | OPD appointments | boards/Opd.dc.html | /opd | Front Office | OPD | opd:appointment:* | GET /opd/slots, POST /opd/appointments |
 | Consultation | boards/Consult.dc.html | /opd/visits/:id | Doctor | OPD | opd:consultation:write | PUT /opd/visits/{id}/consultation |
+| In-patient rounds | boards/IpdRounds.dc.html | /ipd/rounds | Doctor | IPD | ipd:note:write, orders:* | GET /ipd/admissions?doctor=me, POST /orders |
 | Admission | boards/Admission.dc.html | /ipd/admit | Admission Desk | IPD | ipd:admission:create | POST /ipd/admissions |
 | Bed board | boards/Beds.dc.html | /ipd/beds | Admission Desk | IPD | ipd:bed:read | GET /ipd/beds + socket bed:update |
 | Discharge desk | boards/Discharge.dc.html | /ipd/discharge | Doctor, billing | IPD | ipd:discharge:* | PUT /ipd/admissions/{id}/discharge-summary |
@@ -50,18 +54,19 @@ Every board on the design canvas, with its web route, main role, module gate, pe
 
 ## Build rules
 
-1. Routes above are web app paths; API paths are under /api/v1 as in the API documentation.
-2. Every screen checks module and permission on the server. The UI hides menu items but never relies on that.
-3. Tabs, filters and selected rows live in the URL (?tab=, ?q=, ?id=) so links can be shared and Back works.
-4. Tables page on the server: 25 rows default, 100 max. Show the total count.
-5. Money is stored in paise and shown with the Indian grouping (₹1,23,456.00). Dates show as 09 Oct 2026; times 24-hour.
-6. IDs (UHID, bill, IP, batch) use the mono font so they can be read and copied.
-7. A 202 APPROVAL_PENDING response shows the waiting banner from the Screen states board.
-8. Live screens (bed board, queue, approvals, nursing tasks) subscribe to Socket.IO and refetch after reconnect.
-9. Every form uses the Zod schema shared with the API; validate on blur and on submit.
-10. Keyboard: all actions reachable by Tab; Enter submits; billing and pharmacy support shortcut keys listed in each screen’s help.
-11. Accessibility: WCAG 2.1 AA contrast, visible focus ring, labels on every input, colour never the only signal.
-12. Sample data on boards is illustrative. Use the real API; never ship sample names.
+1. Panels: after login the API returns the user’s roles; the app opens the home page of the primary role. The menu is built only from that panel’s items (see the Role panels page). Users with several roles switch panel from the top bar; the switch changes the menu and home page, never the permissions checked by the server.
+2. Routes above are web app paths; API paths are under /api/v1 as in the API documentation.
+3. Every screen checks module and permission on the server. The UI hides menu items but never relies on that.
+4. Tabs, filters and selected rows live in the URL (?tab=, ?q=, ?id=) so links can be shared and Back works.
+5. Tables page on the server: 25 rows default, 100 max. Show the total count.
+6. Money is stored in paise and shown with the Indian grouping (₹1,23,456.00). Dates show as 09 Oct 2026; times 24-hour.
+7. IDs (UHID, bill, IP, batch) use the mono font so they can be read and copied.
+8. A 202 APPROVAL_PENDING response shows the waiting banner from the Screen states board.
+9. Live screens (bed board, queue, approvals, nursing tasks) subscribe to Socket.IO and refetch after reconnect.
+10. Every form uses the Zod schema shared with the API; validate on blur and on submit.
+11. Keyboard: all actions reachable by Tab; Enter submits; billing and pharmacy support shortcut keys listed in each screen’s help.
+12. Accessibility: WCAG 2.1 AA contrast, visible focus ring, labels on every input, colour never the only signal.
+13. Sample data on boards is illustrative. Use the real API; never ship sample names.
 
 ## Components to MUI
 
