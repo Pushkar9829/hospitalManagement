@@ -8,13 +8,13 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Home: boards/Dashboard.dc.html
 - Data scope: Whole hospital, all branches
 - Menu:
-  - **Overview:** Dashboard, OPD Analytics, IPD Analytics, Approvals, Reports, Audit Log
+  - **Overview:** Dashboard, OPD Analytics, IPD Analytics, Billing Analytics, Approvals, Reports, Audit Log
   - **Patients:** Patients, Patient Profile, Front Office, OPD Check-in, Appointments, Admissions, Bed Board, Bed Requests, Discharge Desk
   - **Clinical:** Consultation, OPD Triage, In-patient Rounds, Nursing Station, Rosters
   - **Diagnostics:** Laboratory, Radiology, Pharmacy
-  - **Business:** Billing, In-patient Bills, Insurance Desk, Finance, Inventory, HR, Payroll
+  - **Business:** Billing, Shifts and Day-end, In-patient Bills, Insurance Desk, Corporate and Credit, Finance, Inventory, HR, Payroll
   - **Support:** Medical Records, Diet & Kitchen, Facility, Quality, CRM
-  - **Settings:** Hospital Settings, Users, Roles & Access, Departments, OPD Settings, IPD Settings, Subscription
+  - **Settings:** Hospital Settings, Users, Roles & Access, Departments, OPD Settings, IPD Settings, Billing Settings, Subscription
   - **Personal:** My Space
 
 ## Hospital Admin
@@ -23,10 +23,11 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Home: boards/HomeAdmin.dc.html
 - Data scope: Branch
 - Menu:
-  - **Overview:** Home, Approvals, Reports
+  - **Overview:** Home, Approvals, Reports, Finance
   - **Operations:** Patients, Front Office, Bed Board, Inventory
-  - **Settings:** Hospital Settings, Users, Roles & Access, Departments, OPD Settings, IPD Settings
+  - **Settings:** Hospital Settings, Users, Roles & Access, Departments, OPD Settings, IPD Settings, Billing Settings
   - **Services:** Medical Records, Diet & Kitchen, Facility, Quality, CRM
+  - **Departments setup:** Laboratory, Radiology, Pharmacy
   - **Personal:** My Space
 
 ## Medical Superintendent
@@ -38,6 +39,7 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
   - **Overview:** Home, OPD Analytics, IPD Analytics, Approvals, Reports
   - **Clinical:** Bed Board, Bed Requests, Discharge Desk, Nursing Station, Rosters
   - **Governance:** Medical Records, Quality
+  - **Services (read):** Diet & Kitchen, Facility, CRM
   - **Personal:** My Space
 
 ## Doctor
@@ -49,6 +51,7 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
   - **My day:** Home, OPD Consultation, In-patient Rounds, Discharge Desk
   - **Patients:** Patient Profile, Bed Board
   - **Results:** Laboratory, Radiology
+  - **Records and orders:** Medical Records, Diet Orders
   - **Personal:** My Space
 
 ## Head of Department
@@ -81,6 +84,7 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
   - **My ward:** Home, Nursing Station, Bed Board, Patient Profile
   - **OPD:** OPD Triage
   - **Requests:** Diet Orders, Tickets and Transport, Report Incident
+  - **Results:** Laboratory, Radiology
   - **Personal:** My Space
 
 ## Ward In-charge
@@ -120,7 +124,7 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Home: boards/HomeCashier.dc.html
 - Data scope: Own counter
 - Menu:
-  - **Counter:** Home, Billing Counter, In-patient Bills, Find Patient
+  - **Counter:** Home, Billing Counter, Cashier Shift, In-patient Bills, Find Patient
   - **Reports:** Collection Reports
   - **Personal:** My Space
 
@@ -130,8 +134,9 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Home: boards/HomeBillingMgr.dc.html
 - Data scope: Branch billing
 - Menu:
-  - **Billing:** Home, Billing, In-patient Bills, Insurance Desk, Discharge Desk, Approvals
-  - **Reports:** Reports
+  - **Billing:** Home, Billing, Shifts and Day-end, In-patient Bills, Insurance Desk, Corporate and Credit, Discharge Desk, Approvals
+  - **Reports:** Reports, Billing Analytics
+  - **Finance (read):** Finance
   - **Personal:** My Space
 
 ## Laboratory
@@ -169,7 +174,7 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Home: boards/HomePharmacy.dc.html
 - Data scope: Pharmacy stores
 - Menu:
-  - **Pharmacy:** Home, Dispensing, Stock
+  - **Pharmacy:** Home, Dispensing, Stock, Counter Shift
   - **Reports:** Reports
   - **Personal:** My Space
 
@@ -181,6 +186,8 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Menu:
   - **Stores:** Home, Inventory, Approvals
   - **Reports:** Reports
+  - **Finance (read):** Finance
+  - **Pharmacy stock:** Pharmacy
   - **Personal:** My Space
 
 ## HR
@@ -201,6 +208,7 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Menu:
   - **Payroll:** Home, Payroll Run, Attendance
   - **Reports:** Reports
+  - **Finance (read):** Finance
   - **Personal:** My Space
 
 ## Accounts
@@ -209,9 +217,9 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Home: boards/HomeAccounts.dc.html
 - Data scope: Legal entity
 - Menu:
-  - **Finance:** Home, Finance, Approvals
-  - **Source modules:** Billing, Payroll, Inventory
-  - **Reports:** Reports
+  - **Finance:** Home, Finance, Approvals, Shifts and Day-end
+  - **Source modules:** Billing, Payroll, Inventory, In-patient Bills, Pharmacy
+  - **Reports:** Reports, Billing Analytics
   - **Personal:** My Space
 
 ## Auditor
@@ -221,7 +229,7 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Data scope: Whole hospital, read-only
 - Menu:
   - **Overview:** Home, Audit Log, Reports
-  - **Books and records:** Finance, Inventory, Payroll, Approvals History
+  - **Books and records:** Finance, Inventory, Payroll, Approvals History, Shifts and Day-end
 
 ## Medical Records
 
@@ -259,6 +267,7 @@ Each role logs in to its own panel: its own home page, menu and data scope. The 
 - Menu:
   - **Quality:** Home, Quality and Incidents, Medical Records, Approvals
   - **Reports:** Reports
+  - **Services (read):** Diet & Kitchen, Facility, CRM
   - **Personal:** My Space
 
 ## CRM and Call Centre

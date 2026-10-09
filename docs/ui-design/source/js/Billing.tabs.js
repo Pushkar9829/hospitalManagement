@@ -1,5 +1,6 @@
   tabDefs() {
-    return { main: 'OPD billing', tabs: ['OPD billing', 'IP running bill', 'Deposits', 'Refunds and cancellations', 'Credit and corporate', 'Close shift'], panels: {
+    return { main: 'OPD billing', tabs: ['OPD billing', 'IP running bill', 'Deposits', 'Refunds and cancellations', 'Credit and corporate', 'Miscellaneous bill', 'Close shift'], panels: {
+      'Miscellaneous bill': { title: 'Miscellaneous bill', sub: 'For items that are not a visit, test or stay. Priced from the miscellaneous price list; series MS/26-27/.', acts: ['Create bill'], head: ['Item', 'Price', 'Revenue head', 'GST'], rows: [['Medical certificate', '₹200', 'Certificates', '~bn:Exempt'], ['Copy of medical records (per page)', '₹10', 'Medical records', '~bn:Exempt'], ['Attendant meal', '₹150', 'Cafeteria', '~bb:5%'], ['Attendant extra bed (per night)', '₹500', 'Room services', '~bn:Exempt'], ['Duplicate UHID card', '₹50', 'Registration', '~bn:Exempt']] },
       'IP running bill': { title: 'Running bill · Ravi Kumar · IP/26-27/000871', sub: 'Day 2 · Semi-private · Self pay', acts: ['Interim bill', 'Final bill', 'Collect deposit'],
         kpis: [['Charges so far', '₹14,860'], ['Deposit received', '₹20,000'], ['Balance', '₹5,140', 'in patient\'s favour'], ['Estimated at discharge', '₹23,500', 'deposit alert at 90%']],
         head: ['Date', 'Service', 'Source', 'Qty', 'Rate', 'Amount'],

@@ -1120,6 +1120,179 @@
       "page": "p10",
       "is_interactive": true,
       "expand": "fill"
+    },
+    "BillModule.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 2720,
+      "title": "Billing 1 · Module overview and benchmark",
+      "page": "p15",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "BillFlow.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 4754,
+      "h": 1572,
+      "title": "Billing 2 · End-to-end flow (swimlane)",
+      "page": "p15"
+    },
+    "BillAltFlows.dc.html": {
+      "x": 1520,
+      "y": 1692,
+      "w": 1624,
+      "h": 2128,
+      "title": "Billing 3 · Alternate and exception flows",
+      "page": "p15"
+    },
+    "BillStates.dc.html": {
+      "x": 3224,
+      "y": 1692,
+      "w": 1576,
+      "h": 1416,
+      "title": "Billing 4 · Status lifecycles",
+      "page": "p15"
+    },
+    "BillRules.dc.html": {
+      "x": 6354,
+      "y": 0,
+      "w": 1440,
+      "h": 4300,
+      "title": "Billing 5 · Rules, messages, reports, tests",
+      "page": "p15",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "BillConfig.dc.html": {
+      "x": 7874,
+      "y": 0,
+      "w": 1440,
+      "h": 1320,
+      "title": "Billing 6 · Billing settings (Admin)",
+      "page": "p15",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "BillAnalytics.dc.html": {
+      "x": 7874,
+      "y": 1440,
+      "w": 1440,
+      "h": 1740,
+      "title": "Billing 7 · Billing analytics (Management)",
+      "page": "p15",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "BillRolePatient.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1600,
+      "h": 1180,
+      "title": "Billing · Patient and payer · flow",
+      "page": "p16",
+      "is_interactive": true
+    },
+    "PortalPay.dc.html": {
+      "x": 1680,
+      "y": 0,
+      "w": 1832,
+      "h": 1040,
+      "title": "Billing · Patient and payer · phone screens",
+      "page": "p16"
+    },
+    "BillRoleInsurance.dc.html": {
+      "x": 3592,
+      "y": 0,
+      "w": 1600,
+      "h": 1180,
+      "title": "Billing · Insurance desk · flow",
+      "page": "p16",
+      "is_interactive": true
+    },
+    "BillRoleCashier.dc.html": {
+      "x": 0,
+      "y": 1300,
+      "w": 1600,
+      "h": 1180,
+      "title": "Billing · Cashier · flow",
+      "page": "p16",
+      "is_interactive": true
+    },
+    "BillShift.dc.html": {
+      "x": 1680,
+      "y": 1300,
+      "w": 1440,
+      "h": 1320,
+      "title": "Billing · Cashier · shift and day-end",
+      "page": "p16",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "BillRoleManager.dc.html": {
+      "x": 3200,
+      "y": 1300,
+      "w": 1600,
+      "h": 1180,
+      "title": "Billing · Billing manager · flow",
+      "page": "p16",
+      "is_interactive": true
+    },
+    "BillRoleCorporate.dc.html": {
+      "x": 0,
+      "y": 2740,
+      "w": 1600,
+      "h": 1180,
+      "title": "Billing · Corporate desk · flow",
+      "page": "p16",
+      "is_interactive": true
+    },
+    "BillCorporate.dc.html": {
+      "x": 1680,
+      "y": 2740,
+      "w": 1440,
+      "h": 1320,
+      "title": "Billing · Corporate desk · corporate and credit",
+      "page": "p16",
+      "is_interactive": true,
+      "expand": "fill"
+    },
+    "BillRolePharmacy.dc.html": {
+      "x": 3200,
+      "y": 2740,
+      "w": 1600,
+      "h": 1180,
+      "title": "Billing · Pharmacy counter · flow",
+      "page": "p16",
+      "is_interactive": true
+    },
+    "BillRoleAccounts.dc.html": {
+      "x": 0,
+      "y": 4180,
+      "w": 1600,
+      "h": 1180,
+      "title": "Billing · Accounts · flow",
+      "page": "p16",
+      "is_interactive": true
+    },
+    "BillRoleAuditor.dc.html": {
+      "x": 1680,
+      "y": 4180,
+      "w": 1600,
+      "h": 1180,
+      "title": "Billing · Auditor · flow",
+      "page": "p16",
+      "is_interactive": true
+    },
+    "BillRoleManagement.dc.html": {
+      "x": 3360,
+      "y": 4180,
+      "w": 1600,
+      "h": 1180,
+      "title": "Billing · Management · flow",
+      "page": "p16",
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -1266,6 +1439,24 @@
       "maxW": 5112,
       "page": "p14",
       "w": 240
+    },
+    "t_p15": {
+      "x": 0,
+      "y": -300,
+      "text": "Billing 1 · Module flow end to end",
+      "kind": "title1",
+      "maxW": 9314,
+      "page": "p15",
+      "w": 240
+    },
+    "t_p16": {
+      "x": 0,
+      "y": -300,
+      "text": "Billing 2 · Role-wise flows",
+      "kind": "title1",
+      "maxW": 5192,
+      "page": "p16",
+      "w": 240
     }
   },
   "order": [
@@ -1385,7 +1576,26 @@
     "IpdRolePharmacy.dc.html",
     "IpdRoleHousekeeping.dc.html",
     "IpdRoleAdmin.dc.html",
-    "IpdRoleManagement.dc.html"
+    "IpdRoleManagement.dc.html",
+    "BillModule.dc.html",
+    "BillFlow.dc.html",
+    "BillAltFlows.dc.html",
+    "BillStates.dc.html",
+    "BillRules.dc.html",
+    "BillConfig.dc.html",
+    "BillAnalytics.dc.html",
+    "BillRolePatient.dc.html",
+    "PortalPay.dc.html",
+    "BillRoleInsurance.dc.html",
+    "BillRoleCashier.dc.html",
+    "BillShift.dc.html",
+    "BillRoleManager.dc.html",
+    "BillRoleCorporate.dc.html",
+    "BillCorporate.dc.html",
+    "BillRolePharmacy.dc.html",
+    "BillRoleAccounts.dc.html",
+    "BillRoleAuditor.dc.html",
+    "BillRoleManagement.dc.html"
   ],
   "pages": [
     {
@@ -1411,6 +1621,14 @@
     {
       "id": "p14",
       "name": "IPD 2 · Role-wise flows"
+    },
+    {
+      "id": "p15",
+      "name": "Billing 1 · Module flow end to end"
+    },
+    {
+      "id": "p16",
+      "name": "Billing 2 · Role-wise flows"
     },
     {
       "id": "p1",

@@ -23,6 +23,10 @@
       "IpdAnalytics"
      ],
      [
+      "Billing Analytics",
+      "BillAnalytics"
+     ],
+     [
       "Approvals",
       "Approvals"
      ],
@@ -127,12 +131,20 @@
       "Billing"
      ],
      [
+      "Shifts and Day-end",
+      "BillShift"
+     ],
+     [
       "In-patient Bills",
       "IpdBill"
      ],
      [
       "Insurance Desk",
       "IpdTpa"
+     ],
+     [
+      "Corporate and Credit",
+      "BillCorporate"
      ],
      [
       "Finance",
@@ -205,6 +217,10 @@
       "IpdConfig"
      ],
      [
+      "Billing Settings",
+      "BillConfig"
+     ],
+     [
       "Subscription",
       "Subscription"
      ]
@@ -243,6 +259,10 @@
      [
       "Reports",
       "Reports"
+     ],
+     [
+      "Finance",
+      "Finance"
      ]
     ]
    ],
@@ -293,6 +313,10 @@
      [
       "IPD Settings",
       "IpdConfig"
+     ],
+     [
+      "Billing Settings",
+      "BillConfig"
      ]
     ]
    ],
@@ -318,6 +342,23 @@
      [
       "CRM",
       "Crm"
+     ]
+    ]
+   ],
+   [
+    "Departments setup",
+    [
+     [
+      "Laboratory",
+      "Lab"
+     ],
+     [
+      "Radiology",
+      "Radiology"
+     ],
+     [
+      "Pharmacy",
+      "Pharmacy"
      ]
     ]
    ],
@@ -404,6 +445,23 @@
     ]
    ],
    [
+    "Services (read)",
+    [
+     [
+      "Diet & Kitchen",
+      "Diet"
+     ],
+     [
+      "Facility",
+      "Facility"
+     ],
+     [
+      "CRM",
+      "Crm"
+     ]
+    ]
+   ],
+   [
     "Personal",
     [
      [
@@ -466,6 +524,19 @@
      [
       "Radiology",
       "Radiology"
+     ]
+    ]
+   ],
+   [
+    "Records and orders",
+    [
+     [
+      "Medical Records",
+      "Records"
+     ],
+     [
+      "Diet Orders",
+      "Diet"
      ]
     ]
    ],
@@ -671,6 +742,19 @@
      [
       "Report Incident",
       "Quality"
+     ]
+    ]
+   ],
+   [
+    "Results",
+    [
+     [
+      "Laboratory",
+      "Lab"
+     ],
+     [
+      "Radiology",
+      "Radiology"
      ]
     ]
    ],
@@ -897,6 +981,10 @@
       "Billing"
      ],
      [
+      "Cashier Shift",
+      "BillShift"
+     ],
+     [
       "In-patient Bills",
       "IpdBill"
      ],
@@ -946,12 +1034,20 @@
       "Billing"
      ],
      [
+      "Shifts and Day-end",
+      "BillShift"
+     ],
+     [
       "In-patient Bills",
       "IpdBill"
      ],
      [
       "Insurance Desk",
       "IpdTpa"
+     ],
+     [
+      "Corporate and Credit",
+      "BillCorporate"
      ],
      [
       "Discharge Desk",
@@ -969,6 +1065,19 @@
      [
       "Reports",
       "Reports"
+     ],
+     [
+      "Billing Analytics",
+      "BillAnalytics"
+     ]
+    ]
+   ],
+   [
+    "Finance (read)",
+    [
+     [
+      "Finance",
+      "Finance"
      ]
     ]
    ],
@@ -1131,6 +1240,10 @@
      [
       "Stock",
       "Inventory"
+     ],
+     [
+      "Counter Shift",
+      "BillShift"
      ]
     ]
    ],
@@ -1185,6 +1298,24 @@
      [
       "Reports",
       "Reports"
+     ]
+    ]
+   ],
+   [
+    "Finance (read)",
+    [
+     [
+      "Finance",
+      "Finance"
+     ]
+    ]
+   ],
+   [
+    "Pharmacy stock",
+    [
+     [
+      "Pharmacy",
+      "Pharmacy"
      ]
     ]
    ],
@@ -1287,6 +1418,15 @@
     ]
    ],
    [
+    "Finance (read)",
+    [
+     [
+      "Finance",
+      "Finance"
+     ]
+    ]
+   ],
+   [
     "Personal",
     [
      [
@@ -1319,6 +1459,10 @@
      [
       "Approvals",
       "Approvals"
+     ],
+     [
+      "Shifts and Day-end",
+      "BillShift"
      ]
     ]
    ],
@@ -1336,6 +1480,14 @@
      [
       "Inventory",
       "Inventory"
+     ],
+     [
+      "In-patient Bills",
+      "IpdBill"
+     ],
+     [
+      "Pharmacy",
+      "Pharmacy"
      ]
     ]
    ],
@@ -1345,6 +1497,10 @@
      [
       "Reports",
       "Reports"
+     ],
+     [
+      "Billing Analytics",
+      "BillAnalytics"
      ]
     ]
    ],
@@ -1402,6 +1558,10 @@
      [
       "Approvals History",
       "Approvals"
+     ],
+     [
+      "Shifts and Day-end",
+      "BillShift"
      ]
     ]
    ]
@@ -1571,6 +1731,23 @@
      [
       "Reports",
       "Reports"
+     ]
+    ]
+   ],
+   [
+    "Services (read)",
+    [
+     [
+      "Diet & Kitchen",
+      "Diet"
+     ],
+     [
+      "Facility",
+      "Facility"
+     ],
+     [
+      "CRM",
+      "Crm"
      ]
     ]
    ],

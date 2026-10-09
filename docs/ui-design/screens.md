@@ -43,6 +43,11 @@ Every screen on the design canvas, with its web route, main role, module gate, p
 | IPD settings | boards/IpdConfig.dc.html | /settings/ipd | Hospital Admin | IPD | ipd:settings:* | CRUD /ipd/wards, /ipd/beds, /ipd/packages, PUT /ipd/settings |
 | IPD analytics | boards/IpdAnalytics.dc.html | /ipd/analytics | Management | IPD | reports:ipd:read | GET /reports/ipd-census, /reports/ipd-indicators |
 | Attendant mobile screens | boards/PortalStay.dc.html | /my/stay | Patient, attendant | CORE | patient OTP | GET /portal/admissions/current, /portal/admissions/{id}/bill, POST /portal/payments |
+| Cashier shift and day-end | boards/BillShift.dc.html | /billing/shift | Cashier, Billing Manager | CORE | billing:shift:* | POST /billing/shifts, POST /billing/shifts/{id}/close, POST /billing/days/{date}/lock |
+| Corporate and credit | boards/BillCorporate.dc.html | /billing/corporates | Billing Manager | CORE | billing:corporate:* | GET /billing/corporates, POST /billing/corporate-invoices, POST /billing/einvoice/{id} |
+| Billing settings | boards/BillConfig.dc.html | /settings/billing | Hospital Admin | CORE | billing:settings:* | PUT /billing/settings, CRUD /billing/series, /billing/price-lists |
+| Billing analytics | boards/BillAnalytics.dc.html | /billing/analytics | Management, Accounts | CORE | reports:billing:read | GET /reports/revenue, /reports/receivables-ageing, /reports/leakage |
+| Patient payments on the phone | boards/PortalPay.dc.html | /my/bills | Patient | CORE | patient OTP | GET /portal/bills, POST /portal/payments, GET /portal/receipts |
 | Nursing station | boards/Nursing.dc.html | /nursing/:wardId | Staff Nurse | NUR | nursing:* | GET /nursing/wards/{id}/census, POST /nursing/mar/{doseId}/administer |
 | Shift roster | boards/Roster.dc.html | /hr/rosters | Ward In-charge | HRM | hr:roster:write | GET/PUT /hr/rosters |
 | Laboratory | boards/Lab.dc.html | /lab | Lab, pathologist | LAB | lab:* | GET /lab/worklists, PUT /lab/tests/{id}/results |
