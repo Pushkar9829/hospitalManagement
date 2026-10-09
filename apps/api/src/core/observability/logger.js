@@ -1,6 +1,17 @@
 import pino from 'pino';
 import { env } from '../../config/env.js';
 
+/** Pretty logs in development when pino-pretty is installed (it is not in the production image). */
+function prettyTransport() {
+  if (env.NODE_ENV !== 'development') return undefined;
+  try {
+    import.meta.resolve('pino-pretty');
+    return { target: 'pino-pretty', options: { singleLine: true } };
+  } catch {
+    return undefined;
+  }
+}
+
 /**
  * Structured JSON logs (CloudWatch in production). Patient clinical data and secrets must never
  * be logged: these paths are redacted as a safety net.
@@ -23,8 +34,5 @@ export const logger = pino({
     ],
     censor: '[redacted]',
   },
-  transport:
-    env.NODE_ENV === 'development'
-      ? { target: 'pino-pretty', options: { singleLine: true } }
-      : undefined,
+  transport: prettyTransport(),
 });

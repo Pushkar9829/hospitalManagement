@@ -13,7 +13,11 @@ const Env = z
     MONGO_URI: z.string().min(1, 'MONGO_URI is required'),
     REDIS_URL: z.string().min(1, 'REDIS_URL is required'),
     ROOT_DOMAIN: z.string().default('localhost'),
-    TRUST_PROXY: z.coerce.number().int().min(0).default(1),
+    /**
+     * Proxy hops in front of the API. Production (CloudFront -> ALB) is 2, so req.ip is the real
+     * client; 0 locally so a spoofed X-Forwarded-For cannot dodge rate limits.
+     */
+    TRUST_PROXY: z.coerce.number().int().min(0).max(5).default(0),
     JWT_PRIVATE_KEY: z.string().default(''),
     JWT_PUBLIC_KEY: z.string().default(''),
     /** 32-byte key (base64) for encrypting secrets at rest, e.g. TOTP secrets. */
@@ -33,6 +37,12 @@ const Env = z
   })
   .superRefine((v, ctx) => {
     if (v.NODE_ENV !== 'production') return;
+    if (v.TRUST_PROXY === 0)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['TRUST_PROXY'],
+        message: 'Set TRUST_PROXY (2 behind CloudFront + ALB) in production',
+      });
     for (const k of ['JWT_PRIVATE_KEY', 'JWT_PUBLIC_KEY', 'DATA_ENCRYPTION_KEY']) {
       if (!v[k])
         ctx.addIssue({ code: 'custom', path: [k], message: `${k} is required in production` });

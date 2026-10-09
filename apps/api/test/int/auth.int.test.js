@@ -75,6 +75,19 @@ describe('password sign-in', () => {
     expect(right.body.error.message).toMatch(/15 minutes/);
   });
 
+  it('still locks the account when wrong guesses arrive in parallel', async () => {
+    const t = await makeTenant();
+    const c = client(ctx.app, t.host);
+    const guesses = await Promise.all(
+      Array.from({ length: 8 }, () =>
+        c.post('/auth/login').send({ username: 'superadmin', password: 'Wrong-pass-1' }),
+      ),
+    );
+    expect(guesses.map((r) => r.status)).toContain(423);
+    const right = await c.post('/auth/login').send({ username: 'superadmin', password: PASSWORD });
+    expect(right.status).toBe(423);
+  });
+
   it('never lets a user of one hospital sign in at another', async () => {
     const a = await makeTenant();
     const b = await makeTenant();

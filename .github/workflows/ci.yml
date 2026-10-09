@@ -19,7 +19,7 @@ jobs:
         ports: ['6379:6379']
     env:
       REDIS_URL: redis://localhost:6379
-      MONGOMS_VERSION: 8.0.4
+      MONGO_TEST_URI: mongodb://127.0.0.1:27017/?replicaSet=rs0
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -27,19 +27,22 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - name: Cache MongoDB test binary
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/mongodb-binaries
-          key: mongodb-${{ runner.os }}-8.0.4
+      - name: Start MongoDB 8 (single-node replica set, needed for transactions)
+        run: |
+          docker run -d --name mongo --network host mongo:8.0 --replSet rs0 --bind_ip 127.0.0.1
+          for i in $(seq 1 30); do docker exec mongo mongosh --quiet --eval 'db.adminCommand("ping").ok' && break; sleep 2; done
+          docker exec mongo mongosh --quiet --eval 'rs.initiate({_id:"rs0",members:[{_id:0,host:"127.0.0.1:27017"}]})'
+          until docker exec mongo mongosh --quiet --eval 'rs.status().myState' | grep -q 1; do sleep 1; done
       - run: pnpm install --frozen-lockfile
       - run: pnpm format:check
       - run: pnpm lint
       - name: Catalogue is in sync with the design docs
         run: pnpm catalog && git diff --exit-code packages/shared/src/catalog
       - run: pnpm test
-      - name: Integration tests (MongoDB replica set in memory + Redis)
+      - name: Integration tests (MongoDB replica set + Redis)
         run: pnpm test:int
       - run: pnpm build
       - name: Dependency audit
         run: pnpm audit --audit-level high
+      - name: API image builds
+        run: docker build -f infra/docker/api.Dockerfile -t hms-api:ci .

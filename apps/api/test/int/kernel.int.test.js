@@ -12,6 +12,7 @@ import {
 import { runAsSystem } from '../../src/core/tenancy/context.js';
 import { AuditLog } from '../../src/core/audit/audit.model.js';
 import { Tenant } from '../../src/core/tenancy/tenant.model.js';
+import { provisionTenant } from '../../src/core/tenancy/provision.js';
 import { tenantRegistry } from '../../src/core/tenancy/tenant.registry.js';
 import { documentNumber, nextNumber, nextUhid } from '../../src/core/sequences/sequence.service.js';
 import { OutboxEvent } from '../../src/core/events/outbox.model.js';
@@ -76,6 +77,52 @@ describe('tenant isolation', () => {
       /Cross-tenant/,
     );
     await expect(Note.find({}).exec()).rejects.toThrow(/No request context/);
+  });
+
+  it('refuses $lookup joins that could read another hospital', async () => {
+    const t = await makeTenant();
+    await as(t, async () => {
+      const byId = Note.aggregate([
+        { $lookup: { from: 'users', localField: 'createdBy', foreignField: '_id', as: 'u' } },
+      ]);
+      await expect(byId.exec()).resolves.toBeInstanceOf(Array);
+      const byCode = Note.aggregate([
+        { $lookup: { from: 'roles', localField: 'text', foreignField: 'code', as: 'r' } },
+      ]);
+      await expect(byCode.exec()).rejects.toThrow(/must join on _id or match tenantId/);
+      const scoped = Note.aggregate([
+        {
+          $lookup: {
+            from: 'roles',
+            let: { c: '$text' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [{ $eq: ['$code', '$$c'] }, { $eq: ['$tenantId', t.tenant._id] }],
+                  },
+                },
+              },
+              { $match: { tenantId: t.tenant._id } },
+            ],
+            as: 'r',
+          },
+        },
+      ]);
+      await expect(scoped.exec()).resolves.toBeInstanceOf(Array);
+    });
+  });
+
+  it('provisions a hospital all-or-nothing', async () => {
+    const subdomain = `broken${Date.now().toString(36)}`;
+    await expect(
+      provisionTenant({
+        name: 'Broken',
+        subdomain,
+        admin: { name: 'X', username: 'BAD USER NAME', password: 'Whatever-123' },
+      }),
+    ).rejects.toThrow(/username/);
+    expect(await Tenant.exists({ subdomain })).toBeNull();
   });
 
   it('every tenant collection index starts with tenantId', () => {

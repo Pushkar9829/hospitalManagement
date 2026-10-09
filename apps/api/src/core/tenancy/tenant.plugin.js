@@ -42,6 +42,7 @@ export function tenantPlugin(schema) {
     const first = this.pipeline()[0];
     if (first?.$geoNear || first?.$search)
       throw new Error('Put tenantId inside $geoNear/$search query');
+    assertLookupsScoped(this.pipeline());
     this.pipeline().unshift({ $match: { tenantId } });
   });
 
@@ -64,4 +65,25 @@ export function tenantPlugin(schema) {
   schema.pre('bulkWrite', function () {
     throw new Error('bulkWrite bypasses tenant checks; use insertMany/updateMany');
   });
+}
+
+/**
+ * $lookup reads another collection without the tenant filter. Joining on _id is safe (ids are
+ * unique across tenants); any other join must use a pipeline that matches tenantId.
+ */
+export function assertLookupsScoped(pipeline) {
+  for (const stage of pipeline) {
+    const lookup = stage.$lookup;
+    if (lookup) {
+      const byId = lookup.foreignField === '_id' && !lookup.pipeline;
+      const scoped = lookup.pipeline && JSON.stringify(lookup.pipeline).includes('tenantId');
+      if (!byId && !scoped)
+        throw new Error(
+          `$lookup on ${lookup.from} must join on _id or match tenantId in its pipeline`,
+        );
+      if (lookup.pipeline) assertLookupsScoped(lookup.pipeline);
+    }
+    for (const sub of stage.$facet ? Object.values(stage.$facet) : []) assertLookupsScoped(sub);
+    if (stage.$unionWith) throw new Error('$unionWith is not allowed on tenant collections');
+  }
 }

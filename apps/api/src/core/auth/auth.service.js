@@ -52,21 +52,30 @@ export async function loginWithPassword({ username, password, rememberDevice }, 
   return completeFirstFactor(user, { rememberDevice, method: 'password' }, meta);
 }
 
+/** Atomic count, so parallel guesses cannot slip past the lockout. */
 async function registerFailure(user) {
-  const failed = (user.failedLogins ?? 0) + 1;
-  const update = { failedLogins: failed };
-  if (failed >= MAX_FAILED_LOGINS)
-    update.lockedUntil = new Date(Date.now() + LOCK_MINUTES * 60_000);
-  await User.updateOne({ _id: user._id }, { $set: update });
-  if (update.lockedUntil) {
+  const updated = await User.findOneAndUpdate(
+    { _id: user._id },
+    { $inc: { failedLogins: 1 } },
+    { new: true },
+  )
+    .select('failedLogins')
+    .lean();
+  if ((updated?.failedLogins ?? 0) < MAX_FAILED_LOGINS) return;
+  const lockedUntil = new Date(Date.now() + LOCK_MINUTES * 60_000);
+  const locked = await User.updateOne(
+    { _id: user._id, $or: [{ lockedUntil: null }, { lockedUntil: { $lte: new Date() } }] },
+    { $set: { lockedUntil, failedLogins: 0 } },
+  );
+  if (locked.modifiedCount) {
     await recordAudit({
       action: 'ACCOUNT_LOCKED',
       entity: 'User',
       entityId: user._id,
       summary: `${MAX_FAILED_LOGINS} wrong attempts`,
     });
-    throw lockedError(update.lockedUntil);
   }
+  throw lockedError(lockedUntil);
 }
 
 function lockedError(until) {
