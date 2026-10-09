@@ -417,7 +417,7 @@ def module_card(code_, name, tier, depends, users, summary):
         ("TOPPADDING", (0, 0), (-1, -1), 3.5), ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
         ("TOPPADDING", (0, 0), (-1, 0), 7), ("BOTTOMPADDING", (0, 0), (-1, 0), 7),
     ]))
-    return [Spacer(1, 2), t, Spacer(1, 8)]
+    return [CondPageBreak(130), Spacer(1, 2), t, Spacer(1, 8)]
 
 
 def tick(yes=True):

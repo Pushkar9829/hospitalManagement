@@ -200,7 +200,7 @@ apps/
       modules/
         core-setup/ patients/ billing/ staff/        (CORE)
         opd/ ipd/ nursing/ lab/ radiology/ pharmacy/ inventory/ hr/ payroll/ finance/
-        mrd/ diet/ facility/ quality/ portal/
+        mrd/ diet/ facility/ quality/ crm/ portal/ abdm/
           <module>/
             <module>.routes.ts      route table + permission per route
             <module>.controller.ts  HTTP in/out only

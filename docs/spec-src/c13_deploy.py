@@ -327,46 +327,105 @@ def quality():
 
 def plan():
     s = []
-    s += H1("Phase 1 Delivery Plan and Acceptance")
-    s += H2("Team")
-    s += table([
-        ["Role", "Count", "Responsibility"],
-        ["Product manager / BA", "1", "Requirements, flows, UAT, hospital liaison"],
-        ["Tech lead / architect", "1", "Architecture, code reviews, core platform"],
-        ["Backend developers (Node)", "3", "Modules, APIs, jobs"],
-        ["Frontend developers (React)", "3", "Screens, printing, real-time"],
-        ["UI/UX designer", "1", "Design system, screens, usability tests"],
-        ["QA engineers", "2", "Test cases, automation, performance"],
-        ["DevOps engineer", "1 (part-time)", "AWS, CI/CD, monitoring, security"],
-        ["Clinical advisor", "1 (part-time)", "Doctor and nursing workflow validation"],
-    ], widths=[0.32, 0.15, 0.53], first_col_bold=True)
+    s += H1("Phase 1 Delivery Plan, Commercials and Acceptance")
+    s += H2("Delivery summary")
+    s += kv([
+        ["Scope", f"Everything in Sections {sec('product')} to {sec('plan')} of this document: "
+                  "all Phase 1 modules, the SaaS platform and console, API, AWS deployment"],
+        ["Delivery time", "1 month (4 weeks) from kickoff to production go-live"],
+        ["Price", "INR 1,00,000 one-time for Phase 1 delivery, plus GST"],
+        ["Go-live", "Production on AWS with the first hospital live at the end of week 4"],
+        ["Support", "30 days of post go-live support (hyper-care) included"],
+    ])
 
-    s += H2("Timeline (two-week sprints)")
+    s += H2("Delivery squads")
+    s.append(P("Work runs in parallel squads that build on the shared Core from week 1. "
+               "Each squad owns its modules end to end: API, screens, tests and reports."))
     s += table([
-        ["Sprints", "Weeks", "Deliverables"],
-        ["0", "1-2", "Design system, repo, CI/CD, AWS dev and staging, auth skeleton"],
-        ["1-3", "3-8", "CORE: tenancy, users, roles, maker-checker, Super Admin "
-                       "approvals, departments, masters, patient registration, audit, "
-                       "notifications, platform console with modules and plans"],
-        ["4-5", "9-12", "Billing engine, cashier shifts, printing; OPD schedules, "
-                        "booking, queue, consultation, e-prescription"],
-        ["6-7", "13-16", "IPD admission, transfers, discharge, real-time bed board; "
-                         "Nursing station, MAR, notes"],
-        ["8-9", "17-20", "Laboratory and Radiology; Pharmacy with purchase, GRN, FEFO "
-                         "dispensing"],
-        ["10-11", "21-24", "Inventory and purchase; HR, rosters, attendance, leave"],
-        ["12-13", "25-28", "Payroll with statutory outputs; Finance auto-posting and "
-                           "statements; reports for all modules"],
-        ["14-15", "29-32", "Medical records and registers; diet and kitchen; housekeeping, "
-                           "linen, maintenance, biomedical, waste; quality and incidents; "
-                           "patient portal, front office, health check-ups"],
-        ["16", "33-34", "Performance and security testing, pen test fixes, data "
-                        "migration tools"],
-        ["17", "35-36", "Pilot hospital go-live, hyper-care, production hardening"],
-    ], widths=[0.12, 0.12, 0.76], first_col_bold=True)
-    s += callout("About 9 months with the team above. A clinic-only release (CORE, OPD, "
-                 "Pharmacy, Lab and billing) can go live after sprint 9 if the business "
-                 "wants earlier revenue.", "tip", "Estimate.")
+        ["Squad", "Owns"],
+        ["Platform", "SaaS platform and console, tenancy, auth, roles, approvals, audit, "
+                     "subscription billing, AWS, CI/CD"],
+        ["Core and Front Office", "Hospital setup, departments, masters, registration, "
+                                  "billing engine, printing, front office, patient portal, "
+                                  "CRM"],
+        ["Clinical", "OPD, IPD and beds, nursing, doctor scheduling, rosters, diet, medical "
+                     "records"],
+        ["Diagnostics and Stock", "Laboratory, radiology, pharmacy, inventory and purchase"],
+        ["People and Money", "HR, attendance, leave, payroll, finance and accounts"],
+        ["Support and Quality", "Housekeeping and facility, quality and incidents"],
+        ["QA and Release", "Test automation from day 1, performance, security, UAT, "
+                           "deployment"],
+    ], widths=[0.24, 0.76], first_col_bold=True)
+
+    s += H2("Four-week plan")
+    s += table([
+        ["Week", "Days", "Deliverables", "Exit check"],
+        ["1", "1-7", "Kickoff and scope freeze; AWS, domain, CI/CD, staging live; design "
+                     "system; SaaS tenancy, signup, auth, roles, maker-checker, audit; "
+                     "hospital setup, departments, masters with Excel import; patient "
+                     "registration; billing engine and printing",
+         "Register a patient and print a bill on staging"],
+        ["2", "8-14", "OPD scheduling, queue, consultation, e-prescription, specialty "
+                      "templates; IPD admission, transfer, discharge, live bed board; "
+                      "nursing station; laboratory; radiology; pharmacy with FEFO; "
+                      "inventory and purchase",
+         "Full OPD and IPD patient journey on staging"],
+        ["3", "15-21", "HR, rosters, attendance, leave; payroll with statutory outputs; "
+                       "finance auto-posting and statements; medical records; diet; "
+                       "housekeeping and facility; quality; CRM; patient portal; "
+                       "subscription billing; all module reports",
+         "Feature complete; demo to hospital; masters loaded"],
+        ["4", "22-30", "UAT with hospital super users; bug fixing; performance and "
+                       "security tests; production setup and restore drill; training; data "
+                       "migration; go-live and hyper-care start",
+         "Acceptance criteria met; hospital live"],
+    ], widths=[0.07, 0.08, 0.6, 0.25])
+    s += flow([
+        ("Day 1", "Kickoff, scope freeze, accounts requested"),
+        ("Day 7", "Core, billing and SaaS platform on staging"),
+        ("Day 14", "Patient journeys and diagnostics working"),
+        ("Day 21", "All modules complete; client demo"),
+        ("Day 26", "UAT sign-off; production ready"),
+        ("Day 28", "Training complete; data migrated"),
+        ("Day 30", "Go-live"),
+        ("Day 30-60", "Hyper-care support"),
+    ], title="Milestones")
+
+    s += H2("Delivery assumptions")
+    s.append(P("The one-month timeline holds when the following are in place. Delays on "
+               "these items move the go-live date by the same number of days."))
+    s += numbered([
+        "Scope is frozen at kickoff as described in this document. New requests are logged "
+        "and delivered after go-live as change requests.",
+        "The hospital fills the Excel import templates (tariffs, drugs and items with "
+        "opening stock, employees and salaries, chart of accounts, opening balances) by "
+        "day 10.",
+        "One decision-maker on the hospital side answers questions and approves designs "
+        "within 24 hours.",
+        "Accounts are opened in week 1: AWS, domain, MongoDB Atlas, SMS provider with DLT "
+        "template registration, WhatsApp Business, payment gateway, and video provider if "
+        "tele-consultation is used. DLT and WhatsApp approvals can take several days, so "
+        "they start on day 1.",
+        "Hospital super users are available for UAT and training in week 4.",
+        "Hardware (printers, barcode scanners, biometric devices, queue TVs) is installed "
+        "on site by day 21.",
+    ])
+
+    s += H2("Commercials")
+    s += table([
+        ["Item", "Terms"],
+        ["Phase 1 price", "INR 1,00,000 one-time, plus GST at 18%"],
+        ["Included", "Design, development, testing, AWS setup, deployment, data import of "
+                     "masters, training of super users, documentation, 30 days hyper-care"],
+        ["Not included (paid at actuals)", "AWS hosting, MongoDB Atlas, domain, SMS and "
+                                           "WhatsApp messages, payment gateway fees, video "
+                                           "provider, licensed drug-interaction database, "
+                                           "hardware"],
+        ["Payment milestones", "40% at kickoff, 30% at week 3 demo, 30% at go-live"],
+        ["Change requests", "Estimated and quoted separately; scheduled after go-live"],
+        ["After hyper-care", "Annual maintenance and support on a separate agreement, or "
+                             "covered by the SaaS subscription for hosted hospitals"],
+    ], widths=[0.28, 0.72], first_col_bold=True)
 
     s += H2("Go-live checklist for each hospital")
     s += numbered([
@@ -379,7 +438,7 @@ def plan():
         "Printers, barcode scanners, biometric devices and TV queue screens tested.",
         "Role-wise training completed, with sign-off; super users identified per department.",
         "Parallel run of 2-3 days for billing and pharmacy if migrating from old software.",
-        "Go-live day support on site; hyper-care for 2 weeks.",
+        "Go-live day support on site; hyper-care for 30 days.",
     ])
 
     s += H2("Phase 1 acceptance criteria")

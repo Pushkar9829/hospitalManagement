@@ -4,7 +4,7 @@ from reportlab.platypus import PageBreak
 
 def story():
     s = []
-    s += H1("Support Services, Medical Records and Quality")
+    s += H1("Support Services, Records, Quality and Patient Engagement")
     s.append(P("These modules cover the departments that keep a hospital running behind the "
                "wards and counters. Without them, hospitals fall back to paper registers or "
                "separate tools for records, kitchen, housekeeping, maintenance and quality."))
@@ -110,6 +110,8 @@ def story():
         ["Laundry cycle", "Soiled linen collection count per ward, dispatch to in-house or "
                           "outsourced laundry, receipt count, shortage tracking"],
         ["Condemnation", "Damaged linen written off with approval; replacement indent"],
+        ["Patient transport", "Porter requests for wheelchair or stretcher moves (ward to "
+                              "radiology, discharge to gate) with pickup and drop times"],
     ], widths=[0.2, 0.8], first_col_bold=True)
     s += H2("Maintenance and biomedical equipment")
     s += table([
@@ -171,6 +173,10 @@ def story():
                    "scores, action items with owners"],
         ["Document control", "Policies and SOPs with version, approval, review date and staff "
                              "read-acknowledgement"],
+        ["Infection control", "Surveillance of hospital-acquired infections (urinary catheter, "
+                              "central line, ventilator-associated, surgical site), device "
+                              "days from nursing records, infection rates, antibiogram from "
+                              "the lab, isolation flags on the bed board"],
     ], widths=[0.2, 0.8], first_col_bold=True)
     s += flow([
         ("Nurse", "Reports patient fall in ward 3"),
@@ -180,4 +186,42 @@ def story():
         ("HOD", "Completes corrective actions"),
         ("Quality Manager", "Verifies and closes; indicator updated"),
     ], title="User flow: incident to closure", cols=3)
+
+    s += module_card("CRM", "Patient CRM and Outreach", "Add-on module", "CORE",
+                     "Call Centre Executives, Marketing / CRM Executives, Front Office, "
+                     "Management",
+                     "Brings patients in and keeps them coming back: call centre, leads, "
+                     "health camps, campaigns, memberships and referral partners.")
+    s += H2("Patient CRM features")
+    s += table([
+        ["Feature", "Details"],
+        ["Call centre", "Agent screen with caller lookup by phone number, appointment "
+                        "booking, enquiry logging and call notes. Optional cloud telephony "
+                        "integration (e.g. Exotel, Knowlarity) for click-to-call, call "
+                        "recording links and missed-call callbacks"],
+        ["Leads", "Enquiries for surgeries, packages and health check-ups tracked through "
+                  "stages (new, contacted, counselled, booked, lost) with follow-up dates "
+                  "and source"],
+        ["Health camps", "Camp planning, on-site registration on a tablet, screening "
+                         "results, conversion of camp patients to visits, camp ROI report"],
+        ["Campaigns", "SMS, WhatsApp and e-mail campaigns to filtered patient lists, e.g. "
+                      "diabetics due for HbA1c. Consent and opt-out respected; DLT templates"],
+        ["Memberships", "Family health cards and memberships with validity, member "
+                        "discounts, free visits and a prepaid wallet usable at all counters"],
+        ["Referral partners", "Referring doctors and clinics with visit history, revenue "
+                              "generated, agreed referral fee where permitted by policy, and "
+                              "monthly statements to Finance"],
+        ["Reviews", "After a good feedback score, the patient gets a link to post a public "
+                    "review (e.g. Google)"],
+        ["Reports", "Lead conversion, campaign response, camp conversion, referral "
+                    "revenue, membership renewals"],
+    ], widths=[0.2, 0.8], first_col_bold=True)
+    s += flow([
+        ("Call Centre", "Patient calls about knee replacement"),
+        ("System", "Creates lead with source and interest"),
+        ("CRM Executive", "Counsels, shares package estimate"),
+        ("System", "Follow-up reminder on due date"),
+        ("Call Centre", "Books orthopaedic OPD appointment"),
+        ("System", "Lead marked converted on admission"),
+    ], title="User flow: lead to admission", cols=3)
     return s

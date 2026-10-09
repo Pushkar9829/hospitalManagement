@@ -93,7 +93,10 @@ def story():
         ["Facility", "Housekeeping board, checklists, linen, tickets, equipment, PM, AMC, "
                      "biomedical waste", "FAC"],
         ["Quality", "Feedback, complaints, incidents, indicators, audits, documents", "QLT"],
-        ["Front Office", "Enquiries, attendant and visitor passes, help desk", "CORE"],
+        ["Front Office", "Enquiries, counter tokens, attendant and visitor passes, help "
+                         "desk", "CORE"],
+        ["CRM", "Call centre, leads, camps, campaigns, memberships, referral partners",
+         "CRM"],
         ["Reports", "Every module's reports, export to Excel / PDF, scheduled e-mail", "All"],
         ["Settings", "Hospital, branches, departments, masters, users, roles, approval "
                      "rules, templates, subscription", "CORE"],

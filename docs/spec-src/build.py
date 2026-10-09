@@ -15,7 +15,7 @@ import c1_overview, c1b_saas, c2_roles, c3_core, c4_patient_ops, c5_clinical, c6
 import c7_business, c7b_support, c8_journeys, c9_arch, c10_data, c11_code, c12_api, c13_deploy
 
 TITLE = "Hospital Management System - Phase 1 SaaS Product and Technical Specification"
-VERSION = "1.1"
+VERSION = "1.2"
 OUT = os.path.join(os.path.dirname(__file__), "..", "Hospital_Management_System_Phase1_Specification.pdf")
 
 
@@ -60,6 +60,7 @@ def cover_page(c, doc):
                                        "AWS S3 + CloudFront")
     c.setFont("Body", 10)
     c.setFillColor(colors.white)
+    c.drawString(MARGIN, PAGE_H - 252, "Delivery: 1 month   ·   Price: INR 1,00,000 + GST")
     c.drawString(MARGIN, PAGE_H - 270, f"Version {VERSION}   ·   "
                                        f"{date.today().strftime('%d %B %Y')}")
     c.restoreState()
@@ -93,8 +94,9 @@ def cover_story():
         ("Diagnostics and Core Departments", "Laboratory, radiology, pharmacy"),
         ("Billing and Reporting", "Cash, billing, printing, finance, inventory, HR, "
                                   "payroll"),
-        ("Support Services and Quality", "Medical records, diet and kitchen, housekeeping "
-                                         "and facility, quality, patient portal"),
+        ("Support Services, Quality and Engagement", "Medical records, diet and kitchen, "
+                                                     "housekeeping and facility, quality, "
+                                                     "patient portal, CRM, ABDM"),
     ]
     rows = [[Paragraph(f"<font color='#E2702A'><b>{i}</b></font>",
                        ParagraphStyle("n", parent=S["body"], fontSize=16, leading=18)),

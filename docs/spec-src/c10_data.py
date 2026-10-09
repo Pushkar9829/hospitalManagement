@@ -91,8 +91,13 @@ def story():
                                                                     "windows, counts"],
         ["FAC", "hkTasks, linenTransactions, tickets, equipment, pmSchedules, "
                 "bmwEntries", "TAT, downtime, waste weights"],
-        ["QLT", "feedback, complaints, incidents, indicators, audits, documents",
-         "CAPA, monthly indicator values"],
+        ["QLT", "feedback, complaints, incidents, indicators, audits, documents, "
+                "haiEvents", "CAPA, monthly indicator values, infection events"],
+        ["CRM", "leads, calls, camps, campaigns, memberships, wallets, referralPartners",
+         "stages, consent, balances, partner statements"],
+        ["OPD / LAB", "specialtyForms, treatmentPlans, certificates, homeCollections, "
+                      "collectionCentres", "templates, sessions, visits, rate lists"],
+        ["CORE", "tokens, abhaLinks", "counter queues; ABHA to UHID links and consents"],
     ], widths=[0.11, 0.3, 0.59], mono_cols=(1,))
 
     s += H2("Critical indexes")

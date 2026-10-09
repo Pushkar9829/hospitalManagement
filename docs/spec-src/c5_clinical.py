@@ -35,6 +35,9 @@ def story():
         ["Intake and output", "Oral, IV, feeds vs urine, drains, vomit. Shift and 24-hour "
                               "totals"],
         ["Care plans", "Nursing diagnosis, goals, interventions, evaluation"],
+        ["ICU charting", "Hourly ICU flowsheet: vitals, ventilator settings, infusions and "
+                         "titrations, GCS, lines and drains with device days, fluid balance; "
+                         "severity scores (SOFA, APACHE II)"],
         ["Handover", "Shift handover summary generated per patient (ISBAR format), "
                      "acknowledged by incoming nurse"],
         ["Indents", "Pharmacy indent for patient medicines and ward stock indent to store, "

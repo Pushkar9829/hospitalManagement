@@ -76,7 +76,8 @@ def story():
         ["<b>Support services and quality</b> (added so no other software is needed)",
          "Medical records with birth, death and medico-legal registers; diet and kitchen; "
          "housekeeping, linen, maintenance, biomedical equipment and waste; quality, "
-         "feedback, complaints and incident reporting; patient portal; visitor passes"],
+         "feedback, complaints, incident reporting and infection control; patient "
+         "portal; visitor passes; patient CRM and outreach; ABDM integration"],
     ], widths=[0.28, 0.72])
 
     s += H2("Out of scope for Phase 1")
@@ -97,6 +98,14 @@ def story():
         ["AI features (follow-up bots, smart registration, dictation, OCR, remote care)",
          "Structured prescriptions, notification queue, document store on S3, open API"],
     ], widths=[0.38, 0.62])
+
+    s += H2("Delivery and commercials")
+    s += kv([
+        ["Delivery", "All Phase 1 modules delivered and live within 1 month of kickoff"],
+        ["Price", "INR 1,00,000 one-time for Phase 1 delivery, plus GST"],
+        ["Details", f"Week-by-week plan, delivery assumptions and payment milestones are in "
+                    f"Section {sec('plan')}"],
+    ])
 
     s += H2("Key assumptions")
     s += bullets([
@@ -170,12 +179,19 @@ def story():
          "biomedical equipment PM and AMC, biomedical waste"],
         ["QLT", "Quality and Feedback", "Add-on", "CORE",
          "Patient feedback, complaints, incident reporting with CAPA, NABH indicators, "
-         "audits, document control"],
+         "audits, document control, infection control"],
+        ["CRM", "Patient CRM and Outreach", "Add-on", "CORE",
+         "Call centre, leads, health camps, campaigns, memberships and wallet, referral "
+         "partners, review requests"],
     ], widths=[0.08, 0.17, 0.11, 0.09, 0.55], mono_cols=(0,))
     s += callout("Bed management is part of IPD because one cannot work without the other. "
                  "Doctor profiles live in CORE because billing and lab reports need them even "
                  "when OPD is not subscribed. Doctor schedules and slots are part of OPD.",
                  "note", "Bundling decisions.")
+    s += callout("Clinics get a simplified screen layout: one screen to register, consult, "
+                 "prescribe, bill and print, and a doctor can also act as admin. The same "
+                 "modules run underneath, so a clinic can grow into a hospital without "
+                 "migrating.", "tip", "Clinic mode.")
 
     s += H2("Plans and indicative pricing")
     s.append(P("Hospitals can buy a bundled plan or pick modules one by one. Pricing scales "
@@ -185,7 +201,7 @@ def story():
         ["", "Clinic", "Hospital", "Enterprise"],
         ["Target", "OPD clinics, polyclinics, up to 20 beds", "20-150 beds",
          "150+ beds, groups, multi-branch"],
-        ["Included modules", "CORE, OPD, PHR, LAB", "All 15 Phase 1 modules",
+        ["Included modules", "CORE, OPD, PHR, LAB", "All 16 Phase 1 modules",
          "All modules + dedicated database option"],
         ["Users included", "15", "100", "Unlimited"],
         ["Branches", "1", "Up to 3", "Unlimited"],
@@ -204,7 +220,7 @@ def story():
         ["PAY", "INR 25 per payslip", "Payslips generated in month"],
         ["FIN", "INR 3,000", "Per legal entity"],
         ["MRD, DIET, QLT", "INR 1,500 each", "Per branch"],
-        ["FAC", "INR 2,000", "Per branch"],
+        ["FAC, CRM", "INR 2,000 each", "Per branch"],
         ["Patient portal (in CORE)", "Included", "Online payments carry gateway fees"],
     ], widths=[0.3, 0.3, 0.4])
 

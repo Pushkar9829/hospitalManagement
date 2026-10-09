@@ -37,6 +37,12 @@ def story():
                      "printing at counter"],
         ["Outsourced tests", "Send-out tests to partner labs tracked with expected date "
                              "and uploaded report"],
+        ["Home collection", "Book home sample collection online or by phone; assign "
+                            "phlebotomist by area and slot; mobile web app for collection, "
+                            "barcode printing and payment at home; live status to patient"],
+        ["Collection centres", "Partner clinics and collection centres with their own rate "
+                               "lists, credit billing, sample pick-up runs and monthly "
+                               "statements"],
         ["Quality control", "QC lot entries and Levey-Jennings chart per analyser "
                             "(basic in Phase 1)"],
         ["Microbiology", "Culture workflow with preliminary and final reports: organism, "

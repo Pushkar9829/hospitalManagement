@@ -14,7 +14,10 @@ specification for the multi-tenant SaaS hospital management system. It covers:
   finance, inventory, HR, recruitment, training, attendance, leave and payroll,
   medical records with birth, death and medico-legal registers, diet and kitchen,
   housekeeping, linen, maintenance, biomedical equipment and waste, quality and
-  incidents, front office, patient portal and health check-ups
+  incidents, infection control, front office and counter tokens, patient portal,
+  health check-ups, specialty templates, treatment plans, lab home collection, ICU
+  charting, ABDM integration, and patient CRM and outreach
+- Delivery plan: 1 month, INR 1,00,000 + GST, with delivery assumptions and milestones
 - End-to-end journeys across modules and the screen map
 - Architecture (React, Node.js, MongoDB), database design and reference source code
 - REST API documentation with request and response examples

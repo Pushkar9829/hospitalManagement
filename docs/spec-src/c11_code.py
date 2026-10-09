@@ -150,7 +150,7 @@ import { current } from '../tenancy/context';
 import { AppError } from '../errors';
 
 export type ModuleCode = 'CORE' | 'OPD' | 'IPD' | 'NUR' | 'LAB' | 'RAD' | 'PHR'
-  | 'INV' | 'HRM' | 'PAY' | 'FIN' | 'MRD' | 'DIET' | 'FAC' | 'QLT';
+  | 'INV' | 'HRM' | 'PAY' | 'FIN' | 'MRD' | 'DIET' | 'FAC' | 'QLT' | 'CRM';
 
 /** 402 if the hospital has not subscribed to the module. */
 export const requireModule = (code: ModuleCode): RequestHandler => (_req, _res, next) =>

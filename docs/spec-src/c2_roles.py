@@ -88,6 +88,12 @@ def story():
         ["Quality Manager", "Tenant", "Feedback, complaints, incidents, indicators, "
          "audits, controlled documents."],
         ["Security Desk", "Gate", "Visitor and attendant pass check-in and check-out."],
+        ["Call Centre / CRM Executive", "Branch", "Calls, appointments, leads, camps, "
+         "campaigns, memberships."],
+        ["Home Collection Phlebotomist", "Assigned area", "Home sample visits, barcodes, "
+         "payment collection."],
+        ["Infection Control Nurse", "Branch", "Infection surveillance, device days, "
+         "hand hygiene audits."],
     ], widths=[0.25, 0.15, 0.6], first_col_bold=True)
 
     s += H2("Role to module access matrix")
@@ -115,18 +121,20 @@ def story():
     s.append(P("Support modules. Every staff login can also raise maintenance tickets "
                "(FAC) and report incidents (QLT)."))
     s += table([
-        ["Role", "MRD", "DIET", "FAC", "QLT"],
-        ["Hospital Super Admin", "RA", "R", "RA", "RA"],
-        ["Hospital Admin", "CRU", "CRU", "CRU", "R"],
-        ["Medical Superintendent", "RA", "R", "R", "RA"],
-        ["Consultant / Resident", "own records", "C (diet orders)", "C", "C"],
-        ["Staff Nurse", "R", "CR", "C", "C"],
-        ["MRD Officer / Coder", "CRU", "", "C", "C"],
-        ["Dietitian / Kitchen Supervisor", "", "CRU", "C", "C"],
-        ["Housekeeping / Maintenance / Biomedical", "", "", "CRU", "C"],
-        ["Quality Manager", "R", "R", "R", "CRUA"],
-        ["Security Desk", "", "", "C", "C"],
-    ], widths=[0.4, 0.15, 0.15, 0.15, 0.15], first_col_bold=True)
+        ["Role", "MRD", "DIET", "FAC", "QLT", "CRM"],
+        ["Hospital Super Admin", "RA", "R", "RA", "RA", "RA"],
+        ["Hospital Admin", "CRU", "CRU", "CRU", "R", "CRU"],
+        ["Medical Superintendent", "RA", "R", "R", "RA", "R"],
+        ["Consultant / Resident", "own records", "C (diet orders)", "C", "C", "R"],
+        ["Staff Nurse", "R", "CR", "C", "C", ""],
+        ["MRD Officer / Coder", "CRU", "", "C", "C", ""],
+        ["Dietitian / Kitchen Supervisor", "", "CRU", "C", "C", ""],
+        ["Housekeeping / Maintenance / Biomedical", "", "", "CRU", "C", ""],
+        ["Quality Manager / Infection Control", "R", "R", "R", "CRUA", "R"],
+        ["Call Centre / CRM Executive", "", "", "C", "C", "CRU"],
+        ["Front Office", "R", "", "C", "C", "CR"],
+        ["Security Desk", "", "", "C", "C", ""],
+    ], widths=[0.35, 0.13, 0.13, 0.13, 0.13, 0.13], first_col_bold=True)
 
     s += H2("Login and session security")
     s += table([

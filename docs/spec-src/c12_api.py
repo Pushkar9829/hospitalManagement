@@ -388,6 +388,28 @@ GET /api/v1/payroll/runs/66f0...
         ["POST", "/public/feedback/{token}", "patient link", "Submit feedback"],
     ])
 
+    s += H2("CRM, ABDM and clinic features")
+    s += ep([
+        ["GET", "/crm/callers/{phone}", "crm:call:read", "Caller lookup"],
+        ["CRUD", "/crm/leads", "crm:lead:*", "Leads and follow-ups"],
+        ["CRUD", "/crm/camps", "crm:camp:*", "Health camps"],
+        ["POST", "/crm/campaigns", "crm:campaign:create", "Send campaign (consent-aware)"],
+        ["CRUD", "/crm/memberships", "crm:membership:*", "Memberships and wallet"],
+        ["CRUD", "/crm/referral-partners", "crm:partner:*", "Referral partners"],
+        ["POST", "/abdm/abha/verify", "patients:abha:link", "Create or verify ABHA"],
+        ["POST", "/abdm/scan-share/callback", "ABDM gateway (signed)", "Scan and Share"],
+        ["POST", "/abdm/care-contexts/link", "patients:abha:link", "Link records to ABHA"],
+        ["POST", "/front-office/tokens", "frontoffice:token:create", "Issue counter token"],
+        ["CRUD", "/opd/specialty-forms", "opd:template:*", "Specialty templates"],
+        ["CRUD", "/opd/treatment-plans", "opd:plan:*", "Multi-session plans"],
+        ["POST", "/opd/visits/{id}/certificates", "opd:certificate:create",
+         "Medical certificate"],
+        ["CRUD", "/lab/home-collections", "lab:home:*", "Home sample visits"],
+        ["CRUD", "/lab/collection-centres", "lab:centre:*", "Partner centres"],
+        ["POST", "/nursing/admissions/{id}/icu-chart", "nursing:icu:write", "ICU flowsheet"],
+        ["POST", "/facility/transport-requests", "any staff", "Porter request"],
+    ])
+
     s += H2("Front office, portal and other additions")
     s += ep([
         ["CRUD", "/front-office/enquiries", "frontoffice:enquiry:*", "Enquiry log"],

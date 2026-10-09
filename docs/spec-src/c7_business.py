@@ -35,6 +35,11 @@ def story():
                 "taxable; GST breakup on bill; e-invoice for B2B (corporate) bills"],
         ["Cashier shift", "Opening cash, collections by mode, handover, closing count, "
                           "variance with reason; cash deposited to bank recorded"],
+        ["Payment devices", "Card machine and UPI QR integration so the amount is pushed "
+                            "to the device and the payment is matched automatically; "
+                            "daily settlement reconciliation"],
+        ["Wallet and memberships", "Prepaid patient or family wallet and membership "
+                                   "discounts (from CRM) applied at any counter"],
     ], widths=[0.22, 0.78], first_col_bold=True)
     s += flow([
         ("Cashier", "Opens shift with opening cash"),

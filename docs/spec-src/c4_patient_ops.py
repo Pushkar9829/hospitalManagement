@@ -72,6 +72,35 @@ def story():
         "Time stamps (booked, arrived, vitals, consult start, consult end, billed) feed the "
         "Phase 2 'patient time spent in OPD' analytics.",
     ])
+    s += H2("Specialty templates and treatment plans")
+    s += table([
+        ["Specialty", "Template content"],
+        ["Dental", "Tooth chart (FDI numbering) with conditions per tooth, treatment plan "
+                   "per tooth, procedures done, lab work for crowns and dentures"],
+        ["Ophthalmology", "Visual acuity, refraction, IOP, slit lamp and fundus findings, "
+                          "spectacle prescription print"],
+        ["Obstetrics and gynaecology", "LMP and EDD calculator, antenatal card with visits, "
+                                       "weight, BP, fundal height, scans; gravida and para"],
+        ["Paediatrics", "Growth charts (weight, height, head circumference against WHO "
+                        "curves), immunisation schedule with due dates and reminders"],
+        ["Dermatology", "Body map to mark lesions, clinical photos with before and after "
+                        "comparison"],
+        ["Physiotherapy", "Assessment, goals, session-wise exercises and progress"],
+        ["General", "Hospitals can build their own templates with a form designer"],
+    ], widths=[0.25, 0.75], first_col_bold=True)
+    s += bullets([
+        "<b>Treatment plans.</b> Multi-session treatments such as dental work, "
+        "physiotherapy, dressings and laser are planned with sessions, cost estimate and "
+        "patient consent. Each session is tracked and billed "
+        "per session or as a package.",
+        "<b>Resource scheduling.</b> Procedure rooms, equipment (e.g. laser) and therapists "
+        "can be booked like doctors, so a session needs the doctor, room and machine free.",
+        "<b>Medical certificates.</b> Fitness, sick leave, medical and disability "
+        "certificate templates filled from the consultation and signed digitally.",
+        "<b>Drug interaction checks.</b> Optional licensed drug database adds drug-drug and "
+        "drug-allergy interaction warnings and dose checks to e-prescriptions.",
+    ])
+
     s += H2("Health check-up packages")
     s += bullets([
         "Package master: tests, radiology, consultations and the order of stations, e.g. "
@@ -143,6 +172,8 @@ def story():
         "Alerts when bill crosses deposit by a set percentage.",
         "Additional deposits at any time; low-deposit SMS to attendant.",
         "Package admissions track inclusions and post only excluded services.",
+        "Medication reconciliation at admission (home medicines recorded and continued, "
+        "changed or stopped) and at discharge, as NABH requires.",
     ])
 
     s += H2("Discharge")

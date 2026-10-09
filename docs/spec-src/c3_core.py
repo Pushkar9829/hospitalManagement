@@ -138,7 +138,24 @@ def story():
                           "restrictions enforced"],
         ["Help desk", "Patient information desk can look up a patient's ward and bed, but "
                       "never clinical details; VIP and medico-legal patients hidden"],
+        ["Counter tokens", "One token system for registration, billing, pharmacy, sample "
+                           "collection and radiology counters, with TV display and voice "
+                           "call-out; average wait per counter"],
+        ["Self check-in", "Patients with a booking scan a QR code at a kiosk or on their "
+                          "phone to check in and get a token"],
     ], widths=[0.2, 0.8], first_col_bold=True)
+
+    s += H2("ABDM integration (Ayushman Bharat Digital Mission)")
+    s += bullets([
+        "Create or verify a patient's ABHA number with Aadhaar or mobile OTP at "
+        "registration, and link it to the UHID.",
+        "Scan and Share: patients scan the hospital's QR code with an ABHA app to share "
+        "their profile, which creates a registration and a counter token instantly.",
+        "Link prescriptions, lab reports and discharge summaries to the patient's ABHA so "
+        "they appear in the patient's health locker, with consent.",
+        "Records are mapped to FHIR resources as ABDM requires. The hospital registers in "
+        "the Health Facility Registry and doctors in the Health Professional Registry.",
+    ])
 
     s += H2("Patient portal")
     s.append(P("A mobile-friendly web portal at {hospital}.example.com/my, built in React and "
@@ -201,5 +218,6 @@ def story():
         ["Housekeeping / Facility", "Beds awaiting cleaning, open tickets, PM due, AMC "
                                     "renewals"],
         ["Quality", "Open incidents and complaints, indicator trends, audits due"],
+        ["CRM", "Leads due for follow-up, campaign results, camp bookings, renewals"],
     ], widths=[0.25, 0.75], first_col_bold=True)
     return s
