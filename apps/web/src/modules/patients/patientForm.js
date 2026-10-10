@@ -146,7 +146,12 @@ export function toPayload(values, mode = 'create') {
     referral: blank(values.referralDoctor) ? undefined : { doctorName: values.referralDoctor },
     photoFileId: values.photoFileId,
   };
-  return withoutEmpty(body);
+  const out = withoutEmpty(body);
+  // Required fields stay as typed, so an empty one gets the schema's own message.
+  out.name = { ...out.name, first: values.name?.first ?? '' };
+  out.mobile = values.mobile ?? '';
+  out.gender = values.gender ?? '';
+  return out;
 }
 
 /** A patient from the API -> form values for editing (Aadhaar stays masked, as the API sends it). */

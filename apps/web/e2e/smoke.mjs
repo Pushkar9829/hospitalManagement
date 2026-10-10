@@ -5,6 +5,10 @@
  *
  *   pnpm --filter @hms/web e2e:smoke            build (with the dev gallery) + run
  *   node e2e/smoke.mjs --real                   also sign in against a real API on :4000
+ *   node e2e/smoke.mjs --real-only              only the real-API journeys
+ *
+ * The preview proxies /api to HMS_API_URL (default http://localhost:4000). The signup journey
+ * reads the SMS code from the API's log: set SMOKE_API_LOG to its file (console SMS provider).
  *
  * Env: CHROMIUM_PATH (default /opt/pw-browsers/chromium-1194/chrome-linux/chrome),
  *      PLAYWRIGHT_MODULE (default: `playwright` from node_modules, else the global install),
@@ -17,6 +21,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PANELS } from '@hms/shared/catalog';
 import { sessionSchema } from '@hms/shared/schemas';
+import { phase1bFixtureSteps, phase1bRealSteps } from './phase1b.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const webRoot = resolve(here, '..');
@@ -59,7 +64,15 @@ const BRANCHES = [
   { id: '64b000000000000000000002', name: 'City Branch' },
 ];
 
-function session({ panel, name, username, designation, modules, setup = false }) {
+function session({
+  panel,
+  name,
+  username,
+  designation,
+  modules,
+  setup = false,
+  permissions = PANELS[panel].permissions,
+}) {
   return sessionSchema.parse({
     user: {
       id: `u-${panel}`,
@@ -75,7 +88,7 @@ function session({ panel, name, username, designation, modules, setup = false })
     tenant: { id: 't-demo', name: 'Demo Hospital', subdomain: 'demo', status: 'ACTIVE', modules },
     branch: BRANCHES[0],
     branches: panel === 'superadmin' ? BRANCHES : [BRANCHES[0]],
-    permissions: PANELS[panel].permissions,
+    permissions,
     idleTimeoutMin: 15,
   });
 }
@@ -106,21 +119,37 @@ const ENROL = session({
 const err = (code, message = code) => ({ error: { code, message, requestId: 'smoke-req-1' } });
 
 /** Routes /api/v1/** for one browser context. `users` maps username -> session. */
-async function mockApi(context, users) {
+async function mockApi(context, users, extra = {}) {
   const state = { current: null };
+  await context.route('**/api/public/**', async (route) => {
+    const req = route.request();
+    const path = new URL(req.url()).pathname;
+    const handler = extra[`${req.method()} ${path}`];
+    const [status, json] = handler
+      ? await handler(req.postDataJSON?.() ?? null, state)
+      : [404, err('NOT_FOUND', path)];
+    return route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(json) });
+  });
   await context.route('**/api/v1/**', async (route) => {
     const req = route.request();
     const path = new URL(req.url()).pathname.replace(/^\/api\/v1/, '');
     const body = req.postDataJSON?.() ?? null;
     const reply = (status, json) =>
-      route.fulfill({
-        status,
-        contentType: 'application/json',
-        body: json === undefined ? '' : JSON.stringify(json),
-      });
+      Buffer.isBuffer(json)
+        ? route.fulfill({ status, contentType: 'application/pdf', body: json })
+        : route.fulfill({
+            status,
+            contentType: 'application/json',
+            body: json === undefined ? '' : JSON.stringify(json),
+          });
     const key = `${req.method()} ${path}`;
     if (req.method() !== 'GET') {
       assert(req.headers()['idempotency-key'], `${key} sends Idempotency-Key`);
+    }
+    const handler = extra[key] ?? extra[`${req.method()} ${path.replace(/[a-f\d]{24}/g, ':id')}`];
+    if (handler) {
+      const [status, json] = await handler(body, state);
+      return reply(status, json);
     }
     switch (key) {
       case 'GET /auth/me':
@@ -202,9 +231,9 @@ async function startPreview() {
   throw new Error(`vite preview did not start:\n${output}`);
 }
 
-async function newPage(browser, viewport, users) {
+async function newPage(browser, viewport, users, extra) {
   const context = await browser.newContext({ viewport, reducedMotion: 'reduce' });
-  const state = users ? await mockApi(context, users) : null;
+  const state = users ? await mockApi(context, users, extra) : null;
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
@@ -401,7 +430,7 @@ async function realApiSteps(browser, step) {
     await sheet.getByRole('textbox', { name: 'Temporary password' }).fill(TEMP_PASSWORD);
     await shot(page, 'p1-user-sheet');
     await sheet.getByRole('button', { name: 'Create login' }).click();
-    await page.getByText(`Login created for Smoke Nurse ${RUN}`).waitFor();
+    await page.getByText(`Login created for Smoke Nurse ${RUN}`, { exact: true }).waitFor();
     assert(errors.length === 0, `no page errors: ${errors.join(' | ')}`);
     await context.close();
   });
@@ -518,6 +547,25 @@ async function realApiSteps(browser, step) {
   });
 }
 
+/** Helpers the Phase 1 patient, billing, subscription and signup steps use (phase1b.mjs). */
+function kit() {
+  return {
+    newPage,
+    realPage,
+    shot,
+    assert,
+    noHorizontalScroll,
+    signIn,
+    signInAs,
+    approveInInbox,
+    session,
+    log,
+    ORIGIN,
+    PORT,
+    RUN,
+  };
+}
+
 async function run() {
   const users = { superadmin: SUPERADMIN, nurse: NURSE, accounts: ENROL };
   const preview = await startPreview();
@@ -538,9 +586,13 @@ async function run() {
   };
 
   try {
-    if (!REAL_ONLY) await fixtureSteps(browser, step, users);
+    if (!REAL_ONLY) {
+      await fixtureSteps(browser, step, users);
+      await phase1bFixtureSteps(browser, step, kit());
+    }
     if (REAL || REAL_ONLY) {
       await realApiSteps(browser, step);
+      await phase1bRealSteps(browser, step, kit());
     }
   } finally {
     await browser.close();

@@ -19,7 +19,11 @@ import { BILL_TONES } from '../billing.js';
 export function BillStatus({ bill, inline = false }) {
   const { t } = useTranslation();
   return (
-    <span className={inline ? 'inline-flex flex-wrap items-center gap-1' : 'flex flex-col items-start gap-1'}>
+    <span
+      className={
+        inline ? 'inline-flex flex-wrap items-center gap-1' : 'flex flex-col items-start gap-1'
+      }
+    >
       <StatusBadge
         tone={BILL_TONES[bill.status] ?? 'neutral'}
         icon={false}

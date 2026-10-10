@@ -10,6 +10,20 @@ const anonymous = {
 };
 
 describe('route guards', () => {
+  it('says so when the address is no hospital (404 TENANT_NOT_FOUND)', async () => {
+    mockApi({
+      'GET /auth/me': () => [404, errorBody('TENANT_NOT_FOUND', 'Unknown hospital address')],
+    });
+    renderApp('/login');
+    expect(
+      await screen.findByRole('heading', { name: 'No hospital at this address' }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Go to the main site' })).toHaveAttribute(
+      'href',
+      expect.stringMatching(/^http:\/\/localhost(:\d+)?\/pricing$/),
+    );
+  });
+
   it('sends anonymous users to /login with next', async () => {
     mockApi(anonymous);
     const { router } = renderApp('/ipd/beds?ward=2');

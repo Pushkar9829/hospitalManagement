@@ -61,6 +61,7 @@ export function LinesEditor({ lines, onChange, readOnly = false, caption }) {
                       aria-label={t('billing.lines.qtyFor', { name: l.name })}
                       className="w-20"
                       value={l.qty}
+                      onFocus={(e) => e.target.select()}
                       onChange={(e) =>
                         setQty(i, Math.max(1, Math.min(999, Number(e.target.value) || 1)))
                       }

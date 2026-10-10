@@ -1,10 +1,13 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ROLE_GRANTS, estimatedDob } from '@hms/shared';
 import { errorBody, makeSession } from '../../test/fixtures.js';
 import { mockApi, renderApp } from '../../test/renderApp.jsx';
 import { emptyForm, fromPatient, prefillFromSearch, searchHint, toPayload } from './patientForm.js';
+
+// Typing whole forms takes a few seconds under a parallel run.
+vi.setConfig({ testTimeout: 30_000 });
 
 const ID = 'a'.repeat(24);
 const OTHER = 'b'.repeat(24);
@@ -99,7 +102,7 @@ describe('patient form helpers', () => {
 describe('Patient search', () => {
   it('keeps the query in the URL and opens the profile from a row', async () => {
     const { user, router, fetchMock } = setup();
-    const box = await screen.findByRole('searchbox');
+    const box = await screen.findByRole('searchbox', { name: 'Search' });
     await user.type(box, '987');
     expect(await screen.findByText('Type at least 4 digits of the mobile number.')).toBeVisible();
     await user.type(box, '6');
@@ -191,7 +194,7 @@ describe('Registration', () => {
     await user.type(await screen.findByLabelText(/^First name/), 'Asha');
     await user.click(screen.getByLabelText('Female', { exact: true }));
     await user.type(screen.getByLabelText('Years'), '9');
-    await user.type(screen.getByLabelText(/^Mobile/), '9876543210');
+    await user.type(screen.getAllByLabelText(/^Mobile/)[0], '9876543210');
     await user.click(screen.getByRole('button', { name: 'Add ID document' }));
     const number = screen.getByLabelText(/^Number/);
     await user.type(number, '123456789012');
@@ -249,7 +252,10 @@ describe('Patient profile', () => {
       {
         'GET /patients': () => [
           200,
-          { items: [CARD, { ...CARD, id: OTHER, uhid: 'CC0000077', name: 'Ravi Kumaar' }], total: 2 },
+          {
+            items: [CARD, { ...CARD, id: OTHER, uhid: 'CC0000077', name: 'Ravi Kumaar' }],
+            total: 2,
+          },
         ],
         'POST /patients/merge': (_r, b) => ((body = b), [202, { approvalId: 'c'.repeat(24) }]),
       },
