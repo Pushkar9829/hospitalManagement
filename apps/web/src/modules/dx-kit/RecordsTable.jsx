@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { addDxkitStrings } from '@hms/i18n/dxkit';
 import { DataTable, EmptyState, ErrorState } from '@hms/ui';
 import { apiError } from '../../app/apiError.js';
+import { useStrings } from '../../lib/useStrings.js';
 import { useUrlState } from '../../lib/useUrlState.js';
 
 /**
@@ -25,6 +27,7 @@ export function RecordsTable({
   density,
   skip = false,
 }) {
+  useStrings(addDxkitStrings);
   const { t } = useTranslation();
   const [pageText, setPage] = useUrlState('page', '1');
   const page = Math.max(1, Number(pageText) || 1);

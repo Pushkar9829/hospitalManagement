@@ -1,12 +1,15 @@
 import { useTranslation } from 'react-i18next';
+import { addDxkitStrings } from '@hms/i18n/dxkit';
 import { EmptyState, ErrorState, Loading } from '@hms/ui';
 import { apiError } from '../../app/apiError.js';
+import { useStrings } from '../../lib/useStrings.js';
 
 /**
  * Loading, error and empty states for one query result. `children(data)` renders the content.
  * `isEmpty(data)` decides when to show `empty` (a title string or an element).
  */
 export function QueryView({ query, children, errorTitle, empty, isEmpty, emptyIcon, rows = 3 }) {
+  useStrings(addDxkitStrings);
   const { t } = useTranslation();
   const { data, isLoading, isError, error, refetch, isFetching } = query;
   if (isLoading) return <Loading rows={rows} />;

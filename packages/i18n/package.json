@@ -9,7 +9,8 @@
     "./patients": "./src/patients.js",
     "./billing": "./src/billing.js",
     "./subscription": "./src/subscription.js",
-    "./signup": "./src/signup.js"
+    "./signup": "./src/signup.js",
+    "./dxkit": "./src/dxkit.js"
   },
   "scripts": {
     "lint": "eslint .",

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { addPatientsStrings } from '@hms/i18n/patients';
+import { addDxkitStrings } from '@hms/i18n/dxkit';
 import { Button, Checkbox, Dialog, FormField, Input, Select, Textarea, cn } from '@hms/ui';
 import { ApiErrorNotice } from '../../components/ApiErrorNotice.jsx';
 import { applyFieldErrors, cleanResolver } from '../../lib/forms.js';
@@ -15,7 +16,7 @@ import { PatientPicker } from '../patients/components/PatientPicker.jsx';
  * dialog closes and `onDone(result, values)` runs (the caller shows the toast or the 202 notice).
  *
  * fields: [{ name, label, type: text|number|date|time|select|textarea|checkbox|patient,
- *            options, hint, required, optional, span: 2, mono, placeholder, rows }]
+ *            options, hint, required, optional, span: 2, mono, placeholder, rows, onChange }]
  * `children(form)` renders extra content under the fields (line editors, summaries).
  */
 export function FormDialog({
@@ -34,7 +35,7 @@ export function FormDialog({
   children,
   intro,
 }) {
-  useStrings(addPatientsStrings);
+  useStrings(addPatientsStrings, addDxkitStrings);
   const { t } = useTranslation();
   const [failure, setFailure] = useState(null);
   const form = useForm({
@@ -85,6 +86,8 @@ export function FormDialog({
     return e?.message ? String(e.message) : undefined;
   };
   const formId = `dx-form-${title.replace(/\W+/g, '-').toLowerCase()}`;
+  // A field's own onChange(value) lets the caller update dependent options (e.g. free slots).
+  const fieldOpts = (f) => (f.onChange ? { onChange: (e) => f.onChange(e.target.value) } : undefined);
 
   return (
     <Dialog
@@ -157,15 +160,15 @@ export function FormDialog({
               >
                 {f.type === 'select' ? (
                   <Select
-                    {...register(f.name)}
+                    {...register(f.name, fieldOpts(f))}
                     options={f.options}
                     placeholder={f.placeholder ?? t('dxkit.choose')}
                   />
                 ) : f.type === 'textarea' ? (
-                  <Textarea {...register(f.name)} rows={f.rows ?? 3} placeholder={f.placeholder} />
+                  <Textarea {...register(f.name, fieldOpts(f))} rows={f.rows ?? 3} placeholder={f.placeholder} />
                 ) : (
                   <Input
-                    {...register(f.name)}
+                    {...register(f.name, fieldOpts(f))}
                     type={f.type === 'number' ? 'text' : (f.type ?? 'text')}
                     inputMode={f.type === 'number' ? 'decimal' : undefined}
                     mono={f.mono}
