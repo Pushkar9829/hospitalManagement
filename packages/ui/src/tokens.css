@@ -94,6 +94,7 @@
   --animate-fade-in: fade-in 120ms ease-out;
   --animate-pop-in: pop-in 140ms ease-out;
   --animate-slide-in: slide-in 180ms ease-out;
+  --animate-slide-in-right: slide-in-right 180ms ease-out;
   --animate-shimmer: shimmer 1.4s ease-in-out infinite;
 
   @keyframes fade-in {
@@ -117,6 +118,14 @@
   @keyframes slide-in {
     from {
       transform: translateX(-100%);
+    }
+    to {
+      transform: none;
+    }
+  }
+  @keyframes slide-in-right {
+    from {
+      transform: translateX(100%);
     }
     to {
       transform: none;

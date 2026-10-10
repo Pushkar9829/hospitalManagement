@@ -2,6 +2,8 @@
  * Hindi (Devanagari) strings for the app shell. Medical and product terms that Indian hospitals
  * use in English (OPD, IPD, UHID, OTP, ward, bed, module names) stay in English.
  */
+import { adminCoreHi } from './admin-core.hi.js';
+
 export const hi = {
   app: {
     name: 'Hospital Management System',
@@ -34,6 +36,13 @@ export const hi = {
     show: 'दिखाएँ',
     hide: 'छिपाएँ',
     dismiss: 'हटाएँ',
+    actions: 'कार्रवाइयाँ',
+    all: 'सभी',
+    edit: 'बदलें',
+    view: 'देखें',
+    status: 'स्थिति',
+    yes: 'हाँ',
+    no: 'नहीं',
   },
   login: {
     title: 'साइन इन',
@@ -103,8 +112,17 @@ export const hi = {
   },
   forgot: {
     title: 'पासवर्ड भूल गए?',
-    body: 'अपने अस्पताल एडमिन से इसे रीसेट करने को कहें। वे Settings में Users से आपको नया अस्थायी पासवर्ड भेज सकते हैं।',
-    phase: 'SMS और ई-मेल से खुद पासवर्ड रीसेट करने की सुविधा Phase 1 में आएगी।',
+    body: 'अपना यूज़रनेम या रजिस्टर्ड मोबाइल डालें। हम उस मोबाइल पर SMS से 6 अंकों का कोड भेजेंगे।',
+    username: 'यूज़रनेम या मोबाइल',
+    send: 'कोड भेजें',
+    sent: 'अगर {{username}} का मोबाइल रजिस्टर्ड है, तो उस पर 6 अंकों का कोड भेजा गया है। यह {{minutes}} मिनट में खत्म होगा।',
+    resetTitle: 'नया पासवर्ड सेट करें',
+    code: 'SMS में आया कोड',
+    reset: 'नया पासवर्ड सेट करें',
+    wrongCode: 'कोड सही नहीं है या उसकी समय सीमा खत्म हो गई है। SMS जाँचें या नया कोड माँगें।',
+    otherUser: 'दूसरा यूज़रनेम इस्तेमाल करें',
+    failed: 'हम पासवर्ड रीसेट नहीं कर सके।',
+    done: 'आपका पासवर्ड बदल गया और हर डिवाइस से साइन आउट कर दिया गया। नए पासवर्ड से साइन इन करें।',
     back: 'साइन इन पर वापस जाएँ',
   },
   menu: {
@@ -116,6 +134,7 @@ export const hi = {
     addFavourite: '{{label}} को पसंदीदा में जोड़ें',
     removeFavourite: '{{label}} को पसंदीदा से हटाएँ',
     branchPanel: '{{branch}} · {{panel}}',
+    approvalsWaiting: '{{count}} आपकी मंज़ूरी के इंतज़ार में',
   },
   topbar: {
     search: 'स्क्रीन खोजें',
@@ -130,6 +149,7 @@ export const hi = {
     themeContrast: 'हाई कंट्रास्ट',
     language: 'भाषा',
     shortcuts: 'कीबोर्ड शॉर्टकट',
+    changePassword: 'पासवर्ड बदलें',
     signOut: 'साइन आउट करें',
   },
   palette: {
@@ -266,4 +286,5 @@ export const hi = {
     description:
       'packages/ui के हर कंपोनेंट और स्क्रीन स्थिति के नमूने। यह पेज सिर्फ़ डेवलपर के लिए है और प्रोडक्शन बिल्ड में नहीं होता।',
   },
+  ...adminCoreHi,
 };

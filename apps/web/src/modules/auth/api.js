@@ -20,6 +20,23 @@ export const authApi = baseApi.injectEndpoints({
     enableTwoFactor: b.mutation({
       query: (body) => ({ url: '/auth/2fa/enable', method: 'POST', body }),
     }),
+    /** Change own password (204); signs out the user's other devices. */
+    changePassword: b.mutation({
+      query: (body) => ({ url: '/auth/password', method: 'POST', body }),
+    }),
+    /** Always 202 { expiresInSec }, whether or not the user exists. */
+    forgotPassword: b.mutation({
+      query: (body) => ({ url: '/auth/password/forgot', method: 'POST', body }),
+    }),
+    /** 204, or 401 for a wrong or expired code. */
+    resetPassword: b.mutation({
+      query: (body) => ({ url: '/auth/password/reset', method: 'POST', body }),
+    }),
+    /** Who an invitation is for; 410 INVITE_EXPIRED when used or expired. */
+    inviteInfo: b.query({ query: (token) => `/auth/invite/${encodeURIComponent(token)}` }),
+    acceptInvite: b.mutation({
+      query: (body) => ({ url: '/auth/invite/accept', method: 'POST', body }),
+    }),
   }),
 });
 
@@ -33,4 +50,9 @@ export const {
   useSwitchBranchMutation,
   useSetupTwoFactorMutation,
   useEnableTwoFactorMutation,
+  useChangePasswordMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+  useInviteInfoQuery,
+  useAcceptInviteMutation,
 } = authApi;

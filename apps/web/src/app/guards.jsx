@@ -10,6 +10,7 @@ import {
   canChangeSubscription,
   canOpen,
   moduleName,
+  requiredGate,
   roleHome,
   safeNext,
   screenAccess,
@@ -34,11 +35,12 @@ export function SessionGate() {
 }
 
 /**
- * Signed-in routes. Anonymous users go to /login?next=…; users who must enrol in two-factor
- * sign-in go to /setup-2fa. An expired session keeps rendering (with the SessionExpired dialog
- * on top) so unsaved work stays on screen.
+ * Signed-in routes. Anonymous users go to /login?next=…; users who must choose a new password
+ * go to /change-password and users who must enrol in two-factor sign-in go to /setup-2fa
+ * (`gate` names the set-up page this route is). An expired session keeps rendering (with the
+ * SessionExpired dialog on top) so unsaved work stays on screen.
  */
-export function RequireAuth({ setup = false, children }) {
+export function RequireAuth({ gate = null, children }) {
   const { status, data } = useSelector(selectSession);
   const location = useLocation();
   if (!data || status === 'anonymous') {
@@ -46,9 +48,8 @@ export function RequireAuth({ setup = false, children }) {
     const qs = next && next !== '/' ? `?next=${encodeURIComponent(next)}` : '';
     return <Navigate to={`/login${qs}`} replace />;
   }
-  const mustEnrol = data.user.twoFactorSetupRequired;
-  if (mustEnrol && !setup) return <Navigate to="/setup-2fa" replace />;
-  if (!mustEnrol && setup) return <Navigate to={roleHome(data)} replace />;
+  const required = requiredGate(data);
+  if (required !== gate) return <Navigate to={required ?? roleHome(data)} replace />;
   return children ?? <Outlet />;
 }
 
@@ -57,7 +58,8 @@ export function PublicOnly({ children }) {
   const { status, data } = useSelector(selectSession);
   const [params] = useSearchParams();
   if (status === 'authenticated' && data) {
-    if (data.user.twoFactorSetupRequired) return <Navigate to="/setup-2fa" replace />;
+    const required = requiredGate(data);
+    if (required) return <Navigate to={required} replace />;
     return <Navigate to={safeNext(params.get('next')) ?? roleHome(data)} replace />;
   }
   return children;

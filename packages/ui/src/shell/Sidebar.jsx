@@ -28,6 +28,12 @@ function MenuItem({ item, active, favourite, onToggleFavourite, onNavigate, t })
         )}
       >
         <span className="truncate">{item.label}</span>
+        {item.badge > 0 && (
+          <span className="ml-auto inline-flex min-w-5 shrink-0 items-center justify-center rounded-chip bg-accent px-1.5 text-xs leading-5 font-semibold text-on-accent">
+            <span aria-hidden="true">{item.badge > 99 ? '99+' : item.badge}</span>
+            <span className="sr-only">{item.badgeLabel ?? item.badge}</span>
+          </span>
+        )}
       </a>
       <button
         type="button"
@@ -56,7 +62,8 @@ function MenuItem({ item, active, favourite, onToggleFavourite, onNavigate, t })
  * Favourites group is pinned on top. Collapsed groups and favourites are kept in localStorage
  * under `storageKey` (use one key per user).
  *
- * `menu` is the output of buildMenu(): [{ group, items: [{ label, screen, route }] }].
+ * `menu` is the output of buildMenu(): [{ group, items: [{ label, screen, route }] }]. An item
+ * may carry `badge` (a count, e.g. approvals waiting) and `badgeLabel` (its spoken text).
  * `onNavigate(route, item)` handles plain clicks; modified clicks open the href normally.
  */
 export function Sidebar({

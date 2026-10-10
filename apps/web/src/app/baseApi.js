@@ -1,5 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { sessionExpired, twoFactorSetupRequired } from './sessionActions.js';
+import {
+  passwordChangeRequired,
+  sessionExpired,
+  twoFactorSetupRequired,
+} from './sessionActions.js';
 
 /** Same origin as the app. Built as an absolute URL so it also works under jsdom in tests. */
 export const API_BASE = `${globalThis.location?.origin ?? 'http://localhost'}/api/v1`;
@@ -14,6 +18,9 @@ const NO_REFRESH = [
   '/auth/2fa/verify',
   '/auth/otp/request',
   '/auth/otp/verify',
+  '/auth/password/forgot',
+  '/auth/password/reset',
+  '/auth/invite/accept',
 ];
 
 const REFRESHABLE_CODES = new Set(['TOKEN_INVALID', 'UNAUTHENTICATED']);
@@ -68,7 +75,9 @@ function refreshOnce(api, extraOptions) {
 /**
  * Base query: x-branch-id and Idempotency-Key headers; on 401 TOKEN_INVALID / UNAUTHENTICATED
  * it refreshes once and retries the call (same idempotency key). If the refresh fails while the
- * user was signed in, the session is marked expired; the page stays mounted so drafts are kept.
+ * user was signed in, the session is marked expired (SESSION_IDLE: signed out for inactivity);
+ * the page stays mounted so drafts are kept. 403 TWO_FACTOR_SETUP_REQUIRED and
+ * PASSWORD_CHANGE_REQUIRED send the user to the matching set-up screen.
  */
 export async function baseQueryWithReauth(args, api, extraOptions) {
   const req = withIdempotency(args);
@@ -81,10 +90,21 @@ export async function baseQueryWithReauth(args, api, extraOptions) {
     if (!refreshed.error) {
       result = await rawBaseQuery(req, api, extraOptions);
     } else if (api.getState().session?.status === 'authenticated') {
-      api.dispatch(sessionExpired({ reason: 'token' }));
+      const refreshError = refreshed.error.data?.error;
+      // SESSION_IDLE: the server signed the user out for inactivity (e.g. in another tab).
+      const idle = refreshError?.code === 'SESSION_IDLE';
+      api.dispatch(
+        sessionExpired({
+          reason: idle ? 'idle' : 'token',
+          minutes: idle ? (api.getState().session.data?.idleTimeoutMin ?? null) : null,
+          message: idle ? (refreshError.message ?? null) : null,
+        }),
+      );
     }
   } else if (err?.status === 403 && code === 'TWO_FACTOR_SETUP_REQUIRED') {
     api.dispatch(twoFactorSetupRequired());
+  } else if (err?.status === 403 && code === 'PASSWORD_CHANGE_REQUIRED') {
+    api.dispatch(passwordChangeRequired());
   }
   return result;
 }
@@ -93,6 +113,20 @@ export async function baseQueryWithReauth(args, api, extraOptions) {
 export const baseApi = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Session'],
+  tagTypes: [
+    'Session',
+    'Settings',
+    'Entities',
+    'Branches',
+    'NumberSeries',
+    'ApprovalRules',
+    'Departments',
+    'Masters',
+    'Approvals',
+    'ApprovalCount',
+    'Audit',
+    'Users',
+    'Roles',
+  ],
   endpoints: () => ({}),
 });

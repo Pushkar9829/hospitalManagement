@@ -2,6 +2,7 @@ import {
   Building2,
   ChevronDown,
   Keyboard,
+  KeyRound,
   Languages,
   LogOut,
   Menu as MenuIcon,
@@ -34,8 +35,8 @@ const themeKey = {
 
 /**
  * Top bar: menu button (tablet), breadcrumb and title, the palette search button, a branch
- * switcher when the user has more than one branch, and the account menu (My Space, theme,
- * language, shortcuts, sign out).
+ * switcher when the user has more than one branch, and the account menu (My Space, change
+ * password, theme, language, shortcuts, sign out).
  */
 export function TopBar({
   title,
@@ -52,6 +53,7 @@ export function TopBar({
   languages = [],
   onLanguageChange,
   onMySpace,
+  onChangePassword,
   onShortcuts,
   onSignOut,
   className,
@@ -155,6 +157,11 @@ export function TopBar({
             {onMySpace && (
               <DropdownMenuItem icon={<UserRound size={16} />} onSelect={onMySpace}>
                 {t('topbar.mySpace')}
+              </DropdownMenuItem>
+            )}
+            {onChangePassword && (
+              <DropdownMenuItem icon={<KeyRound size={16} />} onSelect={onChangePassword}>
+                {t('topbar.changePassword')}
               </DropdownMenuItem>
             )}
             {onShortcuts && (

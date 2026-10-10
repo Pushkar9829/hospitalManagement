@@ -27,6 +27,7 @@ export { FormField } from './primitives/FormField.jsx';
 export { FieldContext, useFieldProps } from './primitives/field-context.js';
 export { Dialog, DialogClose } from './primitives/Dialog.jsx';
 export { Drawer } from './primitives/Drawer.jsx';
+export { Sheet } from './primitives/Sheet.jsx';
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './primitives/Tabs.jsx';
 export { Tooltip, TooltipProvider } from './primitives/Tooltip.jsx';
 export { ToastProvider } from './primitives/Toast.jsx';
@@ -53,6 +54,8 @@ export { EmptyState } from './data/EmptyState.jsx';
 export { Skeleton } from './data/Skeleton.jsx';
 export { StatTile } from './data/StatTile.jsx';
 export { QrCode } from './data/QrCode.jsx';
+export { DiffTable } from './data/DiffTable.jsx';
+export { diffRows, flatten } from './data/diff.js';
 
 // clinical
 export { PatientBanner } from './clinical/PatientBanner.jsx';

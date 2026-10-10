@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -30,8 +30,16 @@ import { selectSession } from '../session.js';
 import { sessionExpired, signedOut } from '../sessionActions.js';
 import { usePrefs } from '../prefs-context.js';
 import { useLogoutMutation, useSwitchBranchMutation } from '../../modules/auth/api.js';
+import { useApprovalCountQuery } from '../../modules/approvals/api.js';
 import { useIdleTimeout } from '../../lib/useIdleTimeout.js';
 import { clearAllDrafts } from '../../lib/useDraft.js';
+
+/** Loaded when opened: the password form (zod, react-hook-form) stays out of the first bundle. */
+const ChangePasswordDialog = lazy(() =>
+  import('../../modules/auth/components/ChangePasswordDialog.jsx').then((m) => ({
+    default: m.ChangePasswordDialog,
+  })),
+);
 
 const themeLabel = {
   light: 'topbar.themeLight',
@@ -62,10 +70,38 @@ export function AppLayout() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [passwordOpen, setPasswordOpen] = useState(false);
   const searchRef = useRef(null);
   const mainFocusPath = useRef(location.pathname);
 
-  const menu = useMemo(() => menuFor(data), [data]);
+  // Approvals waiting for me: polled every minute as background traffic (x-background: 1), so
+  // it never keeps an idle session alive; decisions refetch it straight away.
+  const approvalsVisible = canOpen('Approvals', data);
+  const { data: approvalCount } = useApprovalCountQuery(undefined, {
+    skip: !approvalsVisible || status !== 'authenticated',
+    pollingInterval: 60_000,
+    skipPollingIfUnfocused: true,
+  });
+  const waiting = approvalCount?.inbox ?? 0;
+  const baseMenu = useMemo(() => menuFor(data), [data]);
+  const menu = useMemo(
+    () =>
+      waiting
+        ? baseMenu.map((g) => ({
+            ...g,
+            items: g.items.map((it) =>
+              it.screen === 'Approvals'
+                ? {
+                    ...it,
+                    badge: waiting,
+                    badgeLabel: t('menu.approvalsWaiting', { count: waiting }),
+                  }
+                : it,
+            ),
+          }))
+        : baseMenu,
+    [baseMenu, waiting, t],
+  );
   const panels = panelKeys(data).map((k) => PANELS[k]);
   const panelName = panels.map((p) => p.name).join(', ');
   const active = findActiveItem(menu, location.pathname);
@@ -237,6 +273,7 @@ export function AppLayout() {
           languages={LANGUAGES}
           onLanguageChange={setLanguage}
           onMySpace={canOpen('MySpace', data) ? () => go('/me') : undefined}
+          onChangePassword={() => setPasswordOpen(true)}
           onShortcuts={() => setShortcutsOpen(true)}
           onSignOut={signOut}
         />
@@ -257,10 +294,16 @@ export function AppLayout() {
         onOpenChange={setShortcutsOpen}
         shortcuts={shortcutList}
       />
+      {passwordOpen && (
+        <Suspense fallback={null}>
+          <ChangePasswordDialog open onOpenChange={setPasswordOpen} />
+        </Suspense>
+      )}
       {status === 'expired' && (
         <SessionExpired
           dialog
           minutes={expired?.reason === 'idle' ? expired.minutes : null}
+          message={expired?.message}
           onSignIn={() =>
             navigate(`/login?next=${encodeURIComponent(`${location.pathname}${location.search}`)}`)
           }

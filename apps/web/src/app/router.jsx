@@ -12,11 +12,13 @@ import {
 import { AppLayout } from './shell/AppLayout.jsx';
 import { RouteError } from './RouteError.jsx';
 import {
+  ChangePasswordPage,
   DevGalleryPage,
   ForgotPasswordPage,
   LoginPage,
   NotFoundPage,
   SetupTwoFactorPage,
+  WelcomePage,
 } from './pages.js';
 
 function lazyPage(Component) {
@@ -35,10 +37,18 @@ export const routes = [
     errorElement: <RouteError />,
     children: [
       { path: '/login', element: <PublicOnly>{lazyPage(LoginPage)}</PublicOnly> },
-      { path: '/forgot-password', element: lazyPage(ForgotPasswordPage) },
+      { path: '/welcome', element: lazyPage(WelcomePage) },
+      {
+        path: '/forgot-password',
+        element: <PublicOnly>{lazyPage(ForgotPasswordPage)}</PublicOnly>,
+      },
       {
         path: '/setup-2fa',
-        element: <RequireAuth setup>{lazyPage(SetupTwoFactorPage)}</RequireAuth>,
+        element: <RequireAuth gate="/setup-2fa">{lazyPage(SetupTwoFactorPage)}</RequireAuth>,
+      },
+      {
+        path: '/change-password',
+        element: <RequireAuth gate="/change-password">{lazyPage(ChangePasswordPage)}</RequireAuth>,
       },
       {
         element: <RequireAuth />,

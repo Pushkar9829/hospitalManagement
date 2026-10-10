@@ -1,4 +1,6 @@
-/** English strings for the app shell. Modules add their own namespaces in their i18n/ folder. */
+import { adminCoreEn } from './admin-core.en.js';
+
+/** English strings for the app shell; the Phase 1 admin screens are in admin.en.js. */
 export const en = {
   app: {
     name: 'Hospital Management System',
@@ -31,6 +33,13 @@ export const en = {
     show: 'Show',
     hide: 'Hide',
     dismiss: 'Dismiss',
+    actions: 'Actions',
+    all: 'All',
+    edit: 'Edit',
+    view: 'View',
+    status: 'Status',
+    yes: 'Yes',
+    no: 'No',
   },
   login: {
     title: 'Sign in',
@@ -100,8 +109,17 @@ export const en = {
   },
   forgot: {
     title: 'Forgot your password?',
-    body: 'Ask your hospital administrator to reset it. They can send you a new temporary password from Users in Settings.',
-    phase: 'Self-service password reset by SMS and e-mail arrives in Phase 1.',
+    body: 'Enter your username or registered mobile. We will send a 6-digit code to that mobile by SMS.',
+    username: 'Username or mobile',
+    send: 'Send code',
+    sent: 'If {{username}} has a registered mobile, we sent a 6-digit code to it. It expires in {{minutes}} min.',
+    resetTitle: 'Set a new password',
+    code: 'Code from the SMS',
+    reset: 'Set new password',
+    wrongCode: 'The code is not correct or has expired. Check the SMS or request a new code.',
+    otherUser: 'Use another username',
+    failed: 'We could not reset the password.',
+    done: 'Your password was changed and every device was signed out. Sign in with the new password.',
     back: 'Back to sign in',
   },
   menu: {
@@ -113,6 +131,7 @@ export const en = {
     addFavourite: 'Add {{label}} to favourites',
     removeFavourite: 'Remove {{label}} from favourites',
     branchPanel: '{{branch}} · {{panel}}',
+    approvalsWaiting: '{{count}} waiting for your approval',
   },
   topbar: {
     search: 'Search screens',
@@ -127,6 +146,7 @@ export const en = {
     themeContrast: 'High contrast',
     language: 'Language',
     shortcuts: 'Keyboard shortcuts',
+    changePassword: 'Change password',
     signOut: 'Sign out',
   },
   palette: {
@@ -263,4 +283,5 @@ export const en = {
     description:
       'Every component and screen state in packages/ui, with sample props. This page is for developers only and is not in production builds.',
   },
+  ...adminCoreEn,
 };

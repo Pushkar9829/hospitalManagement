@@ -1,14 +1,20 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@hms/ui';
+import { Banner, Tabs, TabsContent, TabsList, TabsTrigger } from '@hms/ui';
 import { AuthLayout } from '../components/AuthLayout.jsx';
 import { PasswordForm } from '../components/PasswordForm.jsx';
 import { OtpForm } from '../components/OtpForm.jsx';
 import { TwoFactorStep } from '../components/TwoFactorStep.jsx';
 
-/** Sign in with password or mobile OTP, then a 2FA code when the role needs it. */
+/**
+ * Sign in with password or mobile OTP, then a 2FA code when the role needs it. After a password
+ * reset or an accepted invitation the username comes prefilled with a confirmation.
+ */
 export default function LoginPage() {
   const { t } = useTranslation();
+  const { state } = useLocation();
+  const notice = ['reset', 'welcome'].includes(state?.notice) ? state.notice : null;
   const [challengeId, setChallengeId] = useState(null);
   const [method, setMethod] = useState('password');
   const host = globalThis.location?.host ?? '';
@@ -23,6 +29,11 @@ export default function LoginPage() {
         <h1 id="login-title" className="mt-1 mb-5 text-2xl font-semibold text-ink">
           {challengeId ? t('twoFactor.title') : t('login.title')}
         </h1>
+        {notice && !challengeId && (
+          <Banner tone="success" role="status" className="mb-4">
+            {t(notice === 'reset' ? 'forgot.done' : 'welcome.done')}
+          </Banner>
+        )}
         {challengeId ? (
           <TwoFactorStep challengeId={challengeId} onCancel={() => setChallengeId(null)} />
         ) : (
@@ -36,7 +47,7 @@ export default function LoginPage() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="password">
-              <PasswordForm onChallenge={setChallengeId} />
+              <PasswordForm onChallenge={setChallengeId} initialUsername={state?.username} />
             </TabsContent>
             <TabsContent value="otp">
               <OtpForm onChallenge={setChallengeId} />

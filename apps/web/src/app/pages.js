@@ -9,6 +9,10 @@ export const ForgotPasswordPage = lazy(
 export const SetupTwoFactorPage = lazy(
   () => import('../modules/auth/pages/SetupTwoFactorPage.jsx'),
 );
+export const ChangePasswordPage = lazy(
+  () => import('../modules/auth/pages/ChangePasswordPage.jsx'),
+);
+export const WelcomePage = lazy(() => import('../modules/auth/pages/WelcomePage.jsx'));
 export const NotFoundPage = lazy(() => import('../modules/system/NotFoundPage.jsx'));
 export const DevGalleryPage = GALLERY_ENABLED
   ? lazy(() => import('../modules/dev/DevGalleryPage.jsx'))

@@ -9,11 +9,23 @@ import { routeMatches } from '@hms/ui';
  */
 
 const HomePage = lazy(() => import('../modules/home/HomePage.jsx'));
+const SettingsPage = lazy(() => import('../modules/setup/pages/SettingsPage.jsx'));
+const MastersPage = lazy(() => import('../modules/setup/pages/MastersPage.jsx'));
+const ApprovalsPage = lazy(() => import('../modules/approvals/pages/ApprovalsPage.jsx'));
+const AuditLogPage = lazy(() => import('../modules/audit/pages/AuditLogPage.jsx'));
+const UsersPage = lazy(() => import('../modules/users/pages/UsersPage.jsx'));
+const RolesPage = lazy(() => import('../modules/users/pages/RolesPage.jsx'));
 
 /** Screen key -> page component. The admin dashboard is the role home until Phase 1 fills it. */
 export const PAGES = {
   Home: HomePage,
   Dashboard: HomePage,
+  Settings: SettingsPage,
+  Departments: MastersPage,
+  Approvals: ApprovalsPage,
+  AuditLog: AuditLogPage,
+  Users: UsersPage,
+  Roles: RolesPage,
 };
 
 /** Screens served outside the signed-in shell. */

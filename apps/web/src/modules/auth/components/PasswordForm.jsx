@@ -14,7 +14,7 @@ import { FormAlert } from './FormAlert.jsx';
 const FIELDS = new Set(['username', 'password', 'rememberDevice']);
 
 /** Username + password. 422 details land under their fields; other errors above the form. */
-export function PasswordForm({ onChallenge }) {
+export function PasswordForm({ onChallenge, initialUsername }) {
   const { t } = useTranslation();
   const [login] = useLoginMutation();
   const [formError, setFormError] = useState(null);
@@ -26,7 +26,7 @@ export function PasswordForm({ onChallenge }) {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(loginBody),
-    defaultValues: { username: '', password: '', rememberDevice: false },
+    defaultValues: { username: initialUsername ?? '', password: '', rememberDevice: false },
   });
 
   const onSubmit = async (values) => {
@@ -57,7 +57,7 @@ export function PasswordForm({ onChallenge }) {
           autoComplete="username"
           autoCapitalize="none"
           spellCheck={false}
-          autoFocus
+          autoFocus={!initialUsername}
           {...register('username')}
         />
       </FormField>
@@ -78,6 +78,7 @@ export function PasswordForm({ onChallenge }) {
           <Input
             type={showPassword ? 'text' : 'password'}
             autoComplete="current-password"
+            autoFocus={Boolean(initialUsername)}
             className="pr-12"
             {...register('password')}
           />

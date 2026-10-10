@@ -7,6 +7,7 @@ export function makeSession({
   modules = ['OPD', 'IPD', 'LAB'],
   permissions = PANELS[panel].permissions,
   twoFactorSetupRequired = false,
+  mustChangePassword = false,
   branches = [{ id: '64b000000000000000000001', name: 'Main Branch' }],
   name = 'Test User',
 } = {}) {
@@ -18,6 +19,7 @@ export function makeSession({
       roles: [{ code: panel.toUpperCase(), name: PANELS[panel].name, panel }],
       twoFactorEnabled: !twoFactorSetupRequired,
       twoFactorSetupRequired,
+      mustChangePassword,
       preferredLanguage: 'en',
     },
     tenant: { id: 't1', name: 'Test Hospital', subdomain: 'test', status: 'ACTIVE', modules },

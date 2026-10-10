@@ -1,6 +1,11 @@
 import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { authApi } from '../modules/auth/api.js';
-import { sessionExpired, signedOut, twoFactorSetupRequired } from './sessionActions.js';
+import {
+  passwordChangeRequired,
+  sessionExpired,
+  signedOut,
+  twoFactorSetupRequired,
+} from './sessionActions.js';
 
 /**
  * status: 'loading' (checking /auth/me) | 'authenticated' | 'anonymous' | 'expired'.
@@ -32,6 +37,9 @@ const slice = createSlice({
       .addCase(signedOut, () => ({ ...initialState, status: 'anonymous' }))
       .addCase(twoFactorSetupRequired, (state) => {
         if (state.data) state.data.user.twoFactorSetupRequired = true;
+      })
+      .addCase(passwordChangeRequired, (state) => {
+        if (state.data) state.data.user.mustChangePassword = true;
       })
       .addMatcher(authApi.endpoints.me.matchRejected, (state, { meta }) => {
         if (meta.condition) return;

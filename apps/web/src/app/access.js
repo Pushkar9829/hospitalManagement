@@ -60,3 +60,13 @@ export function safeNext(next) {
   if (next.startsWith('/login')) return null;
   return next;
 }
+
+/**
+ * The set-up step a signed-in user must finish before anything else, or null. A password
+ * change comes first: until it is done the API refuses every other call, two-factor set-up too.
+ */
+export function requiredGate(session) {
+  if (session?.user.mustChangePassword) return '/change-password';
+  if (session?.user.twoFactorSetupRequired) return '/setup-2fa';
+  return null;
+}

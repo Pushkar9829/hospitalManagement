@@ -25,6 +25,8 @@ const PORT = Number(process.env.SMOKE_PORT ?? 4173);
 const ORIGIN = `http://demo.localhost:${PORT}`;
 const SHOTS = resolve(process.env.SCREENSHOT_DIR ?? resolve(here, 'screenshots'));
 const REAL = process.argv.includes('--real');
+/** --real-only skips the fixture steps (for iterating on the real-API journeys). */
+const REAL_ONLY = process.argv.includes('--real-only');
 mkdirSync(SHOTS, { recursive: true });
 
 function loadPlaywright() {
@@ -67,6 +69,7 @@ function session({ panel, name, username, designation, modules, setup = false })
       roles: [{ code: panel.toUpperCase(), name: PANELS[panel].name, panel }],
       twoFactorEnabled: !setup,
       twoFactorSetupRequired: setup,
+      mustChangePassword: false,
       preferredLanguage: 'en',
     },
     tenant: { id: 't-demo', name: 'Demo Hospital', subdomain: 'demo', status: 'ACTIVE', modules },
@@ -235,6 +238,286 @@ async function signIn(page, username) {
   await page.getByRole('button', { name: 'Sign in' }).click();
 }
 
+// ---------------------------------------------------------------------------------------------
+// Real API (--real): the Phase 1 admin journeys against the live API on :4000 through the
+// preview proxy. Every run uses fresh codes, so it can run again on the same database.
+
+const RUN =
+  `${Date.now().toString(36).slice(-4)}${Math.random().toString(36).slice(2, 4)}`.toUpperCase();
+const DEPT_CODE = `SM${RUN}`.slice(0, 8);
+const DEPT_NAME = `Smoke Nephrology ${RUN}`;
+const NURSE_USER = `smoke.nurse.${RUN.toLowerCase()}`;
+const BILLING_USER = `smoke.billing.${RUN.toLowerCase()}`;
+const TEMP_PASSWORD = 'Smoke#Temp2026';
+const NEW_PASSWORD = 'Smoke#Mine2026';
+
+async function realPage(browser, viewport = { width: 1440, height: 900 }) {
+  return newPage(browser, viewport, null);
+}
+
+async function signInAs(page, username, password = 'Demo@12345') {
+  await page.goto(`${ORIGIN}/login`);
+  await page.getByRole('heading', { name: 'Sign in' }).waitFor();
+  await page.getByLabel('Username or mobile').fill(username);
+  await page.locator('input[autocomplete="current-password"]').fill(password);
+  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.waitForURL((u) => !u.pathname.startsWith('/login'));
+}
+
+async function approveInInbox(page, titleText) {
+  await page.goto(`${ORIGIN}/approvals`);
+  await page.getByRole('heading', { name: 'Approvals', level: 1 }).waitFor();
+  const item = page.getByRole('button', { name: new RegExp(titleText) });
+  await item.waitFor();
+  await item.click();
+  await page.getByRole('heading', { name: new RegExp(titleText), level: 2 }).waitFor();
+  await page.getByRole('button', { name: 'Approve' }).click();
+  await page
+    .getByText(/^Approved: /)
+    .first()
+    .waitFor();
+}
+
+async function realApiSteps(browser, step) {
+  await step('real API: admin registers a department (202, waits for approval)', async () => {
+    const { page, errors, context } = await realPage(browser);
+    await signInAs(page, 'admin');
+    await page.goto(`${ORIGIN}/settings/masters`);
+    await page.getByRole('heading', { name: 'Departments and masters' }).waitFor();
+    await page.evaluate(() => document.fonts.ready);
+    await shot(page, 'p1-masters-departments');
+    await page.getByRole('button', { name: 'Register department' }).first().click();
+    const sheet = page.getByRole('dialog', { name: 'Register department' });
+    await sheet.waitFor();
+    await sheet.getByLabel(/^Code/).fill(DEPT_CODE);
+    await sheet.getByLabel(/^Name/).fill(DEPT_NAME);
+    await sheet.getByLabel('OPD', { exact: true }).check();
+    await sheet.getByRole('button', { name: 'Add session Monday' }).click();
+    await shot(page, 'p1-department-sheet');
+    await sheet.getByRole('button', { name: 'Submit for approval' }).click();
+    await page.getByText('Sent for approval.').waitFor();
+    await page.getByText(`${DEPT_NAME} (${DEPT_CODE}) was sent for approval.`).waitFor();
+    await page
+      .getByRole('row', { name: new RegExp(DEPT_CODE) })
+      .getByText('Pending approval')
+      .waitFor();
+    await shot(page, 'p1-department-202');
+    assert(errors.length === 0, `no page errors: ${errors.join(' | ')}`);
+    await context.close();
+  });
+
+  await step('real API: super admin approves it from the inbox (badge, path, diff)', async () => {
+    const { page, errors, context } = await realPage(browser);
+    await signInAs(page, 'superadmin');
+    const nav = page.getByRole('navigation', { name: 'Main menu' });
+    await nav.getByRole('link', { name: /Approvals.*waiting for your approval/ }).waitFor();
+    await page.goto(`${ORIGIN}/approvals`);
+    const item = page.getByRole('button', { name: new RegExp(DEPT_CODE) });
+    await item.click();
+    await page.getByRole('heading', { name: new RegExp(DEPT_CODE), level: 2 }).waitFor();
+    await page.getByText('Approval path').waitFor();
+    await page.evaluate(() => document.fonts.ready);
+    await shot(page, 'p1-approvals-inbox');
+    await page.getByRole('button', { name: 'Approve' }).click();
+    await page
+      .getByText(/^Approved: /)
+      .first()
+      .waitFor();
+    assert(errors.length === 0, `no page errors: ${errors.join(' | ')}`);
+    await context.close();
+  });
+
+  await step('real API: admin sees the department ACTIVE', async () => {
+    const { page, errors, context } = await realPage(browser);
+    await signInAs(page, 'admin');
+    await page.goto(`${ORIGIN}/settings/masters`);
+    await page.getByPlaceholder('Code or name').fill(DEPT_CODE);
+    await page
+      .getByRole('row', { name: new RegExp(DEPT_CODE) })
+      .getByText('Active')
+      .waitFor();
+    await page.getByRole('row', { name: new RegExp(DEPT_CODE) }).click();
+    await page.getByRole('dialog', { name: `Edit ${DEPT_NAME}` }).waitFor();
+    await shot(page, 'p1-department-active');
+    await page.keyboard.press('Escape');
+    assert(errors.length === 0, `no page errors: ${errors.join(' | ')}`);
+    await context.close();
+  });
+
+  await step('real API: admin imports 2 referral sources from CSV through the wizard', async () => {
+    const { page, errors, context } = await realPage(browser);
+    await signInAs(page, 'admin');
+    await page.goto(`${ORIGIN}/settings/masters?tab=referral-sources`);
+    await page.getByRole('button', { name: 'Import from Excel' }).click();
+    const dialog = page.getByRole('dialog', { name: /Import Referral sources/ });
+    await dialog.waitFor();
+    await dialog.getByRole('button', { name: 'I have the file' }).click();
+    const csv = `Code,Name,Kind,Phone\nRS${RUN}1,Smoke referral ${RUN} 1,DOCTOR,9876543210\nRS${RUN}2,Smoke referral ${RUN} 2,CAMP,\n`;
+    await dialog.locator('input[type=file]').setInputFiles({
+      name: 'referrals.csv',
+      mimeType: 'text/csv',
+      buffer: Buffer.from(csv),
+    });
+    await dialog.getByText('Checked referrals.csv.').waitFor();
+    assert((await dialog.getByRole('row').filter({ hasText: 'New' }).count()) === 2, '2 new rows');
+    await shot(page, 'p1-import-preview');
+    await dialog.getByRole('button', { name: 'Continue' }).click();
+    await dialog.getByLabel(/^Reason/).fill('Smoke test referral sources');
+    await dialog.getByRole('button', { name: 'Save 2 rows' }).click();
+    await dialog.getByText('2 rows saved to Referral sources').waitFor();
+    await shot(page, 'p1-import-done');
+    await dialog.getByRole('button', { name: 'Close' }).first().click();
+    await page.getByRole('row', { name: new RegExp(`RS${RUN}1`) }).waitFor();
+    assert(errors.length === 0, `no page errors: ${errors.join(' | ')}`);
+    await context.close();
+  });
+
+  await step('real API: super admin finds the department approval in the audit log', async () => {
+    const { page, errors, context } = await realPage(browser);
+    await signInAs(page, 'superadmin');
+    await page.goto(`${ORIGIN}/audit?entity=Department&action=APPROVE`);
+    const row = page.getByRole('row', { name: new RegExp(DEPT_CODE) });
+    await row.waitFor();
+    await row.click();
+    await page.getByRole('heading', { name: 'Entry detail' }).waitFor();
+    await page.evaluate(() => document.fonts.ready);
+    await shot(page, 'p1-audit-log');
+    assert(errors.length === 0, `no page errors: ${errors.join(' | ')}`);
+    await context.close();
+  });
+
+  await step('real API: admin creates a nurse with a temporary password (201)', async () => {
+    const { page, errors, context } = await realPage(browser);
+    await signInAs(page, 'admin');
+    await page.goto(`${ORIGIN}/settings/users`);
+    await page.getByRole('heading', { name: 'Users and logins' }).waitFor();
+    await shot(page, 'p1-users');
+    await page.getByRole('button', { name: 'Add user', exact: true }).click();
+    const sheet = page.getByRole('dialog', { name: 'Add user' });
+    await sheet.getByLabel(/^Full name/).fill(`Smoke Nurse ${RUN}`);
+    await sheet.getByLabel(/^Username/).fill(NURSE_USER);
+    await sheet.getByLabel('Staff Nurse').check();
+    await sheet.getByLabel('Main Branch').check();
+    await sheet.getByRole('textbox', { name: 'Temporary password' }).fill(TEMP_PASSWORD);
+    await shot(page, 'p1-user-sheet');
+    await sheet.getByRole('button', { name: 'Create login' }).click();
+    await page.getByText(`Login created for Smoke Nurse ${RUN}`).waitFor();
+    assert(errors.length === 0, `no page errors: ${errors.join(' | ')}`);
+    await context.close();
+  });
+
+  await step('real API: admin creates a billing manager (202)', async () => {
+    const { page, errors, context } = await realPage(browser);
+    await signInAs(page, 'admin');
+    await page.goto(`${ORIGIN}/settings/users?user=new`);
+    const sheet = page.getByRole('dialog', { name: 'Add user' });
+    await sheet.getByLabel(/^Full name/).fill(`Smoke Billing ${RUN}`);
+    await sheet.getByLabel(/^Username/).fill(BILLING_USER);
+    await sheet.getByLabel(/Billing Manager/).check();
+    await sheet.getByLabel('Main Branch').check();
+    await sheet.getByRole('textbox', { name: 'Temporary password' }).fill(TEMP_PASSWORD);
+    await sheet.getByRole('button', { name: 'Submit for approval' }).click();
+    await page.getByText('Sent for approval.').waitFor();
+    await page.getByText(`The login for Smoke Billing ${RUN} was sent for approval.`).waitFor();
+    assert(errors.length === 0, `no page errors: ${errors.join(' | ')}`);
+    await context.close();
+  });
+
+  await step('real API: super admin approves the billing manager', async () => {
+    const { page, errors, context } = await realPage(browser);
+    await signInAs(page, 'superadmin');
+    await approveInInbox(page, BILLING_USER.replace(/\./g, '\\.'));
+    assert(errors.length === 0, `no page errors: ${errors.join(' | ')}`);
+    await context.close();
+  });
+
+  await step('real API: the new nurse must choose a new password', async () => {
+    const { page, errors, context } = await realPage(browser);
+    await signInAs(page, NURSE_USER, TEMP_PASSWORD);
+    await page.waitForURL(`${ORIGIN}/change-password`);
+    await page.getByRole('heading', { name: 'Choose a new password' }).waitFor();
+    await page.evaluate(() => document.fonts.ready);
+    await shot(page, 'p1-forced-password');
+    await page.getByLabel(/^Current password/).fill(TEMP_PASSWORD);
+    await page.getByLabel(/^New password/).fill(NEW_PASSWORD);
+    await page.getByLabel(/^Type the new password again/).fill(NEW_PASSWORD);
+    await page.getByRole('button', { name: 'Save and continue' }).click();
+    await page.waitForURL((u) => u.pathname === '/home');
+    assert(errors.length === 0, `no page errors: ${errors.join(' | ')}`);
+    await context.close();
+  });
+
+  await step(
+    'real API: screens for the record (settings tabs, roles, password, 768 px)',
+    async () => {
+      const { page, errors, context } = await realPage(browser);
+      await signInAs(page, 'superadmin');
+      for (const [tab, name] of [
+        ['hospital', 'p1-settings-hospital'],
+        ['entities', 'p1-settings-entities'],
+        ['branches', 'p1-settings-branches'],
+        ['numbering', 'p1-settings-numbering'],
+        ['approval-rules', 'p1-settings-rules'],
+      ]) {
+        await page.goto(`${ORIGIN}/settings?tab=${tab}`);
+        await page.getByRole('heading', { name: 'Hospital settings' }).waitFor();
+        await page.waitForLoadState('networkidle');
+        await noHorizontalScroll(page, `settings ${tab} 1440`);
+        await shot(page, name, { fullPage: true });
+      }
+      await page.goto(`${ORIGIN}/settings/masters?tab=services`);
+      await page.waitForLoadState('networkidle');
+      await shot(page, 'p1-masters-services');
+      await page.goto(`${ORIGIN}/settings/roles`);
+      await page.getByRole('heading', { name: 'Roles and access' }).waitFor();
+      await page.waitForLoadState('networkidle');
+      await shot(page, 'p1-roles');
+      await page.goto(`${ORIGIN}/approvals?box=all`);
+      await page.waitForLoadState('networkidle');
+      await shot(page, 'p1-approvals-all');
+      await page.getByRole('button', { name: 'Account menu for Dr. Arjun Rao' }).click();
+      await page.getByRole('menuitem', { name: 'Change password' }).click();
+      await page.getByRole('dialog', { name: 'Change password' }).waitFor();
+      await shot(page, 'p1-change-password');
+      await page.keyboard.press('Escape');
+      await page.setViewportSize({ width: 768, height: 1024 });
+      for (const tab of ['hospital', 'branches', 'numbering']) {
+        await page.goto(`${ORIGIN}/settings?tab=${tab}`);
+        await page.getByRole('heading', { name: 'Hospital settings' }).waitFor();
+        await page.waitForLoadState('networkidle');
+        await noHorizontalScroll(page, `settings ${tab} 768`);
+        await shot(page, `p1-settings-${tab}-768`, { fullPage: true });
+      }
+      await page.goto(`${ORIGIN}/settings/masters`);
+      await page.waitForLoadState('networkidle');
+      await noHorizontalScroll(page, 'masters 768');
+      await shot(page, 'p1-masters-768');
+      await page.goto(`${ORIGIN}/approvals?box=all`);
+      await page.waitForLoadState('networkidle');
+      await shot(page, 'p1-approvals-768', { fullPage: true });
+      assert(errors.length === 0, `no page errors: ${errors.join(' | ')}`);
+      await context.close();
+    },
+  );
+
+  await step('real API: forgot password and invitation pages', async () => {
+    const { page, errors, context } = await realPage(browser);
+    await page.goto(`${ORIGIN}/login`);
+    await page.getByRole('link', { name: 'Forgot password?' }).click();
+    await page.getByRole('heading', { name: 'Forgot your password?' }).waitFor();
+    await page.getByLabel(/^Username or mobile/).fill('nurse');
+    await page.getByRole('button', { name: 'Send code' }).click();
+    await page.getByRole('heading', { name: 'Set a new password' }).waitFor();
+    await page.evaluate(() => document.fonts.ready);
+    await shot(page, 'p1-forgot-reset');
+    await page.goto(`${ORIGIN}/welcome?token=${'x'.repeat(40)}`);
+    await page.getByText('This invitation cannot be used.').waitFor();
+    await shot(page, 'p1-welcome-expired');
+    assert(errors.length === 0, `no page errors: ${errors.join(' | ')}`);
+    await context.close();
+  });
+}
+
 async function run() {
   const users = { superadmin: SUPERADMIN, nurse: NURSE, accounts: ENROL };
   const preview = await startPreview();
@@ -255,6 +538,24 @@ async function run() {
   };
 
   try {
+    if (!REAL_ONLY) await fixtureSteps(browser, step, users);
+    if (REAL || REAL_ONLY) {
+      await realApiSteps(browser, step);
+    }
+  } finally {
+    await browser.close();
+    preview.kill();
+  }
+
+  if (failures.length) {
+    log(`\n${failures.length} step(s) failed:\n${failures.join('\n')}`);
+    process.exit(1);
+  }
+  log('\nSmoke test passed.');
+}
+
+async function fixtureSteps(browser, step, users) {
+  {
     await step('superadmin: login, home, sidebar search, palette, 402', async () => {
       const { page, errors, context } = await newPage(browser, { width: 1440, height: 900 }, users);
       await page.goto(`${ORIGIN}/ipd/beds`);
@@ -440,34 +741,7 @@ async function run() {
       assert(errors.length === 0, `no page errors: ${errors.join(' | ')}`);
       await context.close();
     });
-
-    if (REAL) {
-      await step('real API: superadmin sign-in through the preview proxy', async () => {
-        const { page, errors, context } = await newPage(
-          browser,
-          { width: 1440, height: 900 },
-          null,
-        );
-        await signIn(page, 'superadmin');
-        await page.getByRole('heading', { name: /Good (morning|afternoon|evening)/ }).waitFor();
-        await shot(page, 'real-api-home');
-        await page.getByRole('button', { name: /Account menu for/ }).click();
-        await page.getByRole('menuitem', { name: 'Sign out' }).click();
-        await page.getByRole('heading', { name: 'Sign in' }).waitFor();
-        assert(errors.length === 0, `no page errors: ${errors.join(' | ')}`);
-        await context.close();
-      });
-    }
-  } finally {
-    await browser.close();
-    preview.kill();
   }
-
-  if (failures.length) {
-    log(`\n${failures.length} step(s) failed:\n${failures.join('\n')}`);
-    process.exit(1);
-  }
-  log('\nSmoke test passed.');
 }
 
 run().catch((e) => {

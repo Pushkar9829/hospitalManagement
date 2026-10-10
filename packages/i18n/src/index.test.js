@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createI18n, en, hi, translateValidation } from './index.js';
+import { addAdminStrings, adminModulesEn, adminModulesHi } from './admin.js';
 
 /** Every leaf key path in a nested object, e.g. `login.title`. */
 function keys(obj, prefix = '') {
@@ -19,6 +20,35 @@ describe('@hms/i18n', () => {
     expect(enKeys.filter((k) => !hiKeys.has(k))).toEqual([]);
     const get = (o, path) => path.split('.').reduce((a, k) => a[k], o);
     for (const k of enKeys) expect(placeholders(get(hi, k)), k).toEqual(placeholders(get(en, k)));
+  });
+
+  it('has Hindi for every admin screen string, with the same placeholders', () => {
+    const enKeys = keys(adminModulesEn);
+    const hiKeys = new Set(keys(adminModulesHi));
+    expect(enKeys.filter((k) => !hiKeys.has(k))).toEqual([]);
+    expect(keys(adminModulesHi).filter((k) => !enKeys.includes(k))).toEqual([]);
+    const get = (o, path) => path.split('.').reduce((a, k) => a[k], o);
+    for (const k of enKeys)
+      expect(placeholders(get(adminModulesHi, k)), k).toEqual(placeholders(get(adminModulesEn, k)));
+  });
+
+  it('translates admin strings to Hindi, not copies of the English', () => {
+    // Values that are acronyms, codes or placeholders only may stay the same.
+    const same = keys(adminModulesEn).filter((k) => {
+      const get = (o) => k.split('.').reduce((a, x) => a[x], o);
+      const e = get(adminModulesEn);
+      return e === get(adminModulesHi) && /[a-z]{4,}/.test(e.replace(/{{\s*\w+\s*}}/g, ''));
+    });
+    expect(same).toEqual([]);
+  });
+
+  it('adds the admin strings to an instance once, on demand', () => {
+    const i18n = createI18n('hi');
+    expect(i18n.exists('approvals.approve')).toBe(false);
+    addAdminStrings(i18n);
+    addAdminStrings(i18n);
+    expect(i18n.t('approvals.approve')).toBe('मंज़ूर करें');
+    expect(i18n.t('common.save')).toBe('सेव करें');
   });
 
   it('writes Hindi in Devanagari', () => {

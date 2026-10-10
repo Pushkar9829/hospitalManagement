@@ -143,6 +143,6 @@ describe('LoginPage', () => {
     expect(
       await screen.findByRole('heading', { name: 'Forgot your password?' }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/Ask your hospital administrator/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Send code' })).toBeInTheDocument();
   });
 });

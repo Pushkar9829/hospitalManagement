@@ -185,10 +185,11 @@ export function PendingApproval202({ approver, title, className, children }) {
   );
 }
 
-function SessionExpiredBody({ onSignIn }) {
+function SessionExpiredBody({ message, onSignIn }) {
   const { t } = useTranslation();
   return (
     <div className="flex flex-col items-start gap-4">
+      {message && <p className="text-base text-ink">{message}</p>}
       <p className="text-base text-muted">{t('states.sessionExpiredBody')}</p>
       <Button onClick={onSignIn}>{t('states.signInAgain')}</Button>
     </div>
@@ -197,9 +198,10 @@ function SessionExpiredBody({ onSignIn }) {
 
 /**
  * 10 · Session expired. As a dialog (`dialog`), it covers the page without unmounting it, so the
- * form underneath and its draft stay intact.
+ * form underneath and its draft stay intact. `message` is the server's own explanation, when it
+ * gave one (e.g. "You were signed out after 15 minutes without activity").
  */
-export function SessionExpired({ minutes, onSignIn, dialog = false, className }) {
+export function SessionExpired({ minutes, message, onSignIn, dialog = false, className }) {
   const { t } = useTranslation();
   const title = minutes
     ? t('states.sessionExpiredTitle', { minutes })
@@ -207,7 +209,7 @@ export function SessionExpired({ minutes, onSignIn, dialog = false, className })
   if (dialog) {
     return (
       <Dialog open onOpenChange={() => {}} title={title} hideClose size="sm" role="alertdialog">
-        <SessionExpiredBody onSignIn={onSignIn} />
+        <SessionExpiredBody message={message} onSignIn={onSignIn} />
       </Dialog>
     );
   }
@@ -219,7 +221,7 @@ export function SessionExpired({ minutes, onSignIn, dialog = false, className })
       )}
     >
       <h2 className="mb-2 text-lg font-semibold text-ink">{title}</h2>
-      <SessionExpiredBody onSignIn={onSignIn} />
+      <SessionExpiredBody message={message} onSignIn={onSignIn} />
     </section>
   );
 }
