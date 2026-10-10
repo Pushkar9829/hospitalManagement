@@ -46,7 +46,8 @@ export const adminCoreEn = {
   },
   tenant: {
     unknownTitle: 'No hospital at this address',
-    unknownBody: '{{host}} is not a hospital on this service. Check the address, or start a free trial.',
+    unknownBody:
+      '{{host}} is not a hospital on this service. Check the address, or start a free trial.',
     toSite: 'Go to the main site',
   },
   suspended: {

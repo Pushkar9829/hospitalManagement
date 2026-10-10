@@ -69,7 +69,8 @@ export const billingEn = {
       expectedCashTile: 'Expected cash',
       receipts: 'Receipts this shift',
       countTitle: 'Cash count by note',
-      expectedLine: 'Expected cash {{expected}} (opening float {{opening}} plus cash taken, less cash refunds).',
+      expectedLine:
+        'Expected cash {{expected}} (opening float {{opening}} plus cash taken, less cash refunds).',
       note: 'Note or coin',
       count: 'Count',
       countOf: 'Number of ₹{{note}} notes or coins',
@@ -113,7 +114,8 @@ export const billingEn = {
       priceList: 'Price list: {{list}} (category {{category}}).',
       services: 'Services',
       addService: 'Add a service',
-      serviceHint: 'Type 2 or more letters of the code or name. Rates are from the patient’s price list.',
+      serviceHint:
+        'Type 2 or more letters of the code or name. Rates are from the patient’s price list.',
       servicePlaceholder: 'Consultation, ECG, certificate…',
       noService: 'No active service matches “{{q}}”.',
       noRate: 'No rate in this price list',
@@ -136,7 +138,7 @@ export const billingEn = {
       gst: 'GST',
       amount: 'Amount',
       remove: 'Remove {{name}}',
-      lessDiscount: 'after discount {{amount}}',
+      lessDiscount: 'discount −{{amount}}',
     },
     totals: {
       title: 'Totals',
@@ -203,7 +205,8 @@ export const billingEn = {
       removeRow: 'Remove payment {{n}}',
       leftAfter: 'Still due after these: {{amount}}',
       fullyPaid: 'These payments clear the bill.',
-      linkHint: 'A payment link stays pending until the patient pays; the bill is not marked paid before that.',
+      linkHint:
+        'A payment link stays pending until the patient pays; the bill is not marked paid before that.',
       cashLimitHint:
         'Cash of ₹2,00,000 or more from one person in a day is not allowed (section 269ST). Take UPI, card or a bank transfer.',
       submit: 'Take {{amount}}',

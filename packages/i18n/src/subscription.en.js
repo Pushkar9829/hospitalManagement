@@ -15,19 +15,23 @@ export const subscriptionEn = {
     cycles: { MONTHLY: 'Monthly billing', ANNUAL: 'Annual billing (2 months free)' },
     banner: {
       trialTitle: 'Trial: days left {{count}}.',
-      trialBody: 'The trial ends on {{date}}. Choose a plan before then to keep working without a break.',
+      trialBody:
+        'The trial ends on {{date}}. Choose a plan before then to keep working without a break.',
       trialBodyNoDate: 'Choose a plan to keep working after the trial.',
       pastDueTitle: 'Payment due.',
       pastDueBody:
         'Invoice {{invoice}} is unpaid. Everything works for now; after 7 days the hospital becomes read-only.',
       readOnlyTitle: 'Read-only mode.',
-      readOnlyBody: 'Staff can view and print; new bills, admissions and orders are paused until payment.',
+      readOnlyBody:
+        'Staff can view and print; new bills, admissions and orders are paused until payment.',
       suspendedTitle: 'Subscription suspended.',
-      suspendedBody: 'Staff can only sign in. Pay the open invoice to reactivate; records are kept safe.',
+      suspendedBody:
+        'Staff can only sign in. Pay the open invoice to reactivate; records are kept safe.',
       viewInvoice: 'View invoices',
     },
     invoiceIssued: 'Invoice {{number}} issued.',
-    invoiceIssuedBody: 'Amount {{amount}} including GST, due {{date}}. The change takes effect when it is paid.',
+    invoiceIssuedBody:
+      'Amount {{amount}} including GST, due {{date}}. The change takes effect when it is paid.',
     plan: {
       title: 'Current plan',
       period: 'Current period: {{start}} to {{end}}',
@@ -99,7 +103,8 @@ export const subscriptionEn = {
       price: 'Price',
       totalMonth: 'Total a month',
       totalYear: 'Total a year',
-      enterprise: 'Enterprise is priced by Sales. Contact us and we set the agreed price on your account.',
+      enterprise:
+        'Enterprise is priced by Sales. Contact us and we set the agreed price on your account.',
       contactSales: 'Contact Sales',
       submit: 'Issue invoice for {{amount}}',
     },

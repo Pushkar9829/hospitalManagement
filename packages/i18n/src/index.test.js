@@ -8,7 +8,14 @@ import { addSignupStrings, signupEn, signupHi } from './signup.js';
 
 /** Lazily loaded screen bundles: [name, English, Hindi, add function, a key, its Hindi]. */
 const BUNDLES = [
-  ['patients', patientsEn, patientsHi, addPatientsStrings, 'patients.register', 'मरीज़ रजिस्टर करें'],
+  [
+    'patients',
+    patientsEn,
+    patientsHi,
+    addPatientsStrings,
+    'patients.register',
+    'मरीज़ रजिस्टर करें',
+  ],
   ['billing', billingEn, billingHi, addBillingStrings, 'billing.tabs.new', 'नया बिल'],
   [
     'subscription',

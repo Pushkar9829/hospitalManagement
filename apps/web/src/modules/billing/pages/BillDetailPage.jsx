@@ -198,7 +198,11 @@ export default function BillDetailPage() {
   const draft = bill.status === 'DRAFT';
   const final = ['FINAL', 'PARTLY_PAID', 'PAID'].includes(bill.status);
   const canDiscount =
-    can('billing:discount:request') && bill.status === 'FINAL' && !bill.totals.paid && !bill.hold;
+    can('billing:discount:request') &&
+    bill.status === 'FINAL' &&
+    !bill.totals.paid &&
+    !bill.hold &&
+    bill.discount?.status !== 'APPLIED';
   const canCancel = can('billing:cancel:request') && final && !bill.hold;
   const canPay =
     can('billing:payment:create') &&

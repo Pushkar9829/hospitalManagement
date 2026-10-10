@@ -33,7 +33,8 @@ export const signupEn = {
       start: 'Start {{days}}-day trial',
       talk: 'Talk to us',
       alaCarte: 'Or pick modules one by one',
-      alaCarteHint: 'Core is always included. Some modules need another to work; we add it for you.',
+      alaCarteHint:
+        'Core is always included. Some modules need another to work; we add it for you.',
       unit: {
         FLAT: '{{amount}} a month',
         BRANCH: '{{amount}} per branch',

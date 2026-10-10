@@ -14,7 +14,8 @@ export const patientsEn = {
     save: 'Register',
     saveAndBill: 'Register and bill',
     registered: 'Registered with UHID {{uhid}}',
-    draftRestored: 'We restored the form you were filling in on this device (ID numbers are never kept).',
+    draftRestored:
+      'We restored the form you were filling in on this device (ID numbers are never kept).',
     discardDraft: 'Start again',
     search: {
       title: 'Patients',
@@ -236,9 +237,11 @@ export const patientsEn = {
       other: 'The other record',
       pickOther: 'Choose the other record',
       keep: 'Which UHID stays?',
-      keepHint: 'The other UHID is closed and redirects to this one. Allergies and conditions from both are kept.',
+      keepHint:
+        'The other UHID is closed and redirects to this one. Allergies and conditions from both are kept.',
       reason: 'Why are these the same person?',
-      reasonHint: 'For example: same Aadhaar, same mobile and date of birth. Saved in the audit log.',
+      reasonHint:
+        'For example: same Aadhaar, same mobile and date of birth. Saved in the audit log.',
       submit: 'Send for approval',
       sent: 'The merge of {{from}} into {{to}} was sent for approval.',
       approver: 'the Hospital Admin',

@@ -193,7 +193,8 @@ export const hi = {
     paymentFailedTitle: 'भुगतान नहीं हो सका।',
     paymentFailedBody:
       'रीड-ओनली मोड से बचने के लिए {{count}} दिनों के भीतर भुगतान का तरीका अपडेट करें।',
-    paymentFailedBodyGeneric: 'रीड-ओनली मोड से बचने के लिए सब्सक्रिप्शन से बकाया इनवॉइस का भुगतान करें।',
+    paymentFailedBodyGeneric:
+      'रीड-ओनली मोड से बचने के लिए सब्सक्रिप्शन से बकाया इनवॉइस का भुगतान करें।',
     fixNow: 'अभी ठीक करें',
     readOnlyTitle: 'रीड-ओनली मोड।',
     readOnlyBody:

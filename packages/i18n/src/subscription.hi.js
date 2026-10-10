@@ -15,7 +15,8 @@ export const subscriptionHi = {
     cycles: { MONTHLY: 'मासिक बिलिंग', ANNUAL: 'सालाना बिलिंग (2 महीने मुफ़्त)' },
     banner: {
       trialTitle: 'ट्रायल: बचे दिन {{count}}।',
-      trialBody: 'ट्रायल {{date}} को ख़त्म होगा। बिना रुकावट काम जारी रखने के लिए उससे पहले प्लान चुनें।',
+      trialBody:
+        'ट्रायल {{date}} को ख़त्म होगा। बिना रुकावट काम जारी रखने के लिए उससे पहले प्लान चुनें।',
       trialBodyNoDate: 'ट्रायल के बाद काम जारी रखने के लिए प्लान चुनें।',
       pastDueTitle: 'भुगतान बाकी है।',
       pastDueBody:
@@ -28,7 +29,8 @@ export const subscriptionHi = {
       viewInvoice: 'इनवॉइस देखें',
     },
     invoiceIssued: 'इनवॉइस {{number}} जारी हुआ।',
-    invoiceIssuedBody: 'GST सहित राशि {{amount}}, देय तिथि {{date}}। भुगतान होते ही बदलाव लागू होगा।',
+    invoiceIssuedBody:
+      'GST सहित राशि {{amount}}, देय तिथि {{date}}। भुगतान होते ही बदलाव लागू होगा।',
     plan: {
       title: 'मौजूदा प्लान',
       period: 'मौजूदा अवधि: {{start}} से {{end}} तक',
@@ -81,7 +83,8 @@ export const subscriptionHi = {
       nextInvoice: 'अगला इनवॉइस (अनुमान)',
       confirm: 'बदलाव की पुष्टि करें',
       confirmPay: 'पुष्टि करें और {{amount}} का भुगतान करें',
-      menusNote: 'बदलाव लागू होते ही हर उपयोगकर्ता का मेन्यू अपडेट होता है। दोबारा साइन इन की ज़रूरत नहीं।',
+      menusNote:
+        'बदलाव लागू होते ही हर उपयोगकर्ता का मेन्यू अपडेट होता है। दोबारा साइन इन की ज़रूरत नहीं।',
       applied: 'मॉड्यूल अपडेट हुए',
       invoiced: '{{amount}} का इनवॉइस {{number}} जारी हुआ',
     },
@@ -100,7 +103,8 @@ export const subscriptionHi = {
       price: 'कीमत',
       totalMonth: 'प्रति माह कुल',
       totalYear: 'प्रति वर्ष कुल',
-      enterprise: 'एंटरप्राइज़ की कीमत सेल्स टीम तय करती है। हमसे संपर्क करें, हम तय कीमत आपके खाते पर लगा देंगे।',
+      enterprise:
+        'एंटरप्राइज़ की कीमत सेल्स टीम तय करती है। हमसे संपर्क करें, हम तय कीमत आपके खाते पर लगा देंगे।',
       contactSales: 'सेल्स से संपर्क करें',
       submit: '{{amount}} का इनवॉइस जारी करें',
     },
