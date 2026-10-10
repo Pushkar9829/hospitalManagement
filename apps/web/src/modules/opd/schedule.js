@@ -15,12 +15,11 @@ export function daysText(t, week) {
   return idx.map(name).join(', ');
 }
 
-/** The distinct session times across the week: "10:00 to 13:00, 17:00 to 19:00". */
+/** The sessions of the first working day: "10:00 to 14:00, 17:00 to 19:00". */
 export function sessionsText(t, week) {
-  const seen = new Set();
-  for (const w of week)
-    for (const s of w.sessions) seen.add(t('opd.days.session', { start: s.start, end: s.end }));
-  return [...seen].join(', ');
+  const day = week.find((w) => w.sessions.length);
+  if (!day) return t('opd.days.none');
+  return day.sessions.map((s) => t('opd.days.session', { start: s.start, end: s.end })).join(', ');
 }
 
 /** The first session of the week (for room, slot length and the cap). */

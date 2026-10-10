@@ -26,6 +26,7 @@ export function CalendarTab() {
   const [dept, setDept] = useUrlState('dept', '');
   const [doctorParam, setDoctor] = useUrlState('doctor', '');
   const [apptId, setAppt] = useUrlState('appt', '');
+  const [walkIn] = useUrlState('walkin', '');
   const [prefill, setPrefill] = useState(null);
   const departments = useOpdDepartmentsQuery();
   const slots = useOpdSlotsQuery({ date, department: dept });
@@ -120,14 +121,28 @@ export function CalendarTab() {
                 isEmpty={(d) => !d.items.length}
               >
                 {(data) => (
-                  <QueueList items={data.items.slice(0, 12)} label={t('opd.cal.queueLabel')} />
+                  <QueueList
+                    items={[
+                      ...data.items.filter((q) => q.stage !== 'DONE'),
+                      ...data.items.filter((q) => q.stage === 'DONE'),
+                    ]}
+                    label={t('opd.cal.queueLabel')}
+                  />
                 )}
               </QueryView>
             )}
           </Card>
           {can('opd:appointment:create') && (
-            <Card title={t('opd.cal.quickBook')} id="opd-quick-book">
-              <BookingForm date={date} prefill={prefill} />
+            <Card
+              title={walkIn ? t('opd.cal.walkInTitle') : t('opd.cal.quickBook')}
+              id="opd-quick-book"
+            >
+              <BookingForm
+                key={walkIn ? 'walk-in' : 'booked'}
+                date={date}
+                prefill={prefill}
+                walkIn={Boolean(walkIn)}
+              />
             </Card>
           )}
         </div>
