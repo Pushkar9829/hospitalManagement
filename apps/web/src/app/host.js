@@ -30,3 +30,8 @@ export function hospitalHost(subdomain, loc = globalThis.location) {
   const port = loc?.port ? `:${loc.port}` : '';
   return `${subdomain || '…'}.${ROOT_DOMAIN}${port}`;
 }
+
+/** The platform console (console.<root>, e.g. http://console.localhost:5173): its own shell. */
+export function isConsoleHost(hostname = globalThis.location?.hostname) {
+  return bare(hostname).startsWith('console.');
+}

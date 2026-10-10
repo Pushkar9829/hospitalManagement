@@ -37,6 +37,32 @@ export const patientsApi = baseApi.injectEndpoints({
         { type: 'Patients', id: `${id}:timeline` },
       ],
     }),
+    /** Patients registered today in this branch (planned: GET /patients/registered-today). */
+    registeredToday: b.query({
+      query: () => ({ url: '/patients/registered-today', params: { limit: 6 } }),
+      providesTags: ['Patients'],
+    }),
+    /** ABDM Scan and Share arrivals today (planned: GET /abdm/scan-share). */
+    scanShare: b.query({
+      query: (params) => ({ url: '/abdm/scan-share', params: cleanParams(params) }),
+      providesTags: ['Patients'],
+    }),
+    /**
+     * A section of the record from another module (planned, patient-scoped lists):
+     * visits | admissions | reports | prescriptions | consents.
+     */
+    patientSection: b.query({
+      query: ({ id, section, ...params }) => ({
+        url: `/patients/${id}/${section}`,
+        params: cleanParams(params),
+      }),
+      providesTags: (_r, _e, { id }) => [{ type: 'Patients', id }],
+    }),
+    /** Clinical and money summary for the profile (planned: GET /patients/:id/summary). */
+    patientSummary: b.query({
+      query: (id) => `/patients/${id}/summary`,
+      providesTags: (_r, _e, id) => [{ type: 'Patients', id }],
+    }),
     requestMerge: b.mutation({
       query: (body) => ({ url: '/patients/merge', method: 'POST', body }),
       invalidatesTags: ['Patients', 'Approvals', 'ApprovalCount'],
@@ -51,4 +77,8 @@ export const {
   useRegisterPatientMutation,
   useUpdatePatientMutation,
   useRequestMergeMutation,
+  useRegisteredTodayQuery,
+  useScanShareQuery,
+  usePatientSectionQuery,
+  usePatientSummaryQuery,
 } = patientsApi;

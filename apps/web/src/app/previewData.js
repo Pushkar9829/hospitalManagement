@@ -17,7 +17,8 @@ function load() {
 
 /**
  * Answers a request from the preview handlers, or returns null when there is none.
- * Result: { data } or { error: { status, data } } like fetchBaseQuery.
+ * Result: { data } or { error: { status, data } } like fetchBaseQuery. A handler returning
+ * { __passthrough: true } sends that request on to the real API.
  */
 export async function previewResponse(req) {
   if (!PREVIEW_ENABLED) return null;
@@ -28,6 +29,8 @@ export async function previewResponse(req) {
   const query = Object.fromEntries(url.searchParams);
   Object.assign(query, req.params ?? {});
   const out = await match.handler({ method, params: match.params, query, body: req.body });
+  // A handler may decline a request (e.g. a record that exists only in the real API).
+  if (out && out.__passthrough) return null;
   if (out && out.__status >= 400)
     return { error: { status: out.__status, data: { error: out.error } } };
   return { data: out ?? null };

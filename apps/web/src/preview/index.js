@@ -1,7 +1,9 @@
 /**
  * Preview handler registry. Each module file exports `handlers`:
  *   { 'GET /opd/queue': ({ params, query, body }) => data, 'POST /opd/visits/:id/vitals': ... }
- * Paths are relative to /api/v1. Return data, or { __status: 4xx, error: { code, message } }.
+ * Paths are relative to /api/v1; a key may also name a full path outside it, such as
+ * 'GET /api/platform/coupons' (the platform console). Return data, { __status: 4xx, error: { code,
+ * message } }, or { __passthrough: true } to let the real API answer.
  * Never used in production builds (see app/previewData.js).
  */
 const modules = import.meta.glob('./*.preview.js', { eager: true });

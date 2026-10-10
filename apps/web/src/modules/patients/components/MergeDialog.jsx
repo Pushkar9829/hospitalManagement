@@ -12,10 +12,10 @@ import { PatientPicker } from './PatientPicker.jsx';
  * the one that stays, give a reason. The request waits for the Hospital Admin (202); nothing
  * moves until it is approved, then the merged UHID redirects to the surviving one.
  */
-export function MergeDialog({ patient, open, onOpenChange, onDone }) {
+export function MergeDialog({ patient, initialOther = null, open, onOpenChange, onDone }) {
   const { t } = useTranslation();
   const [merge, { isLoading }] = useRequestMergeMutation();
-  const [other, setOther] = useState(null);
+  const [other, setOther] = useState(initialOther);
   const [keep, setKeep] = useState('this');
   const [reason, setReason] = useState('');
   const [errors, setErrors] = useState({});
@@ -23,7 +23,7 @@ export function MergeDialog({ patient, open, onOpenChange, onDone }) {
   const me = {
     id: patient.id,
     uhid: patient.uhid,
-    name: patient.name.full,
+    name: patient.name?.full ?? patient.name,
     age: patient.age,
     gender: patient.gender,
   };
@@ -72,7 +72,7 @@ export function MergeDialog({ patient, open, onOpenChange, onDone }) {
           onChange={setOther}
           exclude={patient.id}
           error={errors.other}
-          autoFocus
+          autoFocus={!initialOther}
         />
         {other && (
           <fieldset className="flex flex-col gap-2">
