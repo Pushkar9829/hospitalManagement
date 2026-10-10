@@ -13,6 +13,7 @@ import {
   PlatformInvoice,
   PlatformUser,
   Subscription,
+  WebhookEvent,
 } from '../../src/platform/models/platform.models.js';
 import { runLifecycle } from '../../src/platform/services/subscription.service.js';
 
@@ -323,6 +324,21 @@ describe('subscription lifecycle', () => {
     expect((await admin.get('/users')).status).toBe(200);
     expect((await admin.get('/audit?entity=Tenant')).body.total).toBeGreaterThanOrEqual(3);
   });
+
+  it('reactivates a suspended hospital with unpaid invoices into payment due, not active', async () => {
+    const { t } = await paidHospital();
+    const sub = await Subscription.findOne({ tenantId: t.tenant._id });
+    const end = new Date(Date.now() - 1000);
+    sub.currentPeriod = { start: new Date(end.getTime() - 30 * DAY), end };
+    await sub.save();
+    await runLifecycle();
+    await setStatus(t, 'SUSPENDED', 1);
+    const sales = await consoleUser(['SALES']);
+    const res = await sales
+      .post(`/tenants/${t.tenant._id}/status`)
+      .send({ action: 'REACTIVATE', reason: 'Owner promised payment this week' });
+    expect(res.body.status).toBe('PAST_DUE');
+  });
 });
 
 describe('platform console', () => {
@@ -442,5 +458,33 @@ describe('payment gateway webhook', () => {
       payment: { provider: 'razorpay', reference: 'pay_TEST123' },
     });
     expect(await statusOf(t)).toBe('ACTIVE');
+  });
+
+  it('keeps a payment with the wrong amount for finance instead of retrying it', async () => {
+    const t = await makeTenant({ status: 'TRIAL', modules: ['OPD'] });
+    const admin = await signIn(ctx.app, t.host);
+    const inv = (await admin.post('/subscription/convert').send({ plan: 'CLINIC' })).body;
+    const body = JSON.stringify({
+      event: 'payment.captured',
+      payload: {
+        payment: {
+          entity: { id: 'pay_SHORT', amount: 100, notes: { platformInvoice: inv.number } },
+        },
+      },
+    });
+    const post = () =>
+      request(ctx.app)
+        .post('/api/webhooks/razorpay')
+        .set('Content-Type', 'application/json')
+        .set('x-razorpay-signature', sign(body))
+        .set('x-razorpay-event-id', `evt_short_${t.tenant.subdomain}`)
+        .send(body);
+    expect((await post()).body).toEqual({ ok: false, error: 'VALIDATION_FAILED' });
+    expect((await post()).body).toEqual({ duplicate: true });
+    const stored = await WebhookEvent.findOne({
+      eventId: `evt_short_${t.tenant.subdomain}`,
+    }).lean();
+    expect(stored.error).toMatch(/^VALIDATION_FAILED/);
+    expect((await PlatformInvoice.findById(inv.id).lean()).status).toBe('ISSUED');
   });
 });

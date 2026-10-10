@@ -3,6 +3,8 @@ import { randomUUID } from 'node:crypto';
 import { makeTenant, makeUser, signIn, useIntegration } from '../helpers/int.js';
 import { runAsSystem } from '../../src/core/tenancy/context.js';
 import { PriceList, Service, TaxCode } from '../../src/modules/setup/index.js';
+import { ApprovalRequest } from '../../src/core/approvals/approval.model.js';
+import { sweepExpiredApprovals } from '../../src/core/approvals/approval.jobs.js';
 
 const ctx = useIntegration();
 
@@ -194,6 +196,37 @@ describe('billing', () => {
     });
   });
 
+  it('releases a bill held for a discount when the approval expires unanswered', async () => {
+    const { t, svc, patient, cash1 } = await counter();
+    const p = await patient('Ravi');
+    await cash1.post('/billing/shifts').send({ counter: 'C1', openingCash: 0 });
+    const bill = await finalBill(cash1, p.id, [{ serviceId: svc.consult }]);
+    const ask = await cash1.post(`/billing/bills/${bill.id}/discount`).send({
+      version: bill.version,
+      kind: 'PERCENT',
+      value: 15,
+      reason: 'Hospital staff family member',
+    });
+    await runAsSystem(t.tenant._id, () =>
+      ApprovalRequest.updateOne(
+        { _id: ask.body.approvalId },
+        { $set: { expiresAt: new Date(Date.now() - 1000) } },
+      ).exec(),
+    );
+    const { expired } = await sweepExpiredApprovals();
+    expect(expired).toBeGreaterThanOrEqual(1);
+    const after = (await cash1.get(`/billing/bills/${bill.id}`)).body;
+    expect(after.hold).toBeUndefined();
+    expect((await cash1.get(`/approvals/${ask.body.approvalId}`)).body.status).toBe('EXPIRED');
+    const paid = await key(cash1.post('/billing/payments')).send({
+      patientId: p.id,
+      mode: 'CASH',
+      amount: 500,
+      allocations: [{ billId: bill.id, amount: 500 }],
+    });
+    expect(paid.status).toBe(201);
+  });
+
   it('cancels a paid bill after approval: credit note, refund to the original mode, paid from the drawer', async () => {
     const { svc, patient, cash1, bm } = await counter();
     const p = await patient('Ravi');
@@ -301,8 +334,8 @@ describe('billing', () => {
     });
   });
 
-  it('keeps payment-link payments pending until confirmed', async () => {
-    const { svc, patient, cash1 } = await counter();
+  it('keeps payment-link payments pending until a Billing Manager confirms them', async () => {
+    const { svc, patient, cash1, bm } = await counter();
     const p = await patient('Ravi');
     await cash1.post('/billing/shifts').send({ counter: 'C1', openingCash: 0 });
     const bill = await finalBill(cash1, p.id, [{ serviceId: svc.cbc }]);
@@ -317,11 +350,69 @@ describe('billing', () => {
     ).body;
     expect(pend.status).toBe('PENDING');
     expect((await cash1.get(`/billing/bills/${bill.id}`)).body.status).toBe('FINAL');
-    const ok = await cash1
+    const byCashier = await cash1
+      .post(`/billing/payments/${pend.id}/settle`)
+      .send({ outcome: 'CAPTURED', version: pend.version });
+    expect(byCashier.status).toBe(403);
+    const ok = await bm
       .post(`/billing/payments/${pend.id}/settle`)
       .send({ outcome: 'CAPTURED', version: pend.version });
     expect(ok.body.status).toBe('CAPTURED');
     expect((await cash1.get(`/billing/bills/${bill.id}`)).body.status).toBe('PAID');
+  });
+
+  it('never reopens a cancelled bill when a pending payment confirms late', async () => {
+    const { svc, patient, cash1, bm } = await counter();
+    const p = await patient('Ravi');
+    await cash1.post('/billing/shifts').send({ counter: 'C1', openingCash: 0 });
+    const bill = await finalBill(cash1, p.id, [{ serviceId: svc.cbc }]);
+    const pend = (
+      await key(cash1.post('/billing/payments')).send({
+        patientId: p.id,
+        mode: 'PAYLINK',
+        amount: 300,
+        reference: 'plink_2',
+        allocations: [{ billId: bill.id, amount: 300 }],
+      })
+    ).body;
+    const open = (await cash1.get(`/billing/bills/${bill.id}`)).body;
+    const ask = await cash1
+      .post(`/billing/bills/${bill.id}/cancel`)
+      .send({ version: open.version, reason: 'Patient left before the test' });
+    await approve(bm, ask.body.approvalId);
+    expect((await cash1.get(`/billing/bills/${bill.id}`)).body.status).toBe('CANCELLED');
+    const late = await bm
+      .post(`/billing/payments/${pend.id}/settle`)
+      .send({ outcome: 'CAPTURED', version: pend.version });
+    expect(late.body.error.code).toBe('BILL_NOT_OPEN');
+    expect((await cash1.get(`/billing/bills/${bill.id}`)).body.status).toBe('CANCELLED');
+  });
+
+  it('cannot print a draft bill', async () => {
+    const { svc, patient, cash1 } = await counter();
+    const p = await patient('Ravi');
+    const draft = (
+      await cash1.post('/billing/bills').send({ patientId: p.id, lines: [{ serviceId: svc.cbc }] })
+    ).body;
+    const res = await cash1.get(`/billing/bills/${draft.id}/pdf`);
+    expect(res.status).toBe(409);
+  });
+
+  it('applies the cash limit to receipts taken at the same moment at two counters', async () => {
+    const { svc, patient, cash1, cash2 } = await counter();
+    const p = await patient('Ravi');
+    await cash1.post('/billing/shifts').send({ counter: 'C1', openingCash: 0 });
+    await cash2.post('/billing/shifts').send({ counter: 'C2', openingCash: 0 });
+    const bill = await finalBill(cash1, p.id, [{ serviceId: svc.consult, qty: 600 }]);
+    const pay = (c) =>
+      key(c.post('/billing/payments')).send({
+        patientId: p.id,
+        mode: 'CASH',
+        amount: 150000,
+        allocations: [{ billId: bill.id, amount: 150000 }],
+      });
+    const results = await Promise.all([pay(cash1), pay(cash2)]);
+    expect(results.map((r) => r.status).sort()).toEqual([201, 422]);
   });
 
   it('counts the drawer: a ₹300 shortfall needs a reason and a Billing Manager, never the cashier', async () => {

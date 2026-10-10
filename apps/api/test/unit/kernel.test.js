@@ -132,3 +132,16 @@ describe('helpers', () => {
     });
   });
 });
+
+describe('request log redaction', () => {
+  it('keeps paths and safe paging keys, masks searches and one-time links', async () => {
+    const { redactUrl } = await import('../../src/core/observability/http.js');
+    expect(redactUrl('/api/v1/patients?q=Ravi%20Kumar&mobile=9876543210&page=2')).toBe(
+      '/api/v1/patients?q=[redacted]&mobile=[redacted]&page=2',
+    );
+    expect(redactUrl('/api/v1/auth/invite/abcDEF123456789012345')).toBe(
+      '/api/v1/auth/invite/[redacted]',
+    );
+    expect(redactUrl('/api/v1/billing/bills/66aa')).toBe('/api/v1/billing/bills/66aa');
+  });
+});

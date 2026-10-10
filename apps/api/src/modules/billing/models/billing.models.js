@@ -221,3 +221,16 @@ shiftSchema.index(
   { unique: true, partialFilterExpression: { status: 'OPEN' } },
 );
 export const CashierShift = defineModel('CashierShift', shiftSchema);
+
+/**
+ * One row per patient per IST day, bumped inside every cash receipt's transaction. Concurrent
+ * cash receipts for the same person then conflict and retry, so the section 269ST check
+ * always sees the other receipt (it cannot be bypassed by two counters at once).
+ */
+const cashLockSchema = new Schema({
+  patientId: { type: Schema.Types.ObjectId, required: true },
+  istDate: { type: String, required: true },
+  n: { type: Number, default: 0 },
+});
+cashLockSchema.index({ tenantId: 1, patientId: 1, istDate: 1 }, { unique: true });
+export const CashLock = defineModel('CashLock', cashLockSchema, { audit: false, base: false });

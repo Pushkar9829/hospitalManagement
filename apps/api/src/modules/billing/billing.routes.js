@@ -15,7 +15,7 @@ import {
   shiftVerifyInput,
 } from '@hms/shared/schemas';
 import { defineRoutes } from '../../core/http/route.js';
-import { errors } from '../../core/errors/index.js';
+import { AppError, errors } from '../../core/errors/index.js';
 import { recordAudit } from '../../core/audit/audit.service.js';
 import { scopeFilter } from '../../core/rbac/scope.js';
 import { paginate } from '../../core/http/paginate.js';
@@ -38,6 +38,8 @@ const accepted = (res, result) => {
 async function sendPdf(res, Model, docId, render, entity, reason) {
   const doc = await Model.findOne({ _id: docId, ...scopeFilter({ branch: 'branchId' }) });
   if (!doc) throw errors.notFound(entity);
+  if (entity === 'Bill' && !doc.billNo)
+    throw new AppError(409, 'INVALID_STATE', 'Finalise the bill before printing it');
   const duplicate = doc.printCount > 0;
   if (duplicate && !reason)
     throw errors.validation([{ path: 'reason', message: 'Give a reason to reprint' }]);
@@ -186,7 +188,8 @@ export const paymentRoutes = defineRoutes({
     {
       method: 'post',
       path: '/payments/:id/settle',
-      permission: 'billing:payment:create',
+      // Confirming money that has not been seen at the counter is a manager action.
+      permission: 'billing:payment:settle',
       audit: 'UPDATE',
       summary: 'Confirm or fail a pending payment-link payment',
       schema: {

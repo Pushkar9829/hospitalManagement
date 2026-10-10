@@ -409,14 +409,21 @@ const consoleRoutes = defineRoutes({
           });
         } else if (action === 'SUSPEND')
           t.set({ status: 'SUSPENDED', statusChangedAt: new Date(), statusReason: reason });
-        else
+        else {
+          // Unpaid invoices keep counting: reactivate into PAST_DUE (full access, the grace
+          // steps restart), never straight to ACTIVE.
+          const converted = (await Subscription.findOne({ tenantId: t._id }).lean())?.converted;
+          const overdue = await PlatformInvoice.exists({
+            tenantId: t._id,
+            status: 'ISSUED',
+            dueAt: { $lte: new Date() },
+          });
           t.set({
-            status: (await Subscription.findOne({ tenantId: t._id }).lean())?.converted
-              ? 'ACTIVE'
-              : 'TRIAL',
+            status: !converted ? 'TRIAL' : overdue ? 'PAST_DUE' : 'ACTIVE',
             statusChangedAt: new Date(),
             statusReason: reason,
           });
+        }
         await t.save();
         await tenantRegistry.invalidate(t);
         await platformAudit(t._id, {
@@ -524,9 +531,39 @@ export function consoleRouter() {
 
 // ---------------------------------------------------------------- payment gateway webhook
 
+/** What a captured payment means for the platform: pay the invoice named in its notes. */
+async function handleRazorpayEvent(event, requestId) {
+  const payment = event.payload?.payment?.entity;
+  if (event.event !== 'payment.captured' || !payment?.notes?.platformInvoice) return;
+  const inv = await PlatformInvoice.findOne({ number: payment.notes.platformInvoice });
+  if (!inv) throw new AppError(422, 'UNKNOWN_INVOICE', 'No platform invoice with this number');
+  await runInContext(
+    {
+      tenantId: null,
+      permissions: new Set(),
+      modules: new Set(['CORE']),
+      userName: 'razorpay',
+      requestId,
+    },
+    () =>
+      recordPayment(
+        inv._id,
+        {
+          provider: 'razorpay',
+          reference: payment.id,
+          amount: payment.amount,
+          recordedBy: 'razorpay',
+        },
+        { applyOnPaid: subs.applyOnPaid },
+      ),
+  );
+}
+
 /**
  * Razorpay webhook (spec 3.16): verify the signature over the raw body, store each event once,
- * then record the payment against the platform invoice named in the payment notes.
+ * and process it once. A delivery that fails unexpectedly answers 500 and releases the event,
+ * so Razorpay's retry processes it; a business rejection (wrong amount, unknown invoice) is kept
+ * with its error for platform finance and is not retried.
  */
 export function webhookRouter() {
   const r = Router();
@@ -539,42 +576,50 @@ export function webhookRouter() {
       if (!expected || !safeEqual(signature, expected)) return res.status(400).end();
       const event = JSON.parse(req.body.toString('utf8'));
       const eventId = String(req.headers['x-razorpay-event-id'] ?? event.id ?? '');
-      const stored = await WebhookEvent.updateOne(
-        { provider: 'razorpay', eventId },
+      if (!eventId) return res.status(400).json({ error: 'missing event id' });
+      const key = { provider: 'razorpay', eventId };
+      await WebhookEvent.updateOne(
+        key,
         { $setOnInsert: { type: event.event, payload: event } },
         { upsert: true },
       );
-      if (!stored.upsertedCount) return res.status(200).json({ duplicate: true });
-      const payment = event.payload?.payment?.entity;
-      if (event.event === 'payment.captured' && payment?.notes?.platformInvoice) {
-        const inv = await PlatformInvoice.findOne({ number: payment.notes.platformInvoice });
-        if (inv) {
-          await runInContext(
-            {
-              tenantId: null,
-              permissions: new Set(),
-              modules: new Set(['CORE']),
-              userName: 'razorpay',
-              requestId: req.id,
-            },
-            () =>
-              recordPayment(
-                inv._id,
-                {
-                  provider: 'razorpay',
-                  reference: payment.id,
-                  amount: payment.amount,
-                  recordedBy: 'razorpay',
-                },
-                { applyOnPaid: subs.applyOnPaid },
-              ),
-          );
-        }
-      }
-      await WebhookEvent.updateOne(
-        { provider: 'razorpay', eventId },
-        { $set: { processedAt: new Date() } },
+      const now = new Date();
+      const claimed = await WebhookEvent.findOneAndUpdate(
+        {
+          ...key,
+          processedAt: { $exists: false },
+          $or: [{ lockedUntil: { $exists: false } }, { lockedUntil: { $lt: now } }],
+        },
+        { $set: { lockedUntil: new Date(now.getTime() + 60_000) }, $inc: { attempts: 1 } },
+        { new: true },
       );
+      if (!claimed) {
+        const seen = await WebhookEvent.findOne(key).lean();
+        // Being processed by a parallel delivery: ask Razorpay to retry later.
+        return seen?.processedAt
+          ? res.status(200).json({ duplicate: true })
+          : res.status(409).json({ inProgress: true });
+      }
+      try {
+        await handleRazorpayEvent(event, req.id);
+      } catch (err) {
+        if (err instanceof AppError && err.status < 500) {
+          await WebhookEvent.updateOne(key, {
+            $set: { processedAt: new Date(), error: `${err.code}: ${err.message}` },
+            $unset: { lockedUntil: 1 },
+          });
+          return res.status(200).json({ ok: false, error: err.code });
+        }
+        await WebhookEvent.updateOne(key, {
+          $set: { error: String(err.message) },
+          $unset: { lockedUntil: 1 },
+        });
+        throw err;
+      }
+      await WebhookEvent.updateOne(key, {
+        $set: { processedAt: new Date() },
+        $unset: { lockedUntil: 1, error: 1 },
+      });
       res.status(200).json({ ok: true });
     } catch (err) {
       next(err);

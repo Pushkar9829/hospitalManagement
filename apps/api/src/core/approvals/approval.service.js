@@ -123,6 +123,26 @@ async function expireIfDue(req) {
 }
 
 /**
+ * Closes every overdue request of the current hospital and runs its applier (which releases
+ * holds, e.g. a bill waiting for a discount). Runs from the worker every 15 minutes, so holds do
+ * not wait for someone to open the request.
+ */
+export async function expireDueApprovals(now = new Date()) {
+  const due = await ApprovalRequest.find({ status: 'PENDING', expiresAt: { $lte: now } })
+    .select('_id')
+    .lean();
+  let expired = 0;
+  for (const { _id } of due) {
+    const done = await withTransaction(async () => {
+      const req = await ApprovalRequest.findById(_id);
+      return req ? expireIfDue(req) : false;
+    });
+    if (done) expired += 1;
+  }
+  return expired;
+}
+
+/**
  * Approve or reject the current level. The maker can never check their own request, and one
  * person decides at most one level of a request.
  */

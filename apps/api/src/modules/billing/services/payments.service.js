@@ -9,7 +9,7 @@ import { scopeFilter } from '../../../core/rbac/scope.js';
 import { paginate } from '../../../core/http/paginate.js';
 import { numbering, PaymentMode } from '../../setup/index.js';
 import { Patient } from '../../patients/index.js';
-import { Bill, Deposit, Payment, Refund } from '../models/billing.models.js';
+import { Bill, CashLock, Deposit, Payment, Refund } from '../models/billing.models.js';
 import { billTotals, istDate } from './pricing.js';
 import { patientSnapshot } from './bills.service.js';
 import { requireOpenShift } from './shift.service.js';
@@ -74,7 +74,7 @@ async function modeOf(code) {
  * Section 269ST of the Income-tax Act (rule R7): no cash of ₹2,00,000 or more from one person in
  * a day. Counts receipts and deposits already taken today; the attempt is logged.
  */
-async function checkCashLimit(patientId, amount) {
+async function checkCashLimit(patientId, amount, { audit = true } = {}) {
   const day = istDate();
   const [p, d] = await Promise.all([
     Payment.aggregate([
@@ -88,18 +88,25 @@ async function checkCashLimit(patientId, amount) {
   ]);
   const today = (p[0]?.s ?? 0) + (d[0]?.s ?? 0);
   if (today + amount >= CASH_LIMIT_PAISE) {
-    await recordAudit({
-      action: 'ACCESS_DENIED',
-      entity: 'Patient',
-      entityId: patientId,
-      summary: `Cash ${formatINR(amount)} refused: ${formatINR(today)} already received in cash today (section 269ST)`,
-    });
+    if (audit)
+      await recordAudit({
+        action: 'ACCESS_DENIED',
+        entity: 'Patient',
+        entityId: patientId,
+        summary: `Cash ${formatINR(amount)} refused: ${formatINR(today)} already received in cash today (section 269ST)`,
+      });
     throw new AppError(
       422,
       'CASH_LIMIT',
       `Cash of ₹2,00,000 or more from one person in a day is not allowed (section 269ST). Already received today: ${formatINR(today)}. Take UPI, card or bank transfer.`,
     );
   }
+}
+
+/** Re-checks the cash limit inside the receipt's transaction, serialised per patient and day. */
+async function lockCashDay(patientId, amount) {
+  await CashLock.updateOne({ patientId, istDate: istDate() }, { $inc: { n: 1 } }, { upsert: true });
+  await checkCashLimit(patientId, amount, { audit: false });
 }
 
 async function loadPatient(id) {
@@ -129,6 +136,7 @@ export async function receivePayment({
   if (mode.kind === 'CASH') await checkCashLimit(patient._id, amount);
   const pending = mode.kind === 'PAYMENT_LINK';
   return withTransaction(async () => {
+    if (mode.kind === 'CASH') await lockCashDay(patient._id, amount);
     const bills = await Bill.find({
       _id: { $in: allocations.map((a) => a.billId) },
       ...scopeFilter({ branch: 'branchId' }),
@@ -136,7 +144,7 @@ export async function receivePayment({
     for (const a of allocations) {
       const bill = bills.find((b) => String(b._id) === String(a.billId));
       if (!bill) throw errors.validation([{ path: 'allocations', message: 'Bill not found' }]);
-      if (!['FINAL', 'PARTLY_PAID'].includes(bill.status))
+      if (!OPEN_FOR_PAYMENT.includes(bill.status))
         throw new AppError(
           409,
           'INVALID_STATE',
@@ -204,10 +212,15 @@ export async function receivePayment({
   });
 }
 
+const OPEN_FOR_PAYMENT = ['FINAL', 'PARTLY_PAID'];
+
 async function applyToBills(payment, bills) {
   for (const a of payment.allocations) {
     const bill =
       bills?.find((b) => String(b._id) === String(a.billId)) ?? (await Bill.findById(a.billId));
+    // Never reopen a cancelled or settled bill (callers check first; this is the last guard).
+    if (!OPEN_FOR_PAYMENT.includes(bill.status))
+      throw new AppError(409, 'INVALID_STATE', `${bill.billNo} is not open for payment`);
     const paid = bill.totals.paid + a.amount;
     bill.totals = billTotals(bill.lines, { paid, refunded: bill.totals.refunded });
     bill.status = bill.totals.balance === 0 ? 'PAID' : 'PARTLY_PAID';
@@ -231,6 +244,12 @@ export async function settlePending(id, { outcome, reference, version }) {
     const bills = await Bill.find({ _id: { $in: payment.allocations.map((a) => a.billId) } });
     for (const a of payment.allocations) {
       const bill = bills.find((b) => String(b._id) === String(a.billId));
+      if (!OPEN_FOR_PAYMENT.includes(bill.status) || bill.hold)
+        throw new AppError(
+          409,
+          'BILL_NOT_OPEN',
+          `${bill.billNo} was ${bill.status === 'CANCELLED' ? 'cancelled' : 'changed'} meanwhile; mark this payment failed and refund it`,
+        );
       if (a.amount > bill.totals.balance)
         throw new AppError(
           409,
@@ -264,6 +283,7 @@ export async function takeDeposit({ patientId, mode: code, amount, reference, pu
   const patient = await loadPatient(patientId);
   if (mode.kind === 'CASH') await checkCashLimit(patient._id, amount);
   return withTransaction(async () => {
+    if (mode.kind === 'CASH') await lockCashDay(patient._id, amount);
     const depositNo = await numbering.next('DEPOSIT');
     const [d] = await Deposit.create([
       {

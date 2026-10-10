@@ -1,4 +1,4 @@
-import { runInContext } from './context.js';
+import { current, runInContext } from './context.js';
 import { tenantRegistry } from './tenant.registry.js';
 import { AppError } from '../errors/index.js';
 
@@ -42,6 +42,10 @@ export async function tenantResolver(req, _res, next) {
       requestId: req.id,
       ip: req.ip,
     },
-    () => next(),
+    () => {
+      // The request logger writes after the response, outside this context; keep a handle.
+      req.ctx = current();
+      next();
+    },
   );
 }

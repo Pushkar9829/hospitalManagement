@@ -2,6 +2,7 @@ import { DENOMINATIONS, SHIFT_VARIANCE_PAISE } from '@hms/shared/schemas';
 import { AppError, errors } from '../../../core/errors/index.js';
 import { current } from '../../../core/tenancy/context.js';
 import { withTransaction } from '../../../core/db/model.js';
+import { scopeFilter } from '../../../core/rbac/scope.js';
 import { publish } from '../../../core/events/events.js';
 import { CashierShift, Deposit, Payment, Refund } from '../models/billing.models.js';
 
@@ -144,7 +145,7 @@ export async function closeShift(id, { version, notes, nonCash, varianceReason }
 /** Billing Manager verifies a shift with a variance; never their own (maker-checker). */
 export async function verifyShift(id, { version, comment }) {
   const c = current();
-  const shift = await CashierShift.findById(id);
+  const shift = await CashierShift.findOne({ _id: id, ...scopeFilter({ branch: 'branchId' }) });
   if (!shift) throw errors.notFound('Shift');
   if (shift.version !== version) throw errors.versionConflict();
   if (shift.status !== 'COUNTED')

@@ -86,6 +86,9 @@ const webhookSchema = new Schema(
     payload: Schema.Types.Mixed,
     processedAt: Date,
     error: String,
+    /** A delivery being processed holds the event; a failed one releases it for the retry. */
+    lockedUntil: Date,
+    attempts: { type: Number, default: 0 },
   },
   { timestamps: true },
 );

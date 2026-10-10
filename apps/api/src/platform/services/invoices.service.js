@@ -98,24 +98,38 @@ export async function recordPayment(
     throw errors.validation([
       { path: 'amount', message: `The invoice total is ${formatINR(inv.total)}` },
     ]);
-  await withTransaction(async () => {
-    inv.set({
-      status: 'PAID',
-      paidAt: new Date(),
-      payment: { provider, reference, amount, recordedBy },
-    });
-    await inv.save();
-    await applyOnPaid(inv);
-    await platformAudit(inv.tenantId, {
+  // Claim ISSUED -> PAID atomically, so a webhook and a manual entry (or two webhook
+  // deliveries) can never both switch on what the invoice pays for.
+  const paid = await withTransaction(async () => {
+    const claimed = await PlatformInvoice.findOneAndUpdate(
+      { _id: inv._id, status: 'ISSUED' },
+      {
+        $set: {
+          status: 'PAID',
+          paidAt: new Date(),
+          payment: { provider, reference, amount, recordedBy },
+        },
+      },
+      { new: true },
+    );
+    if (!claimed) return null;
+    await applyOnPaid(claimed);
+    await platformAudit(claimed.tenantId, {
       action: 'UPDATE',
       entity: 'PlatformInvoice',
-      entityId: inv._id,
-      summary: `Invoice ${inv.number} paid (${provider} ${reference ?? ''})`,
+      entityId: claimed._id,
+      summary: `Invoice ${claimed.number} paid (${provider} ${reference ?? ''})`,
       userName: maybeCurrent()?.userName ?? provider,
     });
+    return claimed;
   });
-  await reactivateIfClear(inv.tenantId);
-  return invoiceDto(inv);
+  if (!paid) {
+    const now = await PlatformInvoice.findById(inv._id);
+    if (now?.status === 'PAID') return invoiceDto(now);
+    throw new AppError(409, 'INVALID_STATE', 'This invoice is void');
+  }
+  await reactivateIfClear(paid.tenantId);
+  return invoiceDto(paid);
 }
 
 export async function invoicePdf(inv) {
