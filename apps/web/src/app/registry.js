@@ -27,6 +27,7 @@ const SubscriptionPage = lazy(() => import('../modules/subscription/pages/Subscr
 const OpdPage = lazy(() => import('../modules/opd/pages/OpdPage.jsx'));
 const OpdCheckinPage = lazy(() => import('../modules/opd/pages/OpdCheckinPage.jsx'));
 const OpdTriagePage = lazy(() => import('../modules/opd/pages/OpdTriagePage.jsx'));
+const ConsultPage = lazy(() => import('../modules/opd/pages/ConsultPage.jsx'));
 
 /** Screen key -> page component. The admin dashboard is the role home until Phase 1 fills it. */
 export const PAGES = {
@@ -49,6 +50,7 @@ export const PAGES = {
   Opd: OpdPage,
   OpdCheckin: OpdCheckinPage,
   OpdTriage: OpdTriagePage,
+  Consult: ConsultPage,
 };
 
 /** Screens served outside the signed-in shell. */

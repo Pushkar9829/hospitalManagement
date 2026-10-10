@@ -50,7 +50,10 @@ export function RxPrintDialog({ open, onOpenChange, visit, consultation }) {
           <Button variant="secondary" onClick={() => onOpenChange(false)}>
             {t('opd.checkin.close')}
           </Button>
-          <Button icon={<Printer size={16} aria-hidden="true" />} onClick={() => globalThis.print?.()}>
+          <Button
+            icon={<Printer size={16} aria-hidden="true" />}
+            onClick={() => globalThis.print?.()}
+          >
             {t('opd.print.print')}
           </Button>
         </div>

@@ -44,7 +44,9 @@ export function SpecialtyTab({ draft, change, readOnly }) {
             onClick={() => change({ specialty: current === s ? null : s })}
             className={cn(
               'flex cursor-pointer flex-col items-start gap-1 rounded-card border-2 px-4 py-3 text-left',
-              current === s ? 'border-primary bg-info-bg' : 'border-line bg-surface hover:bg-surface-2',
+              current === s
+                ? 'border-primary bg-info-bg'
+                : 'border-line bg-surface hover:bg-surface-2',
             )}
           >
             <strong className="text-base text-ink">{t(`opd.spec.names.${s}`)}</strong>

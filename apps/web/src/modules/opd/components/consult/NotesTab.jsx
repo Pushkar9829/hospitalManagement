@@ -37,7 +37,9 @@ export function NotesTab({ draft, change, readOnly, diagnosisError }) {
         </FormField>
       </div>
       <fieldset className="flex flex-col gap-2">
-        <legend className="mb-1 text-sm font-semibold text-ink">{t('opd.consult.diagnosis')}</legend>
+        <legend className="mb-1 text-sm font-semibold text-ink">
+          {t('opd.consult.diagnosis')}
+        </legend>
         {diagnoses.length > 0 && (
           <ul className="flex flex-col gap-2">
             {diagnoses.map((d, i) => (
@@ -96,7 +98,11 @@ export function NotesTab({ draft, change, readOnly, diagnosisError }) {
               change({
                 diagnoses: [
                   ...diagnoses,
-                  { code: it.code, name: it.name, type: diagnoses.length ? 'FINAL' : 'PROVISIONAL' },
+                  {
+                    code: it.code,
+                    name: it.name,
+                    type: diagnoses.length ? 'FINAL' : 'PROVISIONAL',
+                  },
                 ],
               })
             }

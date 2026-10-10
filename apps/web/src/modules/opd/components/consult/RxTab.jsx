@@ -59,7 +59,8 @@ export function RxTab({ draft, change, readOnly, checks, department }) {
   const [templateId, setTemplateId] = useState('');
   const [saving, setSaving] = useState(false);
   const [createTemplate] = useCreateTemplateMutation();
-  const setLine = (i, patch) => change({ rx: rx.map((r, j) => (j === i ? { ...r, ...patch } : r)) });
+  const setLine = (i, patch) =>
+    change({ rx: rx.map((r, j) => (j === i ? { ...r, ...patch } : r)) });
   const list = templates.data?.items ?? [];
   const followDate = draft.followUp?.date ?? '';
 
@@ -308,7 +309,9 @@ export function RxTab({ draft, change, readOnly, checks, department }) {
             advice: draft.advice ?? '',
           }).unwrap()
         }
-        onDone={(_r, v) => toast({ tone: 'success', title: t('opd.rx.templateSaved', { name: v.name }) })}
+        onDone={(_r, v) =>
+          toast({ tone: 'success', title: t('opd.rx.templateSaved', { name: v.name }) })
+        }
       />
     </div>
   );

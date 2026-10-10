@@ -42,4 +42,8 @@ export const SCREEN_PERMISSIONS = Object.freeze({
  * Menu items whose catalogue route has a parameter (`/patients/:id`) open their list instead,
  * so the menu never links to a literal `:id`.
  */
-export const MENU_ROUTES = Object.freeze({ PatientProfile: '/patients' });
+export const MENU_ROUTES = Object.freeze({
+  PatientProfile: '/patients',
+  // OPD Consultation opens the doctor's queue; a visit is /opd/visits/<id>.
+  Consult: '/opd/visits/queue',
+});
