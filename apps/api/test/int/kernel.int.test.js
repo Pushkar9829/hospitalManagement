@@ -189,6 +189,19 @@ describe('module gate and permissions', () => {
 });
 
 describe('data plugins', () => {
+  it('rolls back a nested transaction when the outer one fails', async () => {
+    const t = await makeTenant();
+    await expect(
+      as(t, () =>
+        withTransaction(async () => {
+          await withTransaction(() => Note.create([{ text: 'inner', amount: 1 }]));
+          throw new Error('outer fails');
+        }),
+      ),
+    ).rejects.toThrow('outer fails');
+    expect(await as(t, () => Note.countDocuments({ text: 'inner' }).exec())).toBe(0);
+  });
+
   it('audits create and update with before/after values and the user', async () => {
     const t = await makeTenant();
     const note = await as(t, () => Note.create({ text: 'v1', amount: 10 }));

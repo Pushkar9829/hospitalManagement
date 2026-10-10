@@ -21,8 +21,14 @@ export function defineModel(name, schema, { tenant = true, audit = true, base = 
   return mongoose.model(name, schema);
 }
 
-/** Runs `fn` in one MongoDB transaction; nested calls join the outer one. Retries on transient errors. */
+/**
+ * Runs `fn` in one MongoDB transaction; nested calls join the outer one, so an inner write is
+ * rolled back when the outer work fails. Retries on transient errors (the outer call retries).
+ * Mongoose's own `connection.transaction` always opens a new session, hence the check here.
+ */
 export function withTransaction(fn) {
+  const session = mongoose.transactionAsyncLocalStorage?.getStore()?.session;
+  if (session?.inTransaction()) return fn(session);
   return mongoose.connection.transaction(fn);
 }
 
