@@ -1,14 +1,29 @@
-import { hasPermission } from '@hms/shared';
+import { DEFAULT_APPROVAL_RULES, hasPermission, levelsFor } from '@hms/shared';
 import { AppError, errors } from '../errors/index.js';
 import { current } from '../tenancy/context.js';
 import { withTransaction } from '../db/model.js';
 import { publish } from '../events/events.js';
 import { recordAudit } from '../audit/audit.service.js';
-import { ApprovalRequest } from './approval.model.js';
+import { ApprovalRequest, ApprovalRule } from './approval.model.js';
+
+/** The hospital's rule for an action, falling back to the product default. */
+export async function ruleFor(action) {
+  const own = await ApprovalRule.findOne({ action }).lean();
+  if (own) return own;
+  return DEFAULT_APPROVAL_RULES.find((r) => r.action === action) ?? null;
+}
+
+/** Copies the default rules into a new hospital (idempotent). */
+export async function seedApprovalRules() {
+  for (const r of DEFAULT_APPROVAL_RULES) {
+    if (!(await ApprovalRule.exists({ action: r.action }))) await ApprovalRule.create([r]);
+  }
+}
 
 /**
- * Called by a module when an action needs approval. Returns the request; the API answers 202
- * APPROVAL_PENDING. Only one open request per record and action.
+ * Asks for approval when the hospital's rule requires it. Returns the request (the API answers
+ * 202 APPROVAL_PENDING) or null when no approval is needed (rule disabled, or no level applies),
+ * in which case the caller applies the change straight away.
  */
 export async function requestApproval({
   action,
@@ -16,18 +31,27 @@ export async function requestApproval({
   entity,
   entityId,
   title,
+  before,
+  after,
   payload,
+  metrics,
   reason,
-  checkerPermission,
-  expiresAt,
 }) {
   const c = current();
+  const rule = await ruleFor(action);
+  if (!rule) throw new Error(`No approval rule for ${action}`);
+  if (rule.enabled === false) return null;
+  const levels = levelsFor(rule, metrics);
+  if (!levels.length) return null;
+  if (!reason?.trim())
+    throw errors.validation([{ path: 'reason', message: 'Give a reason for this request' }]);
   return withTransaction(async () => {
     const open = await ApprovalRequest.exists({
       action,
       entity,
       entityId: String(entityId),
       status: 'PENDING',
+      expiresAt: { $gt: new Date() },
     });
     if (open)
       throw new AppError(
@@ -42,13 +66,17 @@ export async function requestApproval({
         entity,
         entityId: String(entityId),
         title,
+        before,
+        after,
         payload,
+        metrics,
         reason,
-        checkerPermission,
+        levels,
+        currentPermission: levels[0].permission,
         makerId: c.userId,
         makerName: c.userName,
         branchId: c.branchId ?? undefined,
-        expiresAt,
+        expiresAt: new Date(Date.now() + (rule.expiryHours ?? 48) * 3_600_000),
       },
     ]);
     await publish('approval.requested', {
@@ -56,53 +84,91 @@ export async function requestApproval({
       action,
       entity,
       entityId: String(entityId),
+      permission: levels[0].permission,
     });
     return req;
   });
 }
 
-/** Approve or reject. The maker can never check their own request (403 MAKER_CANNOT_CHECK). */
+async function expireIfDue(req) {
+  if (req.status === 'PENDING' && req.expiresAt <= new Date()) {
+    req.status = 'EXPIRED';
+    req.currentPermission = undefined;
+    await req.save();
+    await publish('approval.decided', {
+      approvalId: String(req._id),
+      action: req.action,
+      entity: req.entity,
+      entityId: req.entityId,
+      status: 'EXPIRED',
+    });
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Approve or reject the current level. The maker can never check their own request, and one
+ * person decides at most one level of a request.
+ */
 export async function decide(id, { decision, comment, version }) {
   const c = current();
   return withTransaction(async () => {
     const req = await ApprovalRequest.findById(id);
     if (!req) throw errors.notFound('Approval request');
-    if (!hasPermission(c.permissions, req.checkerPermission))
-      throw errors.forbidden(`You need the permission ${req.checkerPermission}`);
-    if (String(req.makerId) === String(c.userId))
-      throw new AppError(403, 'MAKER_CANNOT_CHECK', 'You cannot approve a request you raised');
-    if (req.version !== version) throw errors.versionConflict();
+    // Expiry first: an expired request is closed whatever version the client holds.
+    if (await expireIfDue(req))
+      throw new AppError(409, 'APPROVAL_CLOSED', 'This request has expired. Raise it again.');
     if (req.status !== 'PENDING')
       throw new AppError(
         409,
         'APPROVAL_CLOSED',
         `This request is already ${req.status.toLowerCase()}`,
       );
-    if (req.expiresAt && req.expiresAt < new Date()) {
-      req.status = 'EXPIRED';
-      await req.save();
-      throw new AppError(409, 'APPROVAL_CLOSED', 'This request has expired');
+    if (req.version !== version) throw errors.versionConflict();
+    const level = req.levels[req.levelIndex];
+    if (!hasPermission(c.permissions, level.permission))
+      throw errors.forbidden(`This level needs ${level.label} (${level.permission})`);
+    if (String(req.makerId) === String(c.userId))
+      throw new AppError(403, 'MAKER_CANNOT_CHECK', 'You cannot approve a request you raised');
+    if (req.decisions.some((d) => String(d.by) === String(c.userId))) {
+      throw new AppError(
+        403,
+        'ALREADY_DECIDED',
+        'You already decided an earlier level of this request',
+      );
     }
-    req.status = decision === 'APPROVE' ? 'APPROVED' : 'REJECTED';
-    req.decidedBy = c.userId;
-    req.decidedByName = c.userName;
-    req.decidedAt = new Date();
-    req.comment = comment;
+    req.decisions.push({
+      level: req.levelIndex,
+      decision,
+      by: c.userId,
+      byName: c.userName,
+      comment,
+      at: new Date(),
+    });
+    const last = req.levelIndex === req.levels.length - 1;
+    if (decision === 'REJECT') req.status = 'REJECTED';
+    else if (last) req.status = 'APPROVED';
+    else req.levelIndex += 1;
+    req.currentPermission =
+      req.status === 'PENDING' ? req.levels[req.levelIndex].permission : undefined;
     await req.save();
     await recordAudit({
       action: decision === 'APPROVE' ? 'APPROVE' : 'REJECT',
       entity: req.entity,
       entityId: req.entityId,
-      summary: req.title,
-      after: { approvalId: String(req._id), comment },
+      summary: `${req.title} (level ${req.decisions.length} of ${req.levels.length}: ${level.label})`,
+      after: { approvalId: String(req._id), comment, status: req.status },
     });
-    await publish('approval.decided', {
+    const event = req.status === 'PENDING' ? 'approval.levelApproved' : 'approval.decided';
+    await publish(event, {
       approvalId: String(req._id),
       action: req.action,
       entity: req.entity,
       entityId: req.entityId,
       status: req.status,
       payload: req.payload,
+      permission: req.currentPermission,
     });
     return req;
   });
@@ -123,6 +189,37 @@ export async function withdraw(id, { version }) {
       `This request is already ${req.status.toLowerCase()}`,
     );
   req.status = 'WITHDRAWN';
+  req.currentPermission = undefined;
   await req.save();
   return req;
+}
+
+/** Called by the owning module after it applied an approved change. */
+export async function markApplied(id) {
+  const res = await ApprovalRequest.updateOne(
+    { _id: id, status: 'APPROVED' },
+    { $set: { status: 'APPLIED', appliedAt: new Date() } },
+  );
+  if (!res.modifiedCount)
+    throw new AppError(409, 'APPROVAL_CLOSED', 'Only an approved request can be applied');
+}
+
+const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/**
+ * Mongo condition on `currentPermission` matching the user's approval permissions, including
+ * wildcards (`approvals:*`, `approvals:billing-discount:*`). Null when the user can decide nothing.
+ */
+export function checkerCondition(permissions) {
+  if (permissions.has('*')) return { $exists: true };
+  const exact = [];
+  const patterns = [];
+  for (const p of permissions) {
+    const [mod, res, act] = p.split(':');
+    if (mod !== 'approvals' && mod !== '*') continue;
+    if (!p.includes('*')) exact.push(p);
+    else if (res === '*' || res === undefined) patterns.push(/^approvals:[^:]+:l\d$/);
+    else if (act === '*') patterns.push(new RegExp(`^approvals:${escape(res)}:l\\d$`));
+  }
+  return exact.length || patterns.length ? { $in: [...exact, ...patterns] } : null;
 }

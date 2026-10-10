@@ -1,13 +1,15 @@
 import { z } from 'zod';
 import { mobile } from './common.js';
 
+/** Spec 4.4: at least 10 characters and 3 of 4 character classes (history is checked on the server). */
 export const passwordPolicy = z
   .string()
   .min(10, 'Use at least 10 characters')
   .max(128)
-  .regex(/[a-z]/, 'Add a lower-case letter')
-  .regex(/[A-Z]/, 'Add an upper-case letter')
-  .regex(/\d/, 'Add a number');
+  .refine(
+    (v) => [/[a-z]/, /[A-Z]/, /\d/, /[^A-Za-z0-9]/].filter((re) => re.test(v)).length >= 3,
+    'Use at least 3 of: lower-case, upper-case, number, symbol',
+  );
 
 export const loginBody = z.object({
   username: z.string().trim().toLowerCase().min(2, 'Enter your username or mobile').max(80),
@@ -51,6 +53,8 @@ export const sessionSchema = z.object({
     twoFactorEnabled: z.boolean(),
     /** A role requires two-factor sign-in and it is not set up yet: every other API call returns 403 TWO_FACTOR_SETUP_REQUIRED. */
     twoFactorSetupRequired: z.boolean(),
+    /** Set after an admin reset: every call except changing the password returns 403 PASSWORD_CHANGE_REQUIRED. */
+    mustChangePassword: z.boolean(),
     preferredLanguage: z.string(),
   }),
   tenant: z.object({
@@ -69,4 +73,14 @@ export const sessionSchema = z.object({
 export const twoFactorChallenge = z.object({
   twoFactorRequired: z.literal(true),
   challengeId: z.string(),
+});
+
+export const forgotPasswordBody = z.object({
+  username: z.string().trim().toLowerCase().min(2).max(80),
+});
+
+export const resetPasswordBody = z.object({
+  username: z.string().trim().toLowerCase().min(2).max(80),
+  code: z.string().regex(/^\d{6}$/, 'Enter the 6-digit code'),
+  newPassword: passwordPolicy,
 });

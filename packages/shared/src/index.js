@@ -6,3 +6,5 @@ export * from './ids.js';
 export * from './enums/tones.js';
 export * from './enums/status.js';
 export * from './enums/patient.js';
+export * from './approvals.js';
+export * from './grants.js';

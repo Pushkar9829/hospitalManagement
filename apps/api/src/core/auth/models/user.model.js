@@ -16,6 +16,12 @@ const schema = new Schema({
   designation: String,
   passwordHash: { type: String, select: false },
   passwordChangedAt: Date,
+  /** Hashes of the last 5 passwords (spec 4.4: not one of the last 5). */
+  passwordHistory: { type: [String], select: false, default: [] },
+  /** Set by an admin reset: every call except changing the password answers 403. */
+  mustChangePassword: { type: Boolean, default: false },
+  departmentIds: [{ type: Schema.Types.ObjectId, ref: 'Department' }],
+  employeeId: { type: Schema.Types.ObjectId, ref: 'Employee' },
   roles: [{ type: Schema.Types.ObjectId, ref: 'Role' }],
   branchIds: [{ type: Schema.Types.ObjectId, ref: 'Branch' }],
   defaultBranchId: { type: Schema.Types.ObjectId, ref: 'Branch' },

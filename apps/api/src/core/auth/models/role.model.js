@@ -24,6 +24,11 @@ const schema = new Schema({
   },
   /** Data scope (spec "Data scopes"): what records the role sees by default. */
   scope: { type: String, enum: ['own', 'department', 'ward', 'branch', 'all'], default: 'branch' },
+  /** Concurrent signed-in devices (spec 4.4); empty means no limit. */
+  maxSessions: { type: Number, min: 1, max: 10 },
+  /** Custom roles start as a copy of a system role. */
+  clonedFrom: String,
+  isActive: { type: Boolean, default: true },
   isSystem: { type: Boolean, default: false },
 });
 schema.index({ tenantId: 1, code: 1 }, { unique: true });

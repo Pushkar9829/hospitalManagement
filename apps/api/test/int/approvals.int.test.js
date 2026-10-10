@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { makeTenant, makeUser, signIn, useIntegration } from '../helpers/int.js';
-import { runInContext } from '../../src/core/tenancy/context.js';
-import { requestApproval } from '../../src/core/approvals/approval.service.js';
+import { runInContext, runAsSystem } from '../../src/core/tenancy/context.js';
+import { markApplied, requestApproval } from '../../src/core/approvals/approval.service.js';
+import { ApprovalRequest, ApprovalRule } from '../../src/core/approvals/approval.model.js';
 import { OutboxEvent } from '../../src/core/events/outbox.model.js';
 
 const ctx = useIntegration();
 
-/** A cashier raises a discount request inside their own context. */
-async function raise(t, maker, overrides = {}) {
+/** A cashier asks for a discount inside their own request context. */
+function raise(t, maker, { percent = 15, amount = 5_000_00, entityId = 'OP/26-27/000155' } = {}) {
   return runInContext(
     {
       tenantId: String(t.tenant._id),
@@ -20,80 +21,139 @@ async function raise(t, maker, overrides = {}) {
         action: 'billing.discount',
         module: 'CORE',
         entity: 'Bill',
-        entityId: 'OP/26-27/000155',
-        title: '15% discount on OP/26-27/000155',
-        payload: { discountPct: 15 },
+        entityId,
+        title: `${percent}% discount on ${entityId}`,
+        before: { discount: 0 },
+        after: { discount: percent },
+        payload: { discountPct: percent },
+        metrics: { percent, amount },
         reason: 'Staff family',
-        checkerPermission: 'approvals:inbox:decide',
-        ...overrides,
       }),
   );
 }
 
 describe('maker-checker approvals', () => {
-  it('lets a checker approve, never the maker, and publishes approval.decided', async () => {
+  it('routes a 15% discount through Billing Manager then Super Admin', async () => {
     const t = await makeTenant();
-    const maker = await makeUser(t, {
-      username: 'cashier1',
-      permissions: ['approvals:inbox:read', 'approvals:inbox:decide'],
-    });
-    const req = await raise(t, maker);
+    const cashier = await makeUser(t, { username: 'cashier1', roles: ['cashier'] });
+    await makeUser(t, { username: 'billmgr', roles: ['billingmgr'] });
+    const req = await raise(t, cashier);
+    expect(req.levels.map((l) => l.label)).toEqual(['Billing Manager', 'Super Admin']);
 
-    const makerClient = await signIn(ctx.app, t.host, 'cashier1');
-    const self = await makerClient
+    const maker = await signIn(ctx.app, t.host, 'cashier1');
+    expect((await maker.get('/approvals')).body.total).toBe(0);
+    expect((await maker.get('/approvals?box=mine')).body.total).toBe(1);
+    const self = await maker
       .post(`/approvals/${req._id}/decision`)
       .send({ decision: 'APPROVE', version: req.version });
     expect(self.status).toBe(403);
-    expect(self.body.error.code).toBe('MAKER_CANNOT_CHECK');
 
-    const checker = await signIn(ctx.app, t.host); // superadmin
-    const inbox = await checker.get('/approvals?status=PENDING');
-    expect(inbox.body.items.map((i) => i.title)).toContain('15% discount on OP/26-27/000155');
-
-    const reject = await checker
+    const l1 = await signIn(ctx.app, t.host, 'billmgr');
+    expect((await l1.get('/approvals/count')).body.inbox).toBe(1);
+    const first = await l1
       .post(`/approvals/${req._id}/decision`)
-      .send({ decision: 'REJECT', version: req.version });
-    expect(reject.status).toBe(422);
+      .send({ decision: 'APPROVE', comment: 'Policy', version: req.version });
+    expect(first.status).toBe(200);
+    expect(first.body).toMatchObject({ status: 'PENDING', levelIndex: 1 });
+    expect(first.body.levels[0]).toMatchObject({ decision: 'APPROVE', decidedBy: 'User billmgr' });
+    expect((await l1.get('/approvals/count')).body.inbox).toBe(0);
 
-    const stale = await checker
+    const admin = await signIn(ctx.app, t.host);
+    const stale = await admin
       .post(`/approvals/${req._id}/decision`)
-      .send({ decision: 'APPROVE', version: req.version + 5 });
+      .send({ decision: 'APPROVE', version: req.version });
     expect(stale.body.error.code).toBe('VERSION_CONFLICT');
-
-    const ok = await checker
+    const reject = await admin
       .post(`/approvals/${req._id}/decision`)
-      .send({ decision: 'APPROVE', comment: 'Allowed', version: req.version });
-    expect(ok.status).toBe(200);
-    expect(ok.body).toMatchObject({ status: 'APPROVED', decidedByName: 'Admin User' });
-
-    const again = await checker
+      .send({ decision: 'REJECT', version: first.body.version });
+    expect(reject.status).toBe(422);
+    const ok = await admin
       .post(`/approvals/${req._id}/decision`)
-      .send({ decision: 'APPROVE', version: ok.body.version });
-    expect(again.body.error.code).toBe('APPROVAL_CLOSED');
+      .send({ decision: 'APPROVE', version: first.body.version });
+    expect(ok.body.status).toBe('APPROVED');
 
-    const events = await OutboxEvent.find({ tenantId: t.tenant._id }).lean();
-    expect(events.map((e) => e.type)).toEqual(['approval.requested', 'approval.decided']);
-    expect(events[1].payload).toMatchObject({ status: 'APPROVED', payload: { discountPct: 15 } });
-
-    const audit = await checker.get(`/audit?entity=Bill&action=APPROVE`);
-    expect(audit.body.total).toBe(1);
+    const types = (
+      await OutboxEvent.find({ tenantId: t.tenant._id }).sort({ createdAt: 1 }).lean()
+    ).map((e) => e.type);
+    expect(types).toEqual(['approval.requested', 'approval.levelApproved', 'approval.decided']);
+    await runAsSystem(t.tenant._id, () => markApplied(req._id));
+    expect((await admin.get(`/approvals/${req._id}`)).body.status).toBe('APPLIED');
+    expect((await admin.get('/audit?entity=Bill&action=APPROVE')).body.total).toBe(2);
   });
 
-  it('allows only one open request per record and action', async () => {
+  it('skips the second level below the threshold, and needs no approval when the rule is off', async () => {
     const t = await makeTenant();
-    const maker = await makeUser(t, { username: 'cashier2', roles: ['cashier'] });
-    await raise(t, maker);
-    await expect(raise(t, maker)).rejects.toMatchObject({ code: 'APPROVAL_ALREADY_PENDING' });
+    const cashier = await makeUser(t, { username: 'cashier2', roles: ['cashier'] });
+    const small = await raise(t, cashier, { percent: 5, amount: 2_000_00, entityId: 'A' });
+    expect(small.levels).toHaveLength(1);
+    await runAsSystem(t.tenant._id, () =>
+      ApprovalRule.updateOne({ action: 'billing.discount' }, { $set: { enabled: false } }).exec(),
+    );
+    expect(await raise(t, cashier, { entityId: 'B' })).toBeNull();
   });
 
-  it('shows makers only their own requests', async () => {
+  it('allows one open request per record, and one level per checker', async () => {
     const t = await makeTenant();
-    const a = await makeUser(t, { username: 'makera', permissions: ['approvals:inbox:read'] });
-    const b = await makeUser(t, { username: 'makerb', permissions: ['approvals:inbox:read'] });
-    await raise(t, a, { entityId: 'A' });
-    await raise(t, b, { entityId: 'B' });
-    const ca = await signIn(ctx.app, t.host, 'makera');
-    const list = await ca.get('/approvals');
-    expect(list.body.items.map((i) => i.entityId)).toEqual(['A']);
+    const cashier = await makeUser(t, { username: 'cashier3', roles: ['cashier'] });
+    const req = await raise(t, cashier, { entityId: 'C' });
+    await expect(raise(t, cashier, { entityId: 'C' })).rejects.toMatchObject({
+      code: 'APPROVAL_ALREADY_PENDING',
+    });
+    const admin = await signIn(ctx.app, t.host);
+    const l1 = await admin
+      .post(`/approvals/${req._id}/decision`)
+      .send({ decision: 'APPROVE', version: req.version });
+    expect(l1.status).toBe(200);
+    const l2 = await admin
+      .post(`/approvals/${req._id}/decision`)
+      .send({ decision: 'APPROVE', version: l1.body.version });
+    expect(l2.body.error.code).toBe('ALREADY_DECIDED');
+  });
+
+  it('expires requests after the rule expiry', async () => {
+    const t = await makeTenant();
+    const cashier = await makeUser(t, { username: 'cashier4', roles: ['cashier'] });
+    const req = await raise(t, cashier, { entityId: 'D' });
+    await runAsSystem(t.tenant._id, () =>
+      ApprovalRequest.updateOne(
+        { _id: req._id },
+        { $set: { expiresAt: new Date(Date.now() - 1000) } },
+      ).exec(),
+    );
+    const admin = await signIn(ctx.app, t.host);
+    expect((await admin.get('/approvals/count')).body.inbox).toBe(0);
+    const late = await admin
+      .post(`/approvals/${req._id}/decision`)
+      .send({ decision: 'APPROVE', version: req.version });
+    expect(late.body.error.code).toBe('APPROVAL_CLOSED');
+    expect((await admin.get(`/approvals/${req._id}`)).body.status).toBe('EXPIRED');
+  });
+
+  it('lets a Super Admin tune thresholds and keeps the first level unconditional', async () => {
+    const t = await makeTenant();
+    const admin = await signIn(ctx.app, t.host);
+    const rules = (await admin.get('/approval-rules')).body;
+    const discount = rules.find((r) => r.action === 'billing.discount');
+    const res = await admin.put('/approval-rules/billing.discount').send({
+      version: discount.version,
+      expiryHours: 24,
+      enabled: true,
+      thresholds: [{ amountOver: 1 }, { percentOver: 20 }],
+    });
+    expect(res.status).toBe(200);
+    expect(res.body.levels[0].when).toBeUndefined();
+    expect(res.body.levels[1].when).toEqual({ percentOver: 20 });
+    await makeUser(t, { username: 'billmgr2', roles: ['billingmgr'] });
+    const mgr = await signIn(ctx.app, t.host, 'billmgr2');
+    expect(
+      (
+        await mgr.put('/approval-rules/billing.discount').send({
+          version: res.body.version,
+          expiryHours: 1,
+          enabled: false,
+          thresholds: [null, null],
+        })
+      ).status,
+    ).toBe(403);
   });
 });

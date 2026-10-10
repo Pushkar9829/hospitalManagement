@@ -9,12 +9,14 @@ import { errorHandler, notFoundHandler } from './core/errors/index.js';
 import { tenantResolver } from './core/tenancy/tenantResolver.js';
 import { authenticate } from './core/auth/authenticate.js';
 import { authPublicRoutes, authRoutes } from './core/auth/auth.routes.js';
-import { approvalRoutes } from './core/approvals/approval.routes.js';
+import { approvalRoutes, approvalRuleRoutes } from './core/approvals/approval.routes.js';
 import { auditRoutes } from './core/audit/audit.routes.js';
 import { apiLimiter, loginLimiters } from './core/security/rateLimit.js';
 import { buildOpenApi } from './core/http/openapi.js';
 import { redis } from './core/cache/redis.js';
 import { mountModules } from './modules/index.js';
+import { fileRoutes, localStorageRouter } from './core/files/files.routes.js';
+import { storage } from './core/files/storage.js';
 
 /**
  * Middleware chain from the spec, section "Request lifecycle".
@@ -29,6 +31,8 @@ export function createApp({ extraRouters = [] } = {}) {
   app.use(requestId);
   app.use(httpLogger);
   app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false })); // API returns JSON only
+  // Local file storage (development) streams raw bytes, so it sits before the JSON parser.
+  if (storage().name === 'local') app.use(localStorageRouter());
   app.use(express.json({ limit: '1mb' }));
   app.use(cookieParser());
 
@@ -55,14 +59,23 @@ export function createApp({ extraRouters = [] } = {}) {
 
   const v1 = express.Router();
   v1.use(tenantResolver);
-  for (const path of ['/auth/login', '/auth/2fa/verify', '/auth/otp/request', '/auth/otp/verify'])
+  for (const path of [
+    '/auth/login',
+    '/auth/2fa/verify',
+    '/auth/otp/request',
+    '/auth/otp/verify',
+    '/auth/password/forgot',
+    '/auth/password/reset',
+  ])
     v1.use(path, loginLimiters());
   v1.use(authPublicRoutes);
   v1.use(authenticate);
   v1.use(apiLimiter());
   v1.use(authRoutes);
   v1.use(approvalRoutes);
+  v1.use(approvalRuleRoutes);
   v1.use(auditRoutes);
+  v1.use(fileRoutes);
   v1.use(mountModules());
   for (const r of extraRouters) v1.use(r);
   app.use('/api/v1', v1);

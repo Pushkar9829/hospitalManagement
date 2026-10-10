@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
   changePasswordBody,
+  forgotPasswordBody,
+  resetPasswordBody,
   loginBody,
   otpRequestBody,
   otpVerifyBody,
@@ -68,6 +70,26 @@ export const authPublicRoutes = defineRoutes({
       schema: { body: otpVerifyBody },
       handler: async (req, res) =>
         finish(res, await auth.verifyLoginOtp(req.valid.body, meta(req))),
+    },
+    {
+      method: 'post',
+      path: '/password/forgot',
+      permission: 'public',
+      audit: null,
+      status: 202,
+      summary: 'Send a password reset code to the registered mobile (always answers 202)',
+      schema: { body: forgotPasswordBody },
+      handler: (req) => auth.requestPasswordReset(req.valid.body),
+    },
+    {
+      method: 'post',
+      path: '/password/reset',
+      permission: 'public',
+      audit: 'PASSWORD_CHANGED',
+      summary:
+        'Set a new password with the SMS code; unlocks the account and signs out every device',
+      schema: { body: resetPasswordBody },
+      handler: (req) => auth.resetPassword(req.valid.body),
     },
     {
       method: 'post',

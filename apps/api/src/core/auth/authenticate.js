@@ -2,6 +2,7 @@ import { current } from '../tenancy/context.js';
 import { AppError } from '../errors/index.js';
 import { permissionCache } from '../rbac/permission.cache.js';
 import { ACCESS_COOKIE, tokenBlacklist, verifyAccessToken } from './tokens.js';
+import { idle, idleMinutes } from './idle.js';
 
 const OBJECT_ID = /^[a-f\d]{24}$/i;
 /** Routes a user who still has to enrol in two-factor sign-in may call. */
@@ -11,6 +12,8 @@ const ENROLMENT_ROUTES = new Set([
   '/auth/2fa/setup',
   '/auth/2fa/enable',
 ]);
+/** Routes a user who must change their password (after an admin reset) may call. */
+const PASSWORD_ROUTES = new Set(['/auth/me', '/auth/logout', '/auth/password']);
 
 /** True when one of the user's roles must use two-factor sign-in and it is not set up yet. */
 export function mustEnrolTwoFactor(access, tenant) {
@@ -44,6 +47,9 @@ export async function authenticate(req, _res, next) {
   if (!access || access.status !== 'ACTIVE') {
     return next(new AppError(401, 'TOKEN_INVALID', 'Your account is not active'));
   }
+  if (access.mustChangePassword && !PASSWORD_ROUTES.has(req.path)) {
+    return next(new AppError(403, 'PASSWORD_CHANGE_REQUIRED', 'Choose a new password to continue'));
+  }
   if (mustEnrolTwoFactor(access, c.tenant) && !ENROLMENT_ROUTES.has(req.path)) {
     return next(
       new AppError(403, 'TWO_FACTOR_SETUP_REQUIRED', 'Set up two-factor sign-in to continue'),
@@ -58,6 +64,9 @@ export async function authenticate(req, _res, next) {
     }
     branchId = wanted;
   }
+  // Activity keeps the session alive; background polling (x-background: 1) does not.
+  if (req.headers['x-background'] !== '1')
+    await idle.touch(c.tenantId, claims.sid, idleMinutes(c.tenant));
   Object.assign(c, {
     userId: claims.sub,
     userName: access.name,
@@ -66,6 +75,8 @@ export async function authenticate(req, _res, next) {
     tokenExp: claims.exp,
     permissions: new Set(access.permissions),
     roles: access.roles,
+    scope: access.scope,
+    departmentIds: access.departmentIds,
     branchId,
     branchIds: access.branchIds,
   });

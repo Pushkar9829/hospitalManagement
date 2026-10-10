@@ -5,34 +5,68 @@ import { defineRoutes } from '../http/route.js';
 import { paginate } from '../http/paginate.js';
 import { current } from '../tenancy/context.js';
 import { errors } from '../errors/index.js';
-import { ApprovalRequest } from './approval.model.js';
-import { decide, withdraw } from './approval.service.js';
+import { ApprovalRequest, ApprovalRule } from './approval.model.js';
+import { checkerCondition, decide, withdraw } from './approval.service.js';
 
-const toDto = (r) => ({
-  id: String(r._id),
-  action: r.action,
-  module: r.module,
-  entity: r.entity,
-  entityId: r.entityId,
-  title: r.title,
-  payload: r.payload,
-  reason: r.reason,
-  status: r.status,
-  makerName: r.makerName,
-  makerId: String(r.makerId),
-  decidedByName: r.decidedByName,
-  decidedAt: r.decidedAt,
-  comment: r.comment,
-  createdAt: r.createdAt,
-  version: r.version,
-});
+const READ_ALL = 'approvals:inbox:read-all';
 
-/** Requests the user can act on or follow: ones they may check, plus their own. */
-function visibleFilter() {
-  const c = current();
-  const all = hasPermission(c.permissions, 'approvals:inbox:decide') || c.permissions.has('*');
-  return all ? {} : { makerId: c.userId };
+/** Levels with their decisions, as in the spec's example response. */
+export function toDto(r) {
+  const expired = r.status === 'PENDING' && new Date(r.expiresAt) <= new Date();
+  return {
+    id: String(r._id),
+    action: r.action,
+    module: r.module,
+    entity: r.entity,
+    entityId: r.entityId,
+    title: r.title,
+    before: r.before,
+    after: r.after,
+    payload: r.payload,
+    metrics: r.metrics,
+    reason: r.reason,
+    status: expired ? 'EXPIRED' : r.status,
+    levelIndex: r.levelIndex,
+    levels: r.levels.map((l, i) => {
+      const d = r.decisions.find((x) => x.level === i);
+      return {
+        label: l.label,
+        permission: l.permission,
+        ...(d ? { decision: d.decision, decidedBy: d.byName, comment: d.comment, at: d.at } : {}),
+      };
+    }),
+    makerId: String(r.makerId),
+    makerName: r.makerName,
+    expiresAt: r.expiresAt,
+    createdAt: r.createdAt,
+    version: r.version,
+  };
 }
+
+function boxFilter(box) {
+  const c = current();
+  if (box === 'mine') return { makerId: c.userId };
+  if (box === 'all') {
+    if (!hasPermission(c.permissions, READ_ALL))
+      throw errors.forbidden(`You need the permission ${READ_ALL}`);
+    return {};
+  }
+  const cond = checkerCondition(c.permissions);
+  if (!cond) return { _id: null };
+  return {
+    status: 'PENDING',
+    expiresAt: { $gt: new Date() },
+    currentPermission: cond,
+    makerId: { $ne: c.userId },
+    'decisions.by': { $ne: c.userId },
+  };
+}
+
+const listQuery = pageQuery.extend({
+  box: z.enum(['inbox', 'mine', 'all']).default('inbox'),
+  status: z.enum(['PENDING', 'APPROVED', 'APPLIED', 'REJECTED', 'WITHDRAWN', 'EXPIRED']).optional(),
+  module: z.string().max(8).optional(),
+});
 
 export const approvalRoutes = defineRoutes({
   module: 'CORE',
@@ -41,20 +75,16 @@ export const approvalRoutes = defineRoutes({
     {
       method: 'get',
       path: '/',
-      permission: 'approvals:inbox:read',
+      permission: 'authenticated',
       audit: null,
-      summary: 'Approval inbox (pending first), filterable by status and module',
-      schema: {
-        query: pageQuery.extend({
-          status: z.enum(['PENDING', 'APPROVED', 'REJECTED', 'WITHDRAWN', 'EXPIRED']).optional(),
-          module: z.string().max(8).optional(),
-        }),
-      },
+      summary:
+        'Approvals: my inbox (default), requests I raised (box=mine) or all (box=all, auditors)',
+      schema: { query: listQuery },
       handler: (req) => {
-        const { status, module, ...page } = req.valid.query;
+        const { box, status, module, ...page } = req.valid.query;
         const filter = {
-          ...visibleFilter(),
-          ...(status ? { status } : {}),
+          ...boxFilter(box),
+          ...(status && box !== 'inbox' ? { status } : {}),
           ...(module ? { module } : {}),
         };
         return paginate(ApprovalRequest, filter, page, { map: toDto });
@@ -62,26 +92,38 @@ export const approvalRoutes = defineRoutes({
     },
     {
       method: 'get',
-      path: '/:id',
-      permission: 'approvals:inbox:read',
+      path: '/count',
+      permission: 'authenticated',
       audit: null,
-      summary: 'One approval request',
+      summary: 'Number of requests waiting for me (menu badge)',
+      handler: async () => ({ inbox: await ApprovalRequest.countDocuments(boxFilter('inbox')) }),
+    },
+    {
+      method: 'get',
+      path: '/:id',
+      permission: 'authenticated',
+      audit: null,
+      summary: 'One approval request with its levels and decisions',
       schema: { params: z.object({ id: objectId }) },
       handler: async (req) => {
-        const r = await ApprovalRequest.findOne({
-          _id: req.valid.params.id,
-          ...visibleFilter(),
-        }).lean();
+        const c = current();
+        const r = await ApprovalRequest.findById(req.valid.params.id).lean();
         if (!r) throw errors.notFound('Approval request');
+        const mine =
+          String(r.makerId) === String(c.userId) ||
+          r.decisions.some((d) => String(d.by) === String(c.userId));
+        const canDecide = r.currentPermission && hasPermission(c.permissions, r.currentPermission);
+        if (!mine && !canDecide && !hasPermission(c.permissions, READ_ALL))
+          throw errors.notFound('Approval request');
         return toDto(r);
       },
     },
     {
       method: 'post',
       path: '/:id/decision',
-      permission: 'approvals:inbox:decide',
+      permission: 'authenticated',
       audit: 'APPROVE',
-      summary: 'Approve or reject (a reason is required to reject)',
+      summary: 'Approve or reject the current level (a reason is required to reject)',
       schema: {
         params: z.object({ id: objectId }),
         body: z
@@ -100,7 +142,7 @@ export const approvalRoutes = defineRoutes({
     {
       method: 'post',
       path: '/:id/withdraw',
-      permission: 'approvals:inbox:read',
+      permission: 'authenticated',
       audit: 'UPDATE',
       summary: 'Withdraw your own pending request',
       schema: {
@@ -108,6 +150,72 @@ export const approvalRoutes = defineRoutes({
         body: z.object({ version: z.number().int().min(0) }),
       },
       handler: async (req) => toDto(await withdraw(req.valid.params.id, req.valid.body)),
+    },
+  ],
+});
+
+const ruleDto = (r) => ({
+  action: r.action,
+  label: r.label,
+  levels: r.levels,
+  expiryHours: r.expiryHours,
+  enabled: r.enabled,
+  version: r.version,
+});
+
+export const approvalRuleRoutes = defineRoutes({
+  module: 'CORE',
+  basePath: '/approval-rules',
+  routes: [
+    {
+      method: 'get',
+      path: '/',
+      permission: 'settings:approval:read',
+      audit: null,
+      summary: 'Maker-checker rules of this hospital',
+      handler: async () => (await ApprovalRule.find().sort({ action: 1 }).lean()).map(ruleDto),
+    },
+    {
+      method: 'put',
+      path: '/:action',
+      permission: 'settings:approval:update',
+      audit: 'UPDATE',
+      summary: 'Change thresholds, expiry or switch a rule off (Super Admin)',
+      schema: {
+        params: z.object({ action: z.string().regex(/^[a-z]+\.[a-zA-Z.]+$/) }),
+        body: z.object({
+          version: z.number().int().min(0),
+          expiryHours: z.number().int().min(1).max(336),
+          enabled: z.boolean(),
+          thresholds: z.array(
+            z
+              .object({
+                amountOver: z.number().int().min(0).optional(),
+                percentOver: z.number().min(0).max(100).optional(),
+              })
+              .nullable(),
+          ),
+        }),
+      },
+      handler: async (req) => {
+        const { version, expiryHours, enabled, thresholds } = req.valid.body;
+        const rule = await ApprovalRule.findOne({ action: req.valid.params.action });
+        if (!rule) throw errors.notFound('Approval rule');
+        if (rule.version !== version) throw errors.versionConflict();
+        if (thresholds.length !== rule.levels.length)
+          throw errors.validation([
+            { path: 'thresholds', message: `Give one entry per level (${rule.levels.length})` },
+          ]);
+        thresholds.forEach((t, i) => {
+          // The first level always applies; later levels may be conditional.
+          if (i > 0) rule.levels[i].when = t ?? undefined;
+        });
+        rule.expiryHours = expiryHours;
+        rule.enabled = enabled;
+        rule.markModified('levels');
+        await rule.save();
+        return ruleDto(rule);
+      },
     },
   ],
 });

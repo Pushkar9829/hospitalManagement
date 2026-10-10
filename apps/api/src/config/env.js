@@ -43,7 +43,12 @@ const Env = z
         path: ['TRUST_PROXY'],
         message: 'Set TRUST_PROXY (2 behind CloudFront + ALB) in production',
       });
-    for (const k of ['JWT_PRIVATE_KEY', 'JWT_PUBLIC_KEY', 'DATA_ENCRYPTION_KEY']) {
+    for (const k of [
+      'JWT_PRIVATE_KEY',
+      'JWT_PUBLIC_KEY',
+      'DATA_ENCRYPTION_KEY',
+      'S3_DOCS_BUCKET',
+    ]) {
       if (!v[k])
         ctx.addIssue({ code: 'custom', path: [k], message: `${k} is required in production` });
     }

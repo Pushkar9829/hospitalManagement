@@ -1,3 +1,4 @@
+import { MAX_SESSIONS, systemRolePermissions } from '@hms/shared';
 import { PANELS } from '@hms/shared/catalog';
 import { runAsSystem } from './context.js';
 import { Tenant } from './tenant.model.js';
@@ -6,10 +7,39 @@ import { Role } from '../auth/models/role.model.js';
 import { User } from '../auth/models/user.model.js';
 import { hashPassword } from '../auth/password.js';
 import { withTransaction } from '../db/model.js';
+import { seedApprovalRules } from '../approvals/approval.service.js';
+
+const scopeOf = (code, panel) => (code === 'superadmin' || panel.readOnly ? 'all' : 'branch');
 
 /**
- * Creates a hospital with its first branch, the 28 system roles from the UI design (role panels)
- * and a Super Admin. Used by self-service signup (Phase 1), the platform console and tests.
+ * Creates or updates the system roles of the current hospital from the product defaults
+ * (role panels + ROLE_GRANTS). Custom roles are never touched. Safe to run on every release.
+ */
+export async function syncSystemRoles() {
+  const roles = [];
+  for (const [code, panel] of Object.entries(PANELS)) {
+    const fields = {
+      name: panel.name,
+      panel: code,
+      permissions: code === 'superadmin' ? ['*'] : systemRolePermissions(code),
+      scope: scopeOf(code, panel),
+      maxSessions: MAX_SESSIONS[code],
+      isSystem: true,
+    };
+    let role = await Role.findOne({ code });
+    if (!role) [role] = await Role.create([{ code, ...fields }]);
+    else if (role.isSystem) {
+      role.set(fields);
+      if (role.isModified()) await role.save();
+    }
+    roles.push(role);
+  }
+  return roles;
+}
+
+/**
+ * Creates a hospital with its first branch, the system roles, the maker-checker rules and a
+ * Super Admin. Used by self-service signup, the platform console and tests.
  * All or nothing: a failure part-way never leaves a hospital without roles or an admin.
  */
 export async function provisionTenant({
@@ -28,17 +58,8 @@ export async function provisionTenant({
     ]);
     return runAsSystem(tenant._id, async () => {
       const [mainBranch] = await Branch.create([branch]);
-      const roles = await Role.create(
-        Object.entries(PANELS).map(([code, p]) => ({
-          code,
-          name: p.name,
-          panel: code,
-          permissions: p.permissions,
-          isSystem: true,
-          scope: code === 'superadmin' || p.readOnly ? 'all' : 'branch',
-        })),
-        { ordered: true },
-      );
+      const roles = await syncSystemRoles();
+      await seedApprovalRules();
       let superAdmin = null;
       if (admin) {
         [superAdmin] = await User.create([

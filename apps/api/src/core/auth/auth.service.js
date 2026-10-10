@@ -2,7 +2,7 @@ import { randomInt, randomUUID } from 'node:crypto';
 import { authenticator } from 'otplib';
 import { isMobile, normaliseMobile } from '@hms/shared';
 import { env } from '../../config/env.js';
-import { AppError } from '../errors/index.js';
+import { AppError, errors } from '../errors/index.js';
 import { redis } from '../cache/redis.js';
 import { current } from '../tenancy/context.js';
 import { Branch } from '../tenancy/branch.model.js';
@@ -15,6 +15,7 @@ import { Session } from './models/session.model.js';
 import { hashPassword, verifyPassword } from './password.js';
 import { signAccessToken, tokenBlacklist, verifyAccessToken } from './tokens.js';
 import { mustEnrolTwoFactor } from './authenticate.js';
+import { idle, idleMinutes } from './idle.js';
 
 export const MAX_FAILED_LOGINS = 5;
 export const LOCK_MINUTES = 15;
@@ -219,10 +220,41 @@ export async function verifyLoginOtp({ mobile, code }, meta) {
 
 // ---------------------------------------------------------------- sessions
 
+/**
+ * Concurrent sessions per role (spec 4.4: doctors 2 devices, cashiers 1). Signing in on one more
+ * device signs out the oldest ones.
+ */
+async function enforceDeviceLimit(userId) {
+  const { tenantId } = current();
+  const access = await permissionCache.forUser(tenantId, userId);
+  const limit = access?.maxSessions;
+  if (!limit) return;
+  const families = await Session.aggregate([
+    { $match: { userId, revokedAt: null, expiresAt: { $gt: new Date() } } },
+    { $group: { _id: '$familyId', started: { $min: '$createdAt' } } },
+    { $sort: { started: -1 } },
+  ]);
+  const surplus = families.slice(limit - 1).map((f) => f._id);
+  if (!surplus.length) return;
+  await Session.updateMany(
+    { familyId: { $in: surplus }, revokedAt: null },
+    { $set: { revokedAt: new Date(), revokedReason: 'device-limit' } },
+  );
+  await recordAudit({
+    action: 'LOGOUT',
+    entity: 'User',
+    entityId: userId,
+    userId,
+    summary: `Signed out ${surplus.length} older device(s): limit is ${limit}`,
+  });
+}
+
 async function startSession(user, { rememberDevice, method }, meta) {
   const { tenantId } = current();
   const familyId = randomUUID();
+  await enforceDeviceLimit(user._id);
   const tokens = await issueTokens({ userId: user._id, familyId, rememberDevice }, meta);
+  await idle.touch(tenantId, familyId, idleMinutes(current().tenant));
   await User.updateOne(
     { _id: user._id },
     { $set: { failedLogins: 0, lastLoginAt: new Date() }, $unset: { lockedUntil: 1 } },
@@ -300,6 +332,18 @@ export async function refreshSession(refreshToken, meta) {
     throw expired;
   }
   if (session.expiresAt <= new Date()) throw expired;
+  const { tenantId, tenant } = current();
+  if (!session.rememberDevice && !(await idle.isActive(tenantId, session.familyId))) {
+    await Session.updateMany(
+      { familyId: session.familyId, revokedAt: null },
+      { $set: { revokedAt: new Date(), revokedReason: 'idle' } },
+    );
+    throw new AppError(
+      401,
+      'SESSION_IDLE',
+      `You were signed out after ${idleMinutes(tenant)} minutes without activity. Please sign in again.`,
+    );
+  }
   const user = await User.findById(session.userId).select('status');
   if (user?.status !== 'ACTIVE') throw expired;
   // Claim the token atomically so two parallel refreshes cannot both rotate it.
@@ -332,7 +376,10 @@ export async function logout({ refreshToken, accessToken }) {
   }
   if (claims && claims.tid !== tenantId) claims = null;
   const revoke = { $set: { revokedAt: new Date(), revokedReason: 'logout' } };
-  if (claims?.sid) await Session.updateMany({ familyId: claims.sid, revokedAt: null }, revoke);
+  if (claims?.sid) {
+    await Session.updateMany({ familyId: claims.sid, revokedAt: null }, revoke);
+    await idle.clear(tenantId, claims.sid);
+  }
   const [id, secret] = String(refreshToken ?? '').split('.');
   if (/^[a-f\d]{24}$/i.test(id ?? '') && secret) {
     const s = await Session.findOne({ _id: id, tokenHash: sha256(secret) })
@@ -351,24 +398,121 @@ export async function logout({ refreshToken, accessToken }) {
   }
 }
 
+const HISTORY = 5;
+
+/** Sets a new password if it is not the current one or one of the last 5 (spec 4.4). */
+export async function setPassword(userId, newPassword, { mustChange = false } = {}) {
+  const user = await User.findById(userId).select('+passwordHash +passwordHistory');
+  if (!user) throw errors.notFound('User');
+  for (const old of [user.passwordHash, ...(user.passwordHistory ?? [])].filter(Boolean)) {
+    if (await verifyPassword(old, newPassword)) {
+      throw errors.validation([
+        {
+          path: 'newPassword',
+          message: `Choose a password you have not used in your last ${HISTORY} changes`,
+        },
+      ]);
+    }
+  }
+  const history = [user.passwordHash, ...(user.passwordHistory ?? [])]
+    .filter(Boolean)
+    .slice(0, HISTORY);
+  await User.updateOne(
+    { _id: userId },
+    {
+      $set: {
+        passwordHash: await hashPassword(newPassword),
+        passwordHistory: history,
+        passwordChangedAt: new Date(),
+        mustChangePassword: mustChange,
+        failedLogins: 0,
+      },
+      $unset: { lockedUntil: 1 },
+    },
+  );
+  await permissionCache.invalidate(current().tenantId, String(userId));
+}
+
 export async function changePassword({ currentPassword, newPassword }) {
   const c = current();
   const user = await User.findById(c.userId).select('+passwordHash');
   if (!(await verifyPassword(user?.passwordHash, currentPassword))) {
-    throw new AppError(422, 'VALIDATION_FAILED', 'Current password is incorrect', [
-      { path: 'currentPassword', message: 'Current password is incorrect' },
-    ]);
+    throw errors.validation(
+      [{ path: 'currentPassword', message: 'Current password is incorrect' }],
+      'Current password is incorrect',
+    );
   }
-  await User.updateOne(
-    { _id: c.userId },
-    { $set: { passwordHash: await hashPassword(newPassword), passwordChangedAt: new Date() } },
-  );
+  await setPassword(c.userId, newPassword);
   // Sign out every other device.
   await Session.updateMany(
     { userId: c.userId, familyId: { $ne: c.familyId }, revokedAt: null },
     { $set: { revokedAt: new Date(), revokedReason: 'password-change' } },
   );
   await recordAudit({ action: 'PASSWORD_CHANGED', entity: 'User', entityId: c.userId });
+}
+
+// ---------------------------------------------------------------- forgotten password
+
+/** Sends a reset code to the registered mobile. Same answer whether or not the user exists. */
+export async function requestPasswordReset({ username }) {
+  const { tenantId, tenant } = current();
+  const user = await User.findOne(
+    isMobile(username) ? { mobile: normaliseMobile(username) } : { username },
+  ).select('mobile status preferredLanguage');
+  const result = { expiresInSec: OTP_TTL_SEC };
+  if (!user?.mobile || user.status !== 'ACTIVE') return result;
+  const sendsKey = `pwreset:sends:${tenantId}:${user._id}`;
+  const sends = await redis().incr(sendsKey);
+  if (sends === 1) await redis().expire(sendsKey, 3600);
+  if (sends > OTP_MAX_SENDS) return result;
+  const code = String(randomInt(0, 1_000_000)).padStart(6, '0');
+  await redis().set(
+    `pwreset:${tenantId}:${user._id}`,
+    JSON.stringify({ hash: sha256(`${user._id}:${code}`), attempts: 0 }),
+    'EX',
+    OTP_TTL_SEC,
+  );
+  await sendSms({
+    to: user.mobile,
+    template: 'PASSWORD_RESET_OTP',
+    vars: { code, hospital: tenant.name },
+    lang: user.preferredLanguage,
+  });
+  return result;
+}
+
+/** Checks the code, sets the new password, unlocks the account and signs out every device. */
+export async function resetPassword({ username, code, newPassword }) {
+  const { tenantId } = current();
+  const wrong = new AppError(401, 'INVALID_CREDENTIALS', 'The code is incorrect or has expired');
+  const user = await User.findOne(
+    isMobile(username) ? { mobile: normaliseMobile(username) } : { username },
+  ).select('_id status');
+  if (!user || user.status !== 'ACTIVE') throw wrong;
+  const key = `pwreset:${tenantId}:${user._id}`;
+  const raw = await redis().get(key);
+  if (!raw) throw wrong;
+  const otp = JSON.parse(raw);
+  if (!safeEqual(otp.hash, sha256(`${user._id}:${code}`))) {
+    otp.attempts += 1;
+    if (otp.attempts >= OTP_MAX_ATTEMPTS) await redis().del(key);
+    else await redis().set(key, JSON.stringify(otp), 'KEEPTTL');
+    throw wrong;
+  }
+  await redis().del(key);
+  current().userId = String(user._id);
+  await setPassword(user._id, newPassword);
+  await Session.updateMany(
+    { userId: user._id, revokedAt: null },
+    { $set: { revokedAt: new Date(), revokedReason: 'password-reset' } },
+  );
+  await recordAudit({
+    action: 'PASSWORD_CHANGED',
+    entity: 'User',
+    entityId: user._id,
+    userId: user._id,
+    summary: 'Reset with SMS code',
+  });
 }
 
 // ---------------------------------------------------------------- session payload
@@ -400,6 +544,7 @@ export async function sessionPayload(userId = current().userId) {
       roles: access.roles.map(({ code, name, panel }) => ({ code, name, panel })),
       twoFactorEnabled: Boolean(user.twoFactor?.enabled),
       twoFactorSetupRequired: mustEnrolTwoFactor(access, tenant),
+      mustChangePassword: access.mustChangePassword,
       preferredLanguage: user.preferredLanguage ?? 'en',
     },
     tenant: {

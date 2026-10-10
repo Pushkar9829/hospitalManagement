@@ -10,11 +10,14 @@
     "start": "node src/server.js",
     "worker": "node src/worker.js",
     "seed:dev": "node --env-file-if-exists=.env scripts/seed-dev.js",
+    "sync:roles": "node --env-file-if-exists=.env scripts/sync-system-roles.js",
     "lint": "eslint .",
     "test": "vitest run --project unit",
     "test:int": "vitest run --project integration"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1149.0",
+    "@aws-sdk/s3-request-presigner": "^3.1149.0",
     "@hms/shared": "workspace:*",
     "@socket.io/redis-adapter": "^8.3.0",
     "argon2": "^0.45.1",
