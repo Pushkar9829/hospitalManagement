@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { previewResponse } from './previewData.js';
 import {
   passwordChangeRequired,
   sessionExpired,
@@ -84,6 +85,8 @@ function refreshOnce(api, extraOptions) {
  */
 export async function baseQueryWithReauth(args, api, extraOptions) {
   const req = withIdempotency(args);
+  const preview = await previewResponse(typeof args === 'string' ? { url: args } : args);
+  if (preview) return preview;
   let result = await rawBaseQuery(req, api, extraOptions);
   const err = result.error;
   const code = err?.data?.error?.code;

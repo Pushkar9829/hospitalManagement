@@ -298,6 +298,142 @@ export const MASTERS = Object.freeze({
       'Rate *': 'rates',
     },
   },
+  wards: {
+    label: 'Wards',
+    input: z.object({
+      code: code(8),
+      name,
+      branchCode: code(8),
+      floor: optionalText(20),
+      category: z.enum([
+        'GENERAL',
+        'SEMI_PRIVATE',
+        'PRIVATE',
+        'DELUXE',
+        'ICU',
+        'NICU',
+        'PICU',
+        'HDU',
+        'ISOLATION',
+        'DAYCARE',
+        'EMERGENCY',
+        'LABOUR',
+      ]),
+      gender: z.enum(['ANY', 'MALE', 'FEMALE']).default('ANY'),
+      /** Bed-day service whose tariff (per price list, approved) is the rate per day. */
+      bedServiceCode: code(16).optional(),
+      departmentCode: code(8).optional(),
+    }),
+    columns: {
+      Code: 'code',
+      Name: 'name',
+      Branch: 'branchCode',
+      Floor: 'floor',
+      Category: 'category',
+      Gender: 'gender',
+      'Bed service': 'bedServiceCode',
+      Department: 'departmentCode',
+    },
+  },
+  beds: {
+    label: 'Beds',
+    input: z.object({
+      code: code(12),
+      name: z.string().trim().min(1).max(40),
+      wardCode: code(8),
+      room: optionalText(20),
+      kind: z
+        .enum(['STANDARD', 'ISOLATION', 'VENTILATOR', 'CRADLE', 'DAYCARE'])
+        .default('STANDARD'),
+    }),
+    columns: { Code: 'code', Label: 'name', Ward: 'wardCode', Room: 'room', Kind: 'kind' },
+  },
+  packages: {
+    label: 'Packages',
+    input: z.object({
+      code: code(16),
+      name,
+      kind: z.enum(['SURGICAL', 'MEDICAL', 'DAYCARE', 'MATERNITY', 'HEALTH_CHECK']),
+      price: rupees,
+      stayDays: z.coerce.number().int().min(0).max(60).default(0),
+      wardCategory: optionalText(20),
+      includes: z.array(z.string().trim().min(1).max(80)).max(30).default([]),
+      excludes: z.array(z.string().trim().min(1).max(80)).max(30).default([]),
+      taxCode: code(),
+      departmentCode: code(8).optional(),
+    }),
+    columns: {
+      Code: 'code',
+      Name: 'name',
+      Kind: 'kind',
+      'Price ₹': 'price',
+      'Stay days': 'stayDays',
+      Includes: 'includes',
+      Excludes: 'excludes',
+      'Tax code': 'taxCode',
+      Department: 'departmentCode',
+    },
+  },
+  payers: {
+    label: 'Payers (insurers, TPAs, corporates, schemes)',
+    input: z.object({
+      code: code(12),
+      name,
+      kind: z.enum(['INSURER', 'TPA', 'CORPORATE', 'GOVT_SCHEME']),
+      priceListCode: code().optional(),
+      /** Credit for corporates: limit in rupees and days to pay. */
+      creditLimit: rupees.default(0),
+      creditDays: z.coerce.number().int().min(0).max(180).default(30),
+      gstin,
+      contactName: optionalText(80),
+      email: z
+        .email()
+        .optional()
+        .or(z.literal('').transform(() => undefined)),
+      phone: optionalText(15),
+    }),
+    columns: {
+      Code: 'code',
+      Name: 'name',
+      Kind: 'kind',
+      'Price list': 'priceListCode',
+      'Credit limit ₹': 'creditLimit',
+      'Credit days': 'creditDays',
+      GSTIN: 'gstin',
+      Contact: 'contactName',
+      Email: 'email',
+      Phone: 'phone',
+    },
+  },
+  doctors: {
+    label: 'Doctors',
+    input: z.object({
+      code: code(12),
+      name,
+      kind: z.enum(['FULL_TIME', 'VISITING', 'CONSULTANT', 'RESIDENT']),
+      departmentCode: code(8),
+      /** State medical council or NMC registration number (shown on prescriptions). */
+      registrationNo: z.string().trim().min(3).max(30),
+      council: optionalText(80),
+      qualification: optionalText(120),
+      specialisation: optionalText(80),
+      /** Sign-in of this doctor, if they use the system. */
+      username: optionalText(40),
+      consultationServiceCode: code(16).optional(),
+    }),
+    columns: {
+      Code: 'code',
+      Name: 'name',
+      Kind: 'kind',
+      Department: 'departmentCode',
+      'Registration no.': 'registrationNo',
+      Council: 'council',
+      Qualification: 'qualification',
+      Specialisation: 'specialisation',
+      Username: 'username',
+      'Consultation service': 'consultationServiceCode',
+    },
+  },
 });
 
 export const MASTER_TYPES = Object.freeze(Object.keys(MASTERS));

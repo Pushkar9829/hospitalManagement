@@ -87,3 +87,71 @@ export const Service = master(
   },
   [{ tenantId: 1, category: 1, status: 1 }],
 );
+
+/** Wards per branch (spec 5.2). The rate per day comes from the linked bed-day service. */
+export const Ward = master(
+  'Ward',
+  {
+    branchId: { type: Schema.Types.ObjectId, ref: 'Branch', required: true },
+    floor: String,
+    category: { type: String, required: true },
+    gender: { type: String, default: 'ANY' },
+    bedServiceId: { type: Schema.Types.ObjectId, ref: 'Service' },
+    departmentId: { type: Schema.Types.ObjectId, ref: 'Department' },
+  },
+  [{ tenantId: 1, branchId: 1, isActive: 1 }],
+);
+
+/** Beds. Occupancy (status) is owned by the IPD module; the master only describes the bed. */
+export const Bed = master(
+  'Bed',
+  {
+    wardId: { type: Schema.Types.ObjectId, ref: 'Ward', required: true },
+    branchId: { type: Schema.Types.ObjectId, ref: 'Branch', required: true },
+    room: String,
+    kind: { type: String, default: 'STANDARD' },
+  },
+  [{ tenantId: 1, wardId: 1, isActive: 1 }],
+);
+
+export const Package = master('Package', {
+  kind: { type: String, required: true },
+  price: { type: Number, min: 0, required: true }, // paise
+  stayDays: { type: Number, default: 0 },
+  wardCategory: String,
+  includes: { type: [String], default: [] },
+  excludes: { type: [String], default: [] },
+  taxCodeId: { type: Schema.Types.ObjectId, ref: 'TaxCode', required: true },
+  departmentId: { type: Schema.Types.ObjectId, ref: 'Department' },
+});
+
+/** Insurers, TPAs, corporates and government schemes who pay for patients. */
+export const Payer = master(
+  'Payer',
+  {
+    kind: { type: String, required: true },
+    priceListId: { type: Schema.Types.ObjectId, ref: 'PriceList' },
+    creditLimit: { type: Number, default: 0 }, // paise
+    creditDays: { type: Number, default: 30 },
+    gstin: String,
+    contactName: String,
+    email: String,
+    phone: String,
+  },
+  [{ tenantId: 1, kind: 1, isActive: 1 }],
+);
+
+export const Doctor = master(
+  'Doctor',
+  {
+    kind: { type: String, required: true },
+    departmentId: { type: Schema.Types.ObjectId, ref: 'Department', required: true },
+    registrationNo: { type: String, required: true },
+    council: String,
+    qualification: String,
+    specialisation: String,
+    userId: { type: Schema.Types.ObjectId, ref: 'User' },
+    consultationServiceId: { type: Schema.Types.ObjectId, ref: 'Service' },
+  },
+  [{ tenantId: 1, departmentId: 1, isActive: 1 }],
+);

@@ -7,15 +7,21 @@ import { Branch } from '../../../core/tenancy/branch.model.js';
 import { onApprovalDecided, requestApproval } from '../../../core/approvals/approval.service.js';
 import { Department } from '../models/department.model.js';
 import {
+  Bed,
   Designation,
+  Doctor,
   Holiday,
+  Package,
+  Payer,
   PaymentMode,
   PriceList,
   ReferralSource,
   Service,
   TaxCode,
   Unit,
+  Ward,
 } from '../models/masters.models.js';
+import { User } from '../../../core/auth/models/user.model.js';
 
 const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const byCode = async (Model, codes, filter = {}) =>
@@ -112,6 +118,137 @@ export const TYPES = {
   },
 };
 
+const idStr = (v) => (v ? String(v) : undefined);
+
+/**
+ * Resolves optional `<x>Code` fields to ids: [inputField, docField, Model, filter, label].
+ * Returns { doc } or { error } per row.
+ */
+async function resolveCodes(rows, refs) {
+  const maps = await Promise.all(
+    refs.map(([field, , Model, filter, , by = 'code']) =>
+      by === 'code'
+        ? byCode(Model, rows.map((r) => r[field]).filter(Boolean), filter)
+        : Model.find({ [by]: { $in: rows.map((r) => r[field]).filter(Boolean) }, ...filter })
+            .lean()
+            .then((ds) => new Map(ds.map((d) => [d[by], d]))),
+    ),
+  );
+  return rows.map((row) => {
+    const doc = { ...row };
+    for (const [i, [field, docField, , , label]] of refs.entries()) {
+      delete doc[field];
+      if (!row[field]) continue;
+      const found = maps[i].get(row[field]);
+      if (!found) return { error: { path: field, message: `No active ${label} ${row[field]}` } };
+      doc[docField] = found._id;
+      if (docField === 'wardId') doc.branchId = found.branchId;
+    }
+    return { doc };
+  });
+}
+
+const ACTIVE = { isActive: true };
+const DEPT = ['departmentCode', 'departmentId', Department, { status: 'ACTIVE' }, 'department'];
+const TAX = ['taxCode', 'taxCodeId', TaxCode, ACTIVE, 'tax code'];
+
+Object.assign(TYPES, {
+  wards: {
+    model: Ward,
+    filters: { branchId: 'branchId' },
+    resolve: (rows) =>
+      resolveCodes(rows, [
+        ['branchCode', 'branchId', Branch, {}, 'branch'],
+        [
+          'bedServiceCode',
+          'bedServiceId',
+          Service,
+          { category: 'BED', isActive: true },
+          'bed-day service',
+        ],
+        DEPT,
+      ]),
+    dto: (d) => ({
+      branchId: idStr(d.branchId),
+      floor: d.floor,
+      category: d.category,
+      gender: d.gender,
+      bedServiceId: idStr(d.bedServiceId),
+      departmentId: idStr(d.departmentId),
+    }),
+  },
+  beds: {
+    model: Bed,
+    filters: { wardId: 'wardId', branchId: 'branchId' },
+    resolve: (rows) => resolveCodes(rows, [['wardCode', 'wardId', Ward, ACTIVE, 'ward']]),
+    dto: (d) => ({
+      wardId: idStr(d.wardId),
+      branchId: idStr(d.branchId),
+      room: d.room,
+      kind: d.kind,
+    }),
+  },
+  packages: {
+    model: Package,
+    async resolve(rows) {
+      const res = await resolveCodes(rows, [TAX, DEPT]);
+      return res.map((r) => (r.doc ? { doc: { ...r.doc, price: toPaise(r.doc.price) } } : r));
+    },
+    dto: (d) => ({
+      kind: d.kind,
+      price: d.price,
+      stayDays: d.stayDays,
+      wardCategory: d.wardCategory,
+      includes: d.includes,
+      excludes: d.excludes,
+      taxCodeId: idStr(d.taxCodeId),
+      departmentId: idStr(d.departmentId),
+    }),
+  },
+  payers: {
+    model: Payer,
+    filters: { kind: 'kind' },
+    async resolve(rows) {
+      const res = await resolveCodes(rows, [
+        ['priceListCode', 'priceListId', PriceList, ACTIVE, 'price list'],
+      ]);
+      return res.map((r) =>
+        r.doc ? { doc: { ...r.doc, creditLimit: toPaise(r.doc.creditLimit ?? 0) } } : r,
+      );
+    },
+    dto: (d) => ({
+      kind: d.kind,
+      priceListId: idStr(d.priceListId),
+      creditLimit: d.creditLimit,
+      creditDays: d.creditDays,
+      gstin: d.gstin,
+      contactName: d.contactName,
+      email: d.email,
+      phone: d.phone,
+    }),
+  },
+  doctors: {
+    model: Doctor,
+    filters: { departmentId: 'departmentId' },
+    resolve: (rows) =>
+      resolveCodes(rows, [
+        DEPT,
+        ['username', 'userId', User, {}, 'user', 'username'],
+        ['consultationServiceCode', 'consultationServiceId', Service, ACTIVE, 'service'],
+      ]),
+    dto: (d) => ({
+      kind: d.kind,
+      departmentId: idStr(d.departmentId),
+      registrationNo: d.registrationNo,
+      council: d.council,
+      qualification: d.qualification,
+      specialisation: d.specialisation,
+      userId: idStr(d.userId),
+      consultationServiceId: idStr(d.consultationServiceId),
+    }),
+  },
+});
+
 export function typeOf(type) {
   const t = TYPES[type];
   if (!t || !MASTERS[type]) throw errors.notFound('Master type');
@@ -133,9 +270,16 @@ export async function resolveRows(type, rows) {
   return t.resolve ? t.resolve(rows) : rows.map((r) => ({ doc: r }));
 }
 
-export async function listMasters(type, { q, active, ...page }) {
+export async function listMasters(type, { q, active, ...rest }) {
   const t = typeOf(type);
   const filter = {};
+  const page = {};
+  const FILTER_KEYS = ['branchId', 'wardId', 'departmentId', 'kind'];
+  for (const [k, v] of Object.entries(rest)) {
+    if (v === undefined) continue;
+    if (t.filters?.[k]) filter[t.filters[k]] = v;
+    else if (!FILTER_KEYS.includes(k)) page[k] = v;
+  }
   if (active !== undefined) filter.isActive = active;
   if (q)
     filter.$or = [

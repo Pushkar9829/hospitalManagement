@@ -277,6 +277,11 @@ export const masterRoutes = defineRoutes({
             .enum(['true', 'false'])
             .transform((v) => v === 'true')
             .optional(),
+          // Narrowing filters, used by the types that support them (beds by ward, ...).
+          branchId: objectId.optional(),
+          wardId: objectId.optional(),
+          departmentId: objectId.optional(),
+          kind: z.string().trim().max(30).optional(),
         }),
       },
       handler: (req) => masters.listMasters(req.valid.params.type, req.valid.query),

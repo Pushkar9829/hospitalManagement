@@ -95,7 +95,7 @@ function mapRow(type, headers, cells) {
     if (!field || value === '' || value == null) return;
     if (['isDefault', 'requiresReference'].includes(field))
       out[field] = BOOL[String(value).toLowerCase()] ?? value;
-    else if (field === 'branchCodes')
+    else if (['branchCodes', 'includes', 'excludes'].includes(field))
       out[field] = String(value)
         .split(/[,;]/)
         .map((s) => s.trim())
