@@ -11,6 +11,9 @@ const DECIDED = [
   'Users',
   'Roles',
   'Audit',
+  'Bills',
+  'Refunds',
+  'Patients',
 ];
 
 /** Maker-checker inbox (spec 4.5): list, one request, count for the menu badge, decide, withdraw. */

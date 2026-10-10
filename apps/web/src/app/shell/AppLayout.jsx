@@ -24,7 +24,7 @@ import {
   useToast,
 } from '@hms/ui';
 import { baseApi } from '../baseApi.js';
-import { menuFor, canOpen, panelKeys } from '../access.js';
+import { menuFor, canChangeSubscription, canOpen, isSuspended, panelKeys } from '../access.js';
 import { screenForPath } from '../registry.js';
 import { selectSession } from '../session.js';
 import { sessionExpired, signedOut } from '../sessionActions.js';
@@ -76,7 +76,7 @@ export function AppLayout() {
 
   // Approvals waiting for me: polled every minute as background traffic (x-background: 1), so
   // it never keeps an idle session alive; decisions refetch it straight away.
-  const approvalsVisible = canOpen('Approvals', data);
+  const approvalsVisible = canOpen('Approvals', data) && !isSuspended(data);
   const { data: approvalCount } = useApprovalCountQuery(undefined, {
     skip: !approvalsVisible || status !== 'authenticated',
     pollingInterval: 60_000,
@@ -242,8 +242,23 @@ export function AppLayout() {
     storageKey: `hms:menu:${data.tenant.id}:${data.user.id}`,
   };
 
+  // Subscription state (spec 2.4): Super Admins get a link to fix it on Subscription.
+  const fixSubscription =
+    canChangeSubscription(data) && location.pathname !== '/settings/subscription'
+      ? () => go('/settings/subscription')
+      : undefined;
   const banners = [
-    data.tenant.status === 'READ_ONLY' && <SubscriptionBanner key="ro" variant="readOnly" />,
+    data.tenant.status === 'READ_ONLY' && (
+      <SubscriptionBanner
+        key="ro"
+        variant="readOnly"
+        onFix={fixSubscription}
+        fixLabel={t('errors.limitAction')}
+      />
+    ),
+    data.tenant.status === 'PAST_DUE' && (
+      <SubscriptionBanner key="due" variant="paymentFailed" onFix={fixSubscription} />
+    ),
     !online && <Offline key="offline" />,
   ].filter(Boolean);
 

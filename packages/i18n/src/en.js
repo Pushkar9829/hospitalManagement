@@ -189,6 +189,7 @@ export const en = {
     addModule: 'Add module',
     paymentFailedTitle: 'Payment failed.',
     paymentFailedBody: 'Update your payment method within {{count}} days to avoid read-only mode.',
+    paymentFailedBodyGeneric: 'Pay the open invoice from Subscription to avoid read-only mode.',
     fixNow: 'Fix now',
     readOnlyTitle: 'Read-only mode.',
     readOnlyBody:

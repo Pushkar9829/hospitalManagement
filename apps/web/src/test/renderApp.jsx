@@ -4,7 +4,7 @@ import { initReactI18next } from 'react-i18next';
 import { vi } from 'vitest';
 import { createI18n } from '@hms/i18n';
 import { createStore } from '../app/store.js';
-import { routes } from '../app/router.jsx';
+import { publicRoutes, routes } from '../app/router.jsx';
 import { Providers } from '../app/providers.jsx';
 
 /**
@@ -42,15 +42,20 @@ export function mockApi(handlers) {
   return fetchMock;
 }
 
-/** Renders the real route table at `path` with a fresh store. */
-export function renderApp(path = '/') {
+/** Renders the real route table at `path` with a fresh store (`table`: the public routes). */
+export function renderApp(path = '/', table = routes) {
   const i18n = createI18n('en', { plugins: [initReactI18next] });
   const store = createStore();
-  const router = createMemoryRouter(routes, { initialEntries: [path] });
+  const router = createMemoryRouter(table, { initialEntries: [path] });
   const utils = render(
     <Providers store={store} i18n={i18n}>
       <RouterProvider router={router} />
     </Providers>,
   );
   return { ...utils, store, router };
+}
+
+/** The marketing host's routes (pricing, signup) at `path`. */
+export function renderPublic(path = '/pricing') {
+  return renderApp(path, publicRoutes);
 }

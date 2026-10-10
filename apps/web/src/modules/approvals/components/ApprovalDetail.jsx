@@ -19,6 +19,7 @@ import {
 import { apiError } from '../../../app/apiError.js';
 import { selectSession } from '../../../app/session.js';
 import { timeLeft } from '../../../lib/dates.js';
+import { inrExact } from '../../../lib/money.js';
 import { ApiErrorNotice } from '../../../components/ApiErrorNotice.jsx';
 import { Status } from '../../../components/Status.jsx';
 import {
@@ -52,7 +53,22 @@ const FIELD_KEYS = [
   'removed',
   'roles',
   'branchIds',
+  'total',
+  'discount',
+  'paid',
+  'refund',
+  'survivor',
+  'redirect',
 ];
+
+/** Billing requests carry money in paise: shown as ₹ amounts. */
+const MONEY_FIELDS = ['total', 'discount', 'paid', 'refund', 'amount'];
+function withMoney(obj, action) {
+  if (!obj || typeof obj !== 'object' || !String(action).startsWith('billing.')) return obj;
+  const out = { ...obj };
+  for (const k of MONEY_FIELDS) if (Number.isInteger(out[k])) out[k] = inrExact(out[k]);
+  return out;
+}
 
 /** Shows a branch's name instead of its id where the request names one. */
 function withBranchNames(obj, branches) {
@@ -215,8 +231,8 @@ export function ApprovalDetail({ id, box, onDecided }) {
             {t('approvals.changes')}
           </h3>
           <DiffTable
-            before={withBranchNames(r.before, branches)}
-            after={withBranchNames(r.after, branches)}
+            before={withMoney(withBranchNames(r.before, branches), r.action)}
+            after={withMoney(withBranchNames(r.after, branches), r.action)}
             beforeLabel={t('approvals.current')}
             afterLabel={t('approvals.proposed')}
             caption={t('approvals.changes')}

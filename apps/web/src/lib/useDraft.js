@@ -52,19 +52,29 @@ export function useDraft(key, { debounceMs = 600 } = {}) {
 
 /**
  * Wires useDraft to a react-hook-form form: restores the draft once and saves on every change.
- * Returns the draft helpers plus `restored` (true when values came from a draft).
+ * Returns the draft helpers plus `restored` (true when values came from a draft). `omit` lists
+ * top-level fields never written to the device (identity document numbers, for example).
  */
-export function useFormDraft(key, form, options) {
+export function useFormDraft(key, form, { omit = [], ...options } = {}) {
   const helpers = useDraft(key, options);
   const { draft, save } = helpers;
-  const { reset, watch } = form;
+  const { reset, watch, getValues } = form;
+  const omitKey = omit.join(',');
   useEffect(() => {
-    if (draft) reset(draft, { keepDefaultValues: true });
-  }, [draft, reset]);
+    // Fields left out of the draft keep their current (default) values.
+    if (draft) reset({ ...getValues(), ...draft }, { keepDefaultValues: true });
+  }, [draft, reset, getValues]);
   useEffect(() => {
-    const sub = watch((values) => save(values));
+    const skip = new Set(omitKey ? omitKey.split(',') : []);
+    const sub = watch((values) =>
+      save(
+        skip.size
+          ? Object.fromEntries(Object.entries(values).filter(([k]) => !skip.has(k)))
+          : values,
+      ),
+    );
     return () => sub.unsubscribe();
-  }, [watch, save]);
+  }, [watch, save, omitKey]);
   return { ...helpers, restored: Boolean(draft) };
 }
 

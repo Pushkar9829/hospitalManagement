@@ -17,3 +17,6 @@ export const NotFoundPage = lazy(() => import('../modules/system/NotFoundPage.js
 export const DevGalleryPage = GALLERY_ENABLED
   ? lazy(() => import('../modules/dev/DevGalleryPage.jsx'))
   : null;
+export const SuspendedPage = lazy(() => import('../modules/system/SuspendedPage.jsx'));
+export const PricingPage = lazy(() => import('../modules/signup/pages/PricingPage.jsx'));
+export const SignupPage = lazy(() => import('../modules/signup/pages/SignupPage.jsx'));

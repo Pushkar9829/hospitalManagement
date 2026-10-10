@@ -1,5 +1,6 @@
 import { MODULES, hasPermission } from '@hms/shared';
-import { PANELS, SCREENS, buildMenu, canSeeScreen } from '@hms/shared/catalog';
+import { PANELS, canSeeScreen } from '@hms/shared/catalog';
+import { ALL_SCREENS, MENU_ROUTES, SCREEN_PERMISSIONS } from './screens.js';
 
 /** Modules the hospital can use: CORE is always on. */
 export function activeModules(session) {
@@ -14,16 +15,55 @@ export function panelKeys(session) {
   return (session?.user?.roles ?? []).map((r) => r.panel).filter((p) => PANELS[p]);
 }
 
-/** The user's menu: every role's panel merged, filtered by subscription and permission. */
+/** Suspended hospitals can only sign in and open Subscription (the API answers 402 elsewhere). */
+export function isSuspended(session) {
+  return session?.tenant?.status === 'SUSPENDED';
+}
+
+/** A screen with the web app's permission overrides applied (see SCREEN_PERMISSIONS). */
+function gateOf(key) {
+  const screen = ALL_SCREENS[key];
+  if (!screen) return null;
+  return SCREEN_PERMISSIONS[key] ? { ...screen, permissions: SCREEN_PERMISSIONS[key] } : screen;
+}
+
+/**
+ * The user's menu: every role's panel merged in order, de-duplicated, filtered by subscription
+ * and permission (the catalogue's buildMenu with the web app's overrides). While the hospital is
+ * suspended only Subscription is listed.
+ */
 export function menuFor(session) {
-  return buildMenu(panelKeys(session), accessContext(session));
+  const ctx = accessContext(session);
+  const suspended = isSuspended(session);
+  const groups = new Map();
+  const seen = new Set();
+  for (const key of panelKeys(session)) {
+    for (const g of PANELS[key]?.menu ?? []) {
+      for (const it of g.items) {
+        const screen = gateOf(it.screen);
+        if (seen.has(it.screen) || !screen?.route || !canSeeScreen(screen, ctx)) continue;
+        if (suspended && it.screen !== 'Subscription') continue;
+        seen.add(it.screen);
+        if (!groups.has(g.group)) groups.set(g.group, []);
+        groups.get(g.group).push({
+          ...it,
+          route: MENU_ROUTES[it.screen] ?? screen.route,
+          module: screen.module,
+          phase: screen.phase,
+        });
+      }
+    }
+  }
+  return [...groups].map(([group, items]) => ({ group, items }));
 }
 
 /**
  * Why a screen can or cannot be opened: 'ok', 'module' (not subscribed: 402) or 'permission'
  * (403). The subscription is checked first so a missing module never reads as a permission gap.
+ * Pass the screen key (preferred, applies the overrides) or a screen object.
  */
-export function screenAccess(screen, session) {
+export function screenAccess(screenOrKey, session) {
+  const screen = typeof screenOrKey === 'string' ? gateOf(screenOrKey) : screenOrKey;
   if (!screen) return 'missing';
   const ctx = accessContext(session);
   if (screen.module && screen.module !== 'CORE' && !ctx.modules.includes(screen.module)) {
@@ -33,14 +73,20 @@ export function screenAccess(screen, session) {
 }
 
 export function canOpen(screenKey, session) {
-  return screenAccess(SCREENS[screenKey], session) === 'ok';
+  return screenAccess(screenKey, session) === 'ok';
 }
 
-/** The first panel's home route if the user can open it, else /home (every role can). */
+/**
+ * The first panel's home route if the user can open it, else /home (every role can). While the
+ * hospital is suspended: Subscription for those who may open it, the suspended notice for others.
+ */
 export function roleHome(session) {
+  if (isSuspended(session))
+    return canOpen('Subscription', session) ? '/settings/subscription' : '/suspended';
   for (const key of panelKeys(session)) {
-    const home = SCREENS[PANELS[key].home];
-    if (home?.route?.startsWith('/') && screenAccess(home, session) === 'ok') return home.route;
+    const homeKey = PANELS[key].home;
+    const home = ALL_SCREENS[homeKey];
+    if (home?.route?.startsWith('/') && canOpen(homeKey, session)) return home.route;
   }
   return '/home';
 }

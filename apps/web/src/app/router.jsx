@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { createBrowserRouter } from 'react-router';
+import { Navigate, createBrowserRouter } from 'react-router';
 import { SCREEN_ROUTES } from './registry.js';
 import {
   FullPageLoading,
@@ -11,13 +11,17 @@ import {
 } from './guards.jsx';
 import { AppLayout } from './shell/AppLayout.jsx';
 import { RouteError } from './RouteError.jsx';
+import { isMarketingHost } from './host.js';
 import {
   ChangePasswordPage,
   DevGalleryPage,
   ForgotPasswordPage,
   LoginPage,
   NotFoundPage,
+  PricingPage,
   SetupTwoFactorPage,
+  SignupPage,
+  SuspendedPage,
   WelcomePage,
 } from './pages.js';
 
@@ -53,6 +57,7 @@ export const routes = [
       {
         element: <RequireAuth />,
         children: [
+          { path: '/suspended', element: lazyPage(SuspendedPage) },
           {
             element: <AppLayout />,
             children: [
@@ -70,6 +75,22 @@ export const routes = [
   },
 ];
 
-export function createAppRouter() {
-  return createBrowserRouter(routes);
+/**
+ * The marketing host (no hospital): pricing and the trial signup, calling /api/public. Nothing
+ * here asks /api/v1/auth/me, which needs a hospital address.
+ */
+export const publicRoutes = [
+  {
+    errorElement: <RouteError />,
+    children: [
+      { path: '/pricing', element: lazyPage(PricingPage) },
+      { path: '/signup', element: lazyPage(SignupPage) },
+      { path: '*', element: <Navigate to="/pricing" replace /> },
+    ],
+  },
+];
+
+/** The staff app on a hospital host, the public pages on the marketing host (see host.js). */
+export function createAppRouter(hostname = globalThis.location?.hostname) {
+  return createBrowserRouter(isMarketingHost(hostname) ? publicRoutes : routes);
 }

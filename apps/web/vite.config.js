@@ -3,8 +3,9 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
 // The API resolves the hospital from the Host header, so the proxy keeps it (changeOrigin: false).
-// Open the app at http://demo.localhost:5173 for the "demo" hospital.
-const api = { target: 'http://localhost:4000', changeOrigin: false };
+// Open the app at http://demo.localhost:5173 for the "demo" hospital, and http://localhost:5173
+// for the public pricing and signup pages. HMS_API_URL points the proxy at another API.
+const api = { target: process.env.HMS_API_URL || 'http://localhost:4000', changeOrigin: false };
 const proxy = {
   '/api': api,
   '/socket.io': { ...api, ws: true },

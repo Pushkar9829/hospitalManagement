@@ -4,9 +4,44 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '../lib/cn.js';
 import { diffRows } from './diff.js';
 
+const isTiming = (v) =>
+  v && typeof v === 'object' && Number.isInteger(v.day) && typeof v.from === 'string';
+
+/** 0 = Sunday … 6 = Saturday, in the reader's language. */
+function weekday(day, locale) {
+  // 2026-10-04 is a Sunday.
+  return new Intl.DateTimeFormat(locale, { weekday: 'long', timeZone: 'UTC' }).format(
+    new Date(Date.UTC(2026, 9, 4 + day)),
+  );
+}
+
+/**
+ * OPD timings ({ day, from, to }[]) as one line per weekday, Monday first:
+ * "Monday 09:00–13:00, 17:00–20:00".
+ */
+function timingLines(list, locale = 'en-IN') {
+  const byDay = new Map();
+  for (const s of list) byDay.set(s.day, [...(byDay.get(s.day) ?? []), `${s.from}–${s.to}`]);
+  return [1, 2, 3, 4, 5, 6, 0]
+    .filter((d) => byDay.has(d))
+    .map((d) => `${weekday(d, locale)} ${byDay.get(d).join(', ')}`);
+}
+
+/** "key: value · key: value" for one object in a list. */
+const objectLine = (o) =>
+  Object.entries(o)
+    .filter(([, v]) => v !== undefined && v !== null && v !== '')
+    .map(([k, v]) => `${k}: ${typeof v === 'object' ? JSON.stringify(v) : String(v)}`)
+    .join(' · ');
+
 function Value({ value }) {
-  const { t } = useTranslation();
-  if (value === undefined || value === null || value === '') {
+  const { t, i18n } = useTranslation();
+  if (
+    value === undefined ||
+    value === null ||
+    value === '' ||
+    (Array.isArray(value) && !value.length)
+  ) {
     return (
       <span className="text-muted">
         <span aria-hidden="true">-</span>
@@ -15,19 +50,31 @@ function Value({ value }) {
     );
   }
   if (typeof value === 'boolean') return t(value ? 'common.yes' : 'common.no');
-  if (typeof value === 'object') {
+  if (Array.isArray(value)) {
+    const lines = value.every(isTiming)
+      ? timingLines(value, i18n.language === 'hi' ? 'hi-IN' : 'en-IN')
+      : value.every((v) => v === null || typeof v !== 'object')
+        ? [value.join(', ')]
+        : value.map((v) => (v && typeof v === 'object' ? objectLine(v) : String(v)));
     return (
-      <pre className="max-w-full font-mono text-sm break-words whitespace-pre-wrap">
-        {JSON.stringify(value, null, 2)}
-      </pre>
+      <ul className="flex flex-col gap-0.5">
+        {lines.map((l, i) => (
+          <li key={`${l}-${i}`} className="break-words">
+            {l}
+          </li>
+        ))}
+      </ul>
     );
+  }
+  if (typeof value === 'object') {
+    return <span className="break-words">{objectLine(value)}</span>;
   }
   return <span className="break-words">{String(value)}</span>;
 }
 
 /**
  * Before/after table for approval requests and audit entries. Nested fields are shown as dot
- * paths, objects and lists as pretty-printed JSON. A changed value is marked three ways: tinted
+ * paths; lists read as text: OPD timings one weekday a line, other lists one item a line. A changed value is marked three ways: tinted
  * cell, bold text and a pencil icon (with "changed" for screen readers), never by colour alone.
  * `labels` maps a field path to a readable name; unknown fields show their path. `omit` lists
  * paths to leave out (record ids, versions).

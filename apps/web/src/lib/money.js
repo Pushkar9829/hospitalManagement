@@ -17,3 +17,28 @@ export function inr(paise) {
   if (paise == null) return '';
   return formatINR(paise, { decimals: paise % 100 ? 2 : 0 });
 }
+
+/** ₹1,23,456.00: always with paise, for bill lines and totals. */
+export function inrExact(paise) {
+  if (paise == null) return '';
+  return formatINR(paise, { decimals: 2 });
+}
+
+/**
+ * The billing and subscription APIs take amounts in rupees (their schemas turn them into paise).
+ * Forms keep paise (integers) and convert only here: 49950 -> 499.5.
+ */
+export function rupeesForApi(paise) {
+  return paise == null ? undefined : paise / 100;
+}
+
+/**
+ * A rupee amount typed by a cashier -> paise: "1,250.50" -> 125050. Empty -> null; anything that
+ * is not an amount with at most two decimals ("12.345", "abc") -> NaN, so the form can say so.
+ */
+export function parseRupees(text) {
+  const s = String(text ?? '').replace(/[₹,\s]/g, '');
+  if (!s) return null;
+  if (!/^\d+(\.\d{1,2})?$/.test(s)) return Number.NaN;
+  return toPaise(s);
+}

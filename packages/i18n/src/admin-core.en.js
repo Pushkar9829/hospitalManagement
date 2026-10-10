@@ -24,6 +24,35 @@ export const adminCoreEn = {
     blockedTitle: 'This cannot be done yet.',
     limitTitle: 'Your plan limit is reached.',
     limitAction: 'Open Subscription',
+    askSuperAdmin: 'Ask your Super Admin to update the subscription.',
+    cashLimitTitle: 'Cash limit (section 269ST).',
+    subscription: {
+      LIMIT_REACHED: 'Your plan limit is reached.',
+      TENANT_READ_ONLY: 'Read-only mode: nothing new can be saved.',
+      TENANT_SUSPENDED: 'The subscription is suspended.',
+      MODULE_NOT_SUBSCRIBED: 'This module is not in your plan.',
+    },
+  },
+  pdf: {
+    loading: 'Preparing the document…',
+    failed: 'We could not open the document.',
+    print: 'Print',
+    download: 'Download PDF',
+    reprintBody:
+      'This document was printed before. A reprint is marked DUPLICATE and the reason is logged.',
+    reason: 'Reason for the reprint',
+    reasonError: 'Give a reason (3 characters or more).',
+    reprint: 'Reprint',
+  },
+  tenant: {
+    unknownTitle: 'No hospital at this address',
+    unknownBody: '{{host}} is not a hospital on this service. Check the address, or start a free trial.',
+    toSite: 'Go to the main site',
+  },
+  suspended: {
+    title: 'The subscription of {{hospital}} is suspended',
+    body: 'Only the Super Admin can open Subscription to pay and reactivate it. Ask your Super Admin.',
+    records: 'Patient records are kept safe and are back as soon as the subscription is active.',
   },
   diff: {
     field: 'Field',

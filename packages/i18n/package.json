@@ -5,7 +5,11 @@
   "type": "module",
   "exports": {
     ".": "./src/index.js",
-    "./admin": "./src/admin.js"
+    "./admin": "./src/admin.js",
+    "./patients": "./src/patients.js",
+    "./billing": "./src/billing.js",
+    "./subscription": "./src/subscription.js",
+    "./signup": "./src/signup.js"
   },
   "scripts": {
     "lint": "eslint .",

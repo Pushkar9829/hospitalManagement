@@ -16,3 +16,11 @@ export function istDayStart(ymd) {
 export function istDayEnd(ymd) {
   return ymd ? new Date(`${ymd}T23:59:59.999+05:30`).toISOString() : undefined;
 }
+
+export const DAY = 86_400_000;
+
+/** Whole days left until `iso` (today counts), or 0 once it has passed. */
+export function daysLeft(iso, now = Date.now()) {
+  if (!iso) return null;
+  return Math.max(0, Math.ceil((new Date(iso).getTime() - now) / DAY));
+}

@@ -42,4 +42,27 @@ export const validationHi = {
     'डिफ़ॉल्ट शाखा चुनी गई शाखाओं में से होनी चाहिए',
   'An invitation is sent by SMS: enter the mobile number':
     'आमंत्रण SMS से जाता है: मोबाइल नंबर डालें',
+  'Enter the first name': 'पहला नाम डालें',
+  'Date of birth cannot be in the future': 'जन्म तिथि भविष्य की नहीं हो सकती',
+  'Enter the date of birth or the age': 'जन्म तिथि या उम्र डालें',
+  'Aadhaar has 12 digits': 'आधार में 12 अंक होते हैं',
+  'Enter the full 12-digit Aadhaar number': 'पूरा 12 अंकों का आधार नंबर डालें',
+  'Enter the ID number': 'ID नंबर डालें',
+  'Name the substance': 'किससे एलर्जी है, लिखें',
+  'ABHA number has 14 digits': 'ABHA नंबर में 14 अंक होते हैं',
+  'Remove the allergies or untick "no known allergies"':
+    'एलर्जी हटाएँ या "कोई ज्ञात एलर्जी नहीं" से टिक हटाएँ',
+  'Type at least 2 characters': 'कम से कम 2 अक्षर लिखें',
+  'Explain why these are the same person': 'बताएँ कि ये एक ही व्यक्ति क्यों हैं',
+  'Choose two different records': 'दो अलग रिकॉर्ड चुनें',
+  'Add a parent or guardian for a patient under 18':
+    '18 साल से कम उम्र के मरीज़ के लिए माता-पिता या अभिभावक जोड़ें',
+  'Senior citizen category needs age 60 or more':
+    'वरिष्ठ नागरिक श्रेणी के लिए उम्र 60 या ज़्यादा होनी चाहिए',
+  'Add at least one service': 'कम से कम एक सेवा जोड़ें',
+  'Enter the amount': 'राशि डालें',
+  'Allocations must add up to the amount': 'बँटवारे का जोड़ राशि के बराबर होना चाहिए',
+  'Give a reason (at least 5 characters)': 'कारण लिखें (कम से कम 5 अक्षर)',
+  'At most 100%': 'अधिकतम 100%',
+  'Counter code: letters and digits': 'काउंटर कोड: अक्षर और अंक',
 };

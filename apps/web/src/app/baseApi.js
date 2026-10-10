@@ -8,6 +8,9 @@ import {
 /** Same origin as the app. Built as an absolute URL so it also works under jsdom in tests. */
 export const API_BASE = `${globalThis.location?.origin ?? 'http://localhost'}/api/v1`;
 
+/** Public signup API (no hospital): endpoints use absolute URLs under it, which skip API_BASE. */
+export const PUBLIC_BASE = `${globalThis.location?.origin ?? 'http://localhost'}/api/public`;
+
 const WRITE_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 
 /** Calls that never trigger a token refresh: they are the sign-in flow itself. */
@@ -85,7 +88,9 @@ export async function baseQueryWithReauth(args, api, extraOptions) {
   const err = result.error;
   const code = err?.data?.error?.code;
 
-  if (err?.status === 401 && REFRESHABLE_CODES.has(code) && !NO_REFRESH.includes(req.url)) {
+  // Absolute URLs (the public signup API) have no session to refresh.
+  const isSessionCall = !/^https?:/i.test(req.url ?? '') && !NO_REFRESH.includes(req.url);
+  if (err?.status === 401 && REFRESHABLE_CODES.has(code) && isSessionCall) {
     const refreshed = await refreshOnce(api, extraOptions);
     if (!refreshed.error) {
       result = await rawBaseQuery(req, api, extraOptions);
@@ -127,6 +132,14 @@ export const baseApi = createApi({
     'Audit',
     'Users',
     'Roles',
+    'Patients',
+    'Bills',
+    'Payments',
+    'Deposits',
+    'Refunds',
+    'Shift',
+    'Shifts',
+    'Subscription',
   ],
   endpoints: () => ({}),
 });

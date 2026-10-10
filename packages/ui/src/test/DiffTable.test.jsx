@@ -43,7 +43,29 @@ describe('DiffTable', () => {
     expect(opd).toHaveTextContent('Yes (changed)');
     const unchanged = within(table).getByRole('row', { name: /name/ });
     expect(unchanged).not.toHaveTextContent('changed');
-    expect(within(table).getByRole('row', { name: /opdTimings/ })).toHaveTextContent('"day": 1');
+    expect(within(table).getByRole('row', { name: /opdTimings/ })).toHaveTextContent('day: 1');
+  });
+
+  it('shows OPD timings one weekday a line, Monday first', () => {
+    render(
+      <DiffTable
+        before={{ opdTimings: [] }}
+        after={{
+          opdTimings: [
+            { day: 0, from: '10:00', to: '12:00' },
+            { day: 1, from: '09:00', to: '13:00' },
+            { day: 1, from: '17:00', to: '20:00' },
+          ],
+        }}
+        labels={{ opdTimings: 'OPD timings' }}
+      />,
+    );
+    const row = screen.getByRole('row', { name: /OPD timings/ });
+    const items = within(row)
+      .getAllByRole('listitem')
+      .map((li) => li.textContent);
+    expect(items).toEqual(['Monday 09:00–13:00, 17:00–20:00', 'Sunday 10:00–12:00']);
+    expect(row).not.toHaveTextContent('"day"');
   });
 
   it('says so when nothing was recorded', () => {

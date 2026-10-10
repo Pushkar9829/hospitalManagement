@@ -1,6 +1,25 @@
 import { describe, expect, it } from 'vitest';
 import { createI18n, en, hi, translateValidation } from './index.js';
 import { addAdminStrings, adminModulesEn, adminModulesHi } from './admin.js';
+import { addPatientsStrings, patientsEn, patientsHi } from './patients.js';
+import { addBillingStrings, billingEn, billingHi } from './billing.js';
+import { addSubscriptionStrings, subscriptionEn, subscriptionHi } from './subscription.js';
+import { addSignupStrings, signupEn, signupHi } from './signup.js';
+
+/** Lazily loaded screen bundles: [name, English, Hindi, add function, a key, its Hindi]. */
+const BUNDLES = [
+  ['patients', patientsEn, patientsHi, addPatientsStrings, 'patients.register', 'मरीज़ रजिस्टर करें'],
+  ['billing', billingEn, billingHi, addBillingStrings, 'billing.tabs.new', 'नया बिल'],
+  [
+    'subscription',
+    subscriptionEn,
+    subscriptionHi,
+    addSubscriptionStrings,
+    'subscription.title',
+    'सब्सक्रिप्शन',
+  ],
+  ['signup', signupEn, signupHi, addSignupStrings, 'signup.nav.pricing', 'कीमतें'],
+];
 
 /** Every leaf key path in a nested object, e.g. `login.title`. */
 function keys(obj, prefix = '') {
@@ -40,6 +59,32 @@ describe('@hms/i18n', () => {
       return e === get(adminModulesHi) && /[a-z]{4,}/.test(e.replace(/{{\s*\w+\s*}}/g, ''));
     });
     expect(same).toEqual([]);
+  });
+
+  it.each(BUNDLES)('%s: Hindi for every key, same placeholders, no extra keys', (_n, en_, hi_) => {
+    const enKeys = keys(en_);
+    const hiKeys = keys(hi_);
+    expect(enKeys.filter((k) => !hiKeys.includes(k))).toEqual([]);
+    expect(hiKeys.filter((k) => !enKeys.includes(k))).toEqual([]);
+    const get = (o, path) => path.split('.').reduce((a, k) => a[k], o);
+    for (const k of enKeys) expect(placeholders(get(hi_, k)), k).toEqual(placeholders(get(en_, k)));
+  });
+
+  it.each(BUNDLES)('%s: translated to Hindi in Devanagari, not copied', (_n, en_, hi_) => {
+    const get = (o, k) => k.split('.').reduce((a, x) => a[x], o);
+    const same = keys(en_).filter((k) => {
+      const e = get(en_, k);
+      return e === get(hi_, k) && /[a-z]{4,}/.test(e.replace(/{{\s*\w+\s*}}/g, ''));
+    });
+    expect(same).toEqual([]);
+  });
+
+  it.each(BUNDLES)('%s: added to an instance once, on demand', (_n, _e, _h, add, key, hindi) => {
+    const i18n = createI18n('hi');
+    expect(i18n.exists(key)).toBe(false);
+    add(i18n);
+    add(i18n);
+    expect(i18n.t(key)).toBe(hindi);
   });
 
   it('adds the admin strings to an instance once, on demand', () => {

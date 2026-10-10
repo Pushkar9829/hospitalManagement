@@ -17,6 +17,8 @@ export const PURPOSES = {
   'master-import': { ext: ['xlsx', 'csv'], maxMb: 5 },
   'hospital-logo': { ext: ['png', 'jpg', 'jpeg', 'webp'], maxMb: 2 },
   letterhead: { ext: ['png', 'jpg', 'jpeg', 'webp', 'pdf'], maxMb: 5 },
+  'patient-photo': { ext: ['png', 'jpg', 'jpeg', 'webp'], maxMb: 2 },
+  'patient-document': { ext: ['png', 'jpg', 'jpeg', 'pdf'], maxMb: 10 },
 };
 
 const extOf = (name) => String(name).split('.').pop()?.toLowerCase() ?? '';

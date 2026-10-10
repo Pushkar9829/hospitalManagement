@@ -142,28 +142,41 @@ export function NotSubscribed402({ module, canAdd = false, onAdd, onBack, classN
   );
 }
 
-/** 6 · Subscription banners: payment failed, read-only. Sits above the page header. */
-export function SubscriptionBanner({ variant = 'paymentFailed', days = 7, onFix, className }) {
+/**
+ * 6 · Subscription banners: payment failed (PAST_DUE), read-only. Sits above the page header.
+ * `onFix` adds the action ("Fix now" by default, or `fixLabel`); `days` is the grace left, when
+ * known.
+ */
+export function SubscriptionBanner({
+  variant = 'paymentFailed',
+  days = null,
+  onFix,
+  fixLabel,
+  className,
+}) {
   const { t } = useTranslation();
+  const fix = onFix && (
+    <button
+      type="button"
+      onClick={onFix}
+      className="cursor-pointer font-semibold underline underline-offset-2"
+    >
+      {fixLabel ?? t('states.fixNow')}
+    </button>
+  );
   if (variant === 'readOnly') {
     return (
       <Banner tone="critical" title={t('states.readOnlyTitle')} className={className}>
-        {t('states.readOnlyBody')}
+        {t('states.readOnlyBody')} {fix}
       </Banner>
     );
   }
   return (
     <Banner tone="warning" title={t('states.paymentFailedTitle')} className={className}>
-      {t('states.paymentFailedBody', { count: days })}{' '}
-      {onFix && (
-        <button
-          type="button"
-          onClick={onFix}
-          className="cursor-pointer font-semibold underline underline-offset-2"
-        >
-          {t('states.fixNow')}
-        </button>
-      )}
+      {days != null
+        ? t('states.paymentFailedBody', { count: days })
+        : t('states.paymentFailedBodyGeneric')}{' '}
+      {fix}
     </Banner>
   );
 }

@@ -1,8 +1,11 @@
 import { Link } from 'react-router';
+import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight } from 'lucide-react';
 import { Banner, Conflict409, ErrorState } from '@hms/ui';
 import { apiError } from '../app/apiError.js';
+import { canChangeSubscription } from '../app/access.js';
+import { selectSession } from '../app/session.js';
 
 /** 409 codes that describe the record's state; the server message says what to do. */
 const STATE_CODES = new Set([
@@ -18,6 +21,27 @@ const STATE_CODES = new Set([
 /** "Move these first" style 409s, with one detail per blocker. */
 const BLOCKER_CODES = new Set(['DEPARTMENT_IN_USE', 'BRANCH_IN_USE', 'ROLE_IN_USE']);
 
+/** 402s about the hospital's subscription: they link to Subscription (spec 2.4). */
+const SUBSCRIPTION_CODES = new Set([
+  'LIMIT_REACHED',
+  'TENANT_READ_ONLY',
+  'TENANT_SUSPENDED',
+  'MODULE_NOT_SUBSCRIBED',
+]);
+
+function SubscriptionLink() {
+  const { t } = useTranslation();
+  return (
+    <Link
+      to="/settings/subscription"
+      className="inline-flex min-h-8 items-center gap-1 text-sm font-semibold underline underline-offset-2"
+    >
+      {t('errors.limitAction')}
+      <ArrowRight size={14} aria-hidden="true" />
+    </Link>
+  );
+}
+
 /**
  * The right notice for a failed write: 409 conflict (reload and merge), 402 plan limit (link to
  * Subscription), blockers as a list, 403 with the reason, other 409s and 422s with the server's
@@ -26,6 +50,7 @@ const BLOCKER_CODES = new Set(['DEPARTMENT_IN_USE', 'BRANCH_IN_USE', 'ROLE_IN_US
  */
 export function ApiErrorNotice({ error, onReload, title, className }) {
   const { t } = useTranslation();
+  const session = useSelector((s) => selectSession(s).data);
   const e = error && 'code' in error && 'details' in error ? error : apiError(error);
   if (!e) return null;
   const details = e.details?.filter((d) => d?.message) ?? [];
@@ -39,23 +64,24 @@ export function ApiErrorNotice({ error, onReload, title, className }) {
 
   if (e.code === 'VERSION_CONFLICT')
     return <Conflict409 className={className} onReload={onReload} />;
-  if (e.code === 'LIMIT_REACHED') {
+  if (SUBSCRIPTION_CODES.has(e.code)) {
+    const admin = canChangeSubscription(session);
     return (
       <Banner
         tone="warning"
         role="alert"
-        title={t('errors.limitTitle')}
+        title={t(`errors.subscription.${e.code}`)}
         className={className}
-        action={
-          <Link
-            to="/settings/subscription"
-            className="inline-flex min-h-8 items-center gap-1 text-sm font-semibold underline underline-offset-2"
-          >
-            {t('errors.limitAction')}
-            <ArrowRight size={14} aria-hidden="true" />
-          </Link>
-        }
+        action={admin && <SubscriptionLink />}
       >
+        {e.message}
+        {!admin && <span className="block">{t('errors.askSuperAdmin')}</span>}
+      </Banner>
+    );
+  }
+  if (e.code === 'CASH_LIMIT') {
+    return (
+      <Banner tone="critical" role="alert" title={t('errors.cashLimitTitle')} className={className}>
         {e.message}
       </Banner>
     );

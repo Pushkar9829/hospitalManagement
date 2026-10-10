@@ -2,13 +2,13 @@ import { Suspense } from 'react';
 import { Navigate, Outlet, useLocation, useNavigate, useSearchParams } from 'react-router';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { SCREENS } from '@hms/shared/catalog';
 import { Forbidden403, Loading, NotSubscribed402, Page } from '@hms/ui';
 import { useMeQuery } from '../modules/auth/api.js';
 import { selectSession } from './session.js';
 import {
   canChangeSubscription,
   canOpen,
+  isSuspended,
   moduleName,
   requiredGate,
   roleHome,
@@ -16,7 +16,10 @@ import {
   screenAccess,
 } from './access.js';
 import { PAGES } from './registry.js';
+import { ALL_SCREENS } from './screens.js';
 import { PlannedScreen } from '../modules/system/PlannedScreen.jsx';
+import { UnknownHospital } from '../modules/system/UnknownHospital.jsx';
+import { apiError } from './apiError.js';
 
 export function FullPageLoading() {
   return (
@@ -26,11 +29,15 @@ export function FullPageLoading() {
   );
 }
 
-/** Root: asks the API who is signed in (GET /auth/me) before any route decides. */
+/**
+ * Root: asks the API who is signed in (GET /auth/me) before any route decides. An address that
+ * is no hospital (404 TENANT_NOT_FOUND) says so and links to the public site.
+ */
 export function SessionGate() {
-  useMeQuery();
+  const { error } = useMeQuery();
   const { status } = useSelector(selectSession);
   if (status === 'loading') return <FullPageLoading />;
+  if (apiError(error)?.code === 'TENANT_NOT_FOUND') return <UnknownHospital />;
   return <Outlet />;
 }
 
@@ -50,6 +57,11 @@ export function RequireAuth({ gate = null, children }) {
   }
   const required = requiredGate(data);
   if (required !== gate) return <Navigate to={required ?? roleHome(data)} replace />;
+  // Suspended: only Subscription (for those who may open it) and the suspended notice.
+  if (!required && isSuspended(data)) {
+    const home = roleHome(data);
+    if (location.pathname !== home) return <Navigate to={home} replace />;
+  }
   return children ?? <Outlet />;
 }
 
@@ -73,8 +85,8 @@ export function ScreenGate({ screenKey }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { data } = useSelector(selectSession);
-  const screen = SCREENS[screenKey];
-  const access = screenAccess(screen, data);
+  const screen = ALL_SCREENS[screenKey];
+  const access = screenAccess(screenKey, data);
   const home = roleHome(data);
   if (access === 'module') {
     return (
