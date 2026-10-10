@@ -37,6 +37,9 @@ export async function syncSystemRoles() {
       scope: scopeOf(code, panel),
       maxSessions: MAX_SESSIONS[code],
       isSystem: true,
+      // System roles cannot be deactivated; this also backfills roles stored before `status`.
+      status: 'ACTIVE',
+      isActive: true,
     };
     let role = await Role.findOne({ code });
     if (!role) [role] = await Role.create([{ code, ...fields }]);

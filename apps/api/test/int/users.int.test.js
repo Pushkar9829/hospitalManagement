@@ -2,6 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { client, makeTenant, makeUser, PASSWORD, signIn, useIntegration } from '../helpers/int.js';
 import { outbox } from '../../src/core/notify/notify.service.js';
 import { Tenant } from '../../src/core/tenancy/tenant.model.js';
+import { Role } from '../../src/core/auth/models/role.model.js';
+import { runAsSystem } from '../../src/core/tenancy/context.js';
+import { syncSystemRoles } from '../../src/core/tenancy/provision.js';
 
 const ctx = useIntegration();
 
@@ -102,6 +105,19 @@ describe('staff logins', () => {
     const after = (await admin.get(`/users/${u._id}`)).body;
     expect(after.roles.map((r) => r.code).sort()).toEqual(['billingmgr', 'cashier']);
     expect(after.pendingRoleCodes).toBeUndefined();
+  });
+
+  it('accepts system roles stored before roles had a status (role sync backfills it)', async () => {
+    const { t, admin } = await hospital();
+    await runAsSystem(t.tenant._id, () =>
+      Role.collection.updateMany(
+        { tenantId: t.tenant._id, isSystem: true },
+        { $unset: { status: '' } },
+      ),
+    );
+    expect((await admin.post('/users').send(staff(t))).status).toBe(422);
+    await runAsSystem(t.tenant._id, () => syncSystemRoles());
+    expect((await admin.post('/users').send(staff(t))).status).toBe(201);
   });
 
   it('enforces the plan user limit', async () => {
