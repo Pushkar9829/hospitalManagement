@@ -12,3 +12,4 @@ test-results/
 .keys/
 apps/web/e2e/screenshots/
 .storage/
+.screens/
