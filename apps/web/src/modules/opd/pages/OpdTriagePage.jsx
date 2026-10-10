@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { addOpdStrings } from '@hms/i18n/opd';
@@ -57,7 +57,7 @@ function TriageCard({ visit, onDone }) {
   const [save] = useSaveVitalsMutation();
   const [skip] = useSkipTriageMutation();
   const [procedure] = useRecordProcedureMutation();
-  const startedAt = useRef(new Date());
+  const [startedAt] = useState(() => new Date());
   const allergies = visit.patient.allergies ?? [];
   const canWrite = can('opd:vitals:create');
 
@@ -90,7 +90,7 @@ function TriageCard({ visit, onDone }) {
         .join(' · ')}
       actions={
         <span className="text-sm text-muted">
-          {t('opd.triage.started', { time: fmtTime(startedAt.current, localeOf(i18n)) })}
+          {t('opd.triage.started', { time: fmtTime(startedAt, localeOf(i18n)) })}
         </span>
       }
     >

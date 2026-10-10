@@ -67,4 +67,3 @@ export function useVitalsForm({ defaults, withComplaint = true }) {
   const schema = useMemo(() => vitalsSchema(t, { withComplaint }), [t, withComplaint]);
   return useForm({ resolver: cleanResolver(schema), mode: 'onBlur', defaultValues: defaults });
 }
-
