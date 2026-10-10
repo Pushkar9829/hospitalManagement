@@ -7,6 +7,18 @@ import { OutboxEvent } from '../../src/core/events/outbox.model.js';
 
 const ctx = useIntegration();
 
+/**
+ * The engine is tested with its own action so no module applier (billing applies real
+ * discounts) runs; the rule copies the levels of billing.discount.
+ */
+const ACTION = 'qa.discount';
+async function withQaRule(t) {
+  const { DEFAULT_APPROVAL_RULES } = await import('@hms/shared');
+  const base = DEFAULT_APPROVAL_RULES.find((r) => r.action === 'billing.discount');
+  await runAsSystem(t.tenant._id, () => ApprovalRule.create([{ ...base, action: ACTION }]));
+  return t;
+}
+
 /** A cashier asks for a discount inside their own request context. */
 function raise(t, maker, { percent = 15, amount = 5_000_00, entityId = 'OP/26-27/000155' } = {}) {
   return runInContext(
@@ -18,7 +30,7 @@ function raise(t, maker, { percent = 15, amount = 5_000_00, entityId = 'OP/26-27
     },
     () =>
       requestApproval({
-        action: 'billing.discount',
+        action: ACTION,
         module: 'CORE',
         entity: 'Bill',
         entityId,
@@ -34,7 +46,7 @@ function raise(t, maker, { percent = 15, amount = 5_000_00, entityId = 'OP/26-27
 
 describe('maker-checker approvals', () => {
   it('routes a 15% discount through Billing Manager then Super Admin', async () => {
-    const t = await makeTenant();
+    const t = await withQaRule(await makeTenant());
     const cashier = await makeUser(t, { username: 'cashier1', roles: ['cashier'] });
     await makeUser(t, { username: 'billmgr', roles: ['billingmgr'] });
     const req = await raise(t, cashier);
@@ -82,18 +94,18 @@ describe('maker-checker approvals', () => {
   });
 
   it('skips the second level below the threshold, and needs no approval when the rule is off', async () => {
-    const t = await makeTenant();
+    const t = await withQaRule(await makeTenant());
     const cashier = await makeUser(t, { username: 'cashier2', roles: ['cashier'] });
     const small = await raise(t, cashier, { percent: 5, amount: 2_000_00, entityId: 'A' });
     expect(small.levels).toHaveLength(1);
     await runAsSystem(t.tenant._id, () =>
-      ApprovalRule.updateOne({ action: 'billing.discount' }, { $set: { enabled: false } }).exec(),
+      ApprovalRule.updateOne({ action: ACTION }, { $set: { enabled: false } }).exec(),
     );
     expect(await raise(t, cashier, { entityId: 'B' })).toBeNull();
   });
 
   it('allows one open request per record, and one level per checker', async () => {
-    const t = await makeTenant();
+    const t = await withQaRule(await makeTenant());
     const cashier = await makeUser(t, { username: 'cashier3', roles: ['cashier'] });
     const req = await raise(t, cashier, { entityId: 'C' });
     await expect(raise(t, cashier, { entityId: 'C' })).rejects.toMatchObject({
@@ -111,7 +123,7 @@ describe('maker-checker approvals', () => {
   });
 
   it('expires requests after the rule expiry', async () => {
-    const t = await makeTenant();
+    const t = await withQaRule(await makeTenant());
     const cashier = await makeUser(t, { username: 'cashier4', roles: ['cashier'] });
     const req = await raise(t, cashier, { entityId: 'D' });
     await runAsSystem(t.tenant._id, () =>
@@ -130,7 +142,7 @@ describe('maker-checker approvals', () => {
   });
 
   it('lets a Super Admin tune thresholds and keeps the first level unconditional', async () => {
-    const t = await makeTenant();
+    const t = await withQaRule(await makeTenant());
     const admin = await signIn(ctx.app, t.host);
     const rules = (await admin.get('/approval-rules')).body;
     const discount = rules.find((r) => r.action === 'billing.discount');

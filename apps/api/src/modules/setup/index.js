@@ -25,6 +25,7 @@ router.use(settingsRoutes, branchRoutes, departmentRoutes, masterRoutes);
 export const setupModule = { name: 'setup', router };
 export { numbering, registerDepartmentUsageCheck };
 export { Department } from './models/department.model.js';
+export { HospitalSettings } from './models/settings.model.js';
 export {
   PaymentMode,
   PriceList,

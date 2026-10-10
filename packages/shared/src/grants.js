@@ -32,9 +32,28 @@ export const ROLE_GRANTS = Object.freeze({
     'patients:patient:read',
     'patients:merge:request',
   ],
-  cashier: ['patients:patient:read', 'patients:patient:create'],
+  cashier: [
+    'patients:patient:read',
+    'patients:patient:create',
+    'billing:bill:read',
+    'billing:bill:create',
+    'billing:bill:finalize',
+    'billing:bill:print',
+    'billing:payment:create',
+    'billing:payment:read',
+    'billing:deposit:create',
+    'billing:deposit:read',
+    'billing:discount:request',
+    'billing:cancel:request',
+    'billing:refund:pay',
+    'billing:refund:read',
+    'billing:shift:open',
+    'billing:shift:close',
+    'billing:shift:read',
+  ],
   billingmgr: [
     'patients:patient:read',
+    'billing:*',
     'approvals:billing-discount:l1',
     'approvals:billing-refund:l1',
   ],
@@ -62,6 +81,14 @@ export const ROLE_GRANTS = Object.freeze({
   crm: ['patients:patient:read'],
 });
 
+/**
+ * Menu-derived permissions that are too broad for a role and are replaced by its grants:
+ * the cashier opens the Billing screens but must not verify shifts.
+ */
+export const ROLE_REVOKE = Object.freeze({
+  cashier: ['billing:*', 'billing:ip:*', 'billing:shift:*'],
+});
+
 /** Role codes that count as privileged: creating such a user needs Super Admin approval. */
 export const PRIVILEGED_ROLES = Object.freeze([
   'superadmin',
@@ -74,7 +101,8 @@ export const PRIVILEGED_ROLES = Object.freeze([
 
 /** Default permissions of a system role: menu-derived permissions plus explicit grants. */
 export function systemRolePermissions(panel) {
-  const base = PANELS[panel]?.permissions ?? [];
+  const revoke = new Set(ROLE_REVOKE[panel] ?? []);
+  const base = (PANELS[panel]?.permissions ?? []).filter((k) => !revoke.has(k));
   return [...new Set([...base, ...(ROLE_GRANTS[panel] ?? [])])].sort();
 }
 

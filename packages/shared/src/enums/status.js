@@ -14,6 +14,7 @@ export const BED_STATUS = freeze({
 
 export const BILL_STATUS = freeze({
   DRAFT: { label: 'Draft', tone: 'neutral' },
+  FINAL: { label: 'Due', tone: 'warning' },
   DUE: { label: 'Due', tone: 'warning' },
   PARTIALLY_PAID: { label: 'Partly paid', tone: 'warning' },
   PAID: { label: 'Paid', tone: 'success' },
