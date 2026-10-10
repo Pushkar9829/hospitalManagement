@@ -28,6 +28,32 @@ import {
 } from '../api.js';
 import { ApprovalPath } from './ApprovalPath.jsx';
 
+/** Technical fields that mean nothing to a checker. */
+const OMIT = ['id', 'version', 'approvalId', 'tenantId', 'createdAt', 'updatedAt'];
+const FIELD_KEYS = [
+  'code',
+  'name',
+  'type',
+  'status',
+  'parentId',
+  'hodUserId',
+  'location.branchId',
+  'location.building',
+  'location.floor',
+  'location.rooms',
+  'services.opd',
+  'services.ipd',
+  'services.procedures',
+  'services.diagnostics',
+  'costCentre',
+  'opdTimings',
+  'permissions',
+  'added',
+  'removed',
+  'roles',
+  'branchIds',
+];
+
 /** Re-renders every `ms` so countdowns stay current. */
 function useNow(ms = 60_000) {
   const [now, setNow] = useState(() => Date.now());
@@ -70,6 +96,9 @@ export function ApprovalDetail({ id, box, onDecided }) {
   const [pending, setPending] = useState(null);
   const [withdrawing, setWithdrawing] = useState(false);
   const locale = i18n.language === 'hi' ? 'hi-IN' : 'en-IN';
+  const labels = Object.fromEntries(
+    FIELD_KEYS.map((k) => [k, t(`approvals.fields.${k.replace('.', '_')}`)]),
+  );
 
   if (!id)
     return (
@@ -178,6 +207,8 @@ export function ApprovalDetail({ id, box, onDecided }) {
             beforeLabel={t('approvals.current')}
             afterLabel={t('approvals.proposed')}
             caption={t('approvals.changes')}
+            omit={OMIT}
+            labels={labels}
           />
         </section>
         <section aria-labelledby="ap-reason" className="flex flex-col gap-2">

@@ -126,4 +126,25 @@ describe('Sidebar', () => {
     expect(screen.getByRole('link', { name: 'Home' })).toBeInTheDocument();
     spy.mockRestore();
   });
+
+  it('shows a count badge with spoken text on an item', () => {
+    const withBadge = [
+      {
+        group: 'Overview',
+        items: [
+          {
+            label: 'Approvals',
+            screen: 'Approvals',
+            route: '/approvals',
+            badge: 3,
+            badgeLabel: '3 waiting for your approval',
+          },
+        ],
+      },
+    ];
+    renderSidebar({ menu: withBadge, activePath: '/home' });
+    const link = screen.getByRole('link', { name: /Approvals/ });
+    expect(link).toHaveTextContent('3');
+    expect(link).toHaveAccessibleName('Approvals 3 waiting for your approval');
+  });
 });

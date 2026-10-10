@@ -29,7 +29,8 @@ function Value({ value }) {
  * Before/after table for approval requests and audit entries. Nested fields are shown as dot
  * paths, objects and lists as pretty-printed JSON. A changed value is marked three ways: tinted
  * cell, bold text and a pencil icon (with "changed" for screen readers), never by colour alone.
- * `labels` maps a field path to a readable name; unknown fields show their path.
+ * `labels` maps a field path to a readable name; unknown fields show their path. `omit` lists
+ * paths to leave out (record ids, versions).
  */
 export function DiffTable({
   before,
@@ -38,14 +39,15 @@ export function DiffTable({
   beforeLabel,
   afterLabel,
   caption,
+  omit,
   onlyChanged = false,
   className,
 }) {
   const { t } = useTranslation();
   const rows = useMemo(() => {
-    const all = diffRows(before, after);
+    const all = diffRows(before, after, { omit });
     return onlyChanged ? all.filter((r) => r.changed) : all;
-  }, [before, after, onlyChanged]);
+  }, [before, after, omit, onlyChanged]);
 
   if (!rows.length) return <p className="text-base text-muted">{t('diff.none')}</p>;
 
