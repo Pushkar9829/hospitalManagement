@@ -1,3 +1,5 @@
+import { inr } from '../../lib/money.js';
+
 /**
  * OPD display helpers shared by the OPD and front-office screens: status tones (colour always
  * comes with the text label), today's date in IST and small formatting helpers.
@@ -106,4 +108,16 @@ export function downloadCsv(filename, header, rows) {
   a.download = filename;
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/** The fee line: free follow-up (day n of the window), paid online, or due at the counter. */
+export function feeText(t, fee) {
+  if (!fee) return '';
+  if (fee.amount === 0)
+    return fee.freeDay
+      ? t('opd.fee.freeDay', { day: fee.freeDay, window: fee.window })
+      : t('opd.fee.free');
+  if (fee.prepaid) return t('opd.fee.prepaid', { amount: inr(fee.amount) });
+  if (fee.paid) return t('opd.fee.paid', { amount: inr(fee.amount) });
+  return t('opd.fee.due', { amount: inr(fee.amount) });
 }

@@ -10,6 +10,7 @@
     "./billing": "./src/billing.js",
     "./subscription": "./src/subscription.js",
     "./signup": "./src/signup.js",
+    "./opd": "./src/opd.js",
     "./dxkit": "./src/dxkit.js"
   },
   "scripts": {

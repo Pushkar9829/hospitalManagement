@@ -23,6 +23,8 @@ const BillingPage = lazy(() => import('../modules/billing/pages/BillingPage.jsx'
 const BillDetailPage = lazy(() => import('../modules/billing/pages/BillDetailPage.jsx'));
 const ShiftPage = lazy(() => import('../modules/billing/pages/ShiftPage.jsx'));
 const SubscriptionPage = lazy(() => import('../modules/subscription/pages/SubscriptionPage.jsx'));
+// OPD and front office
+const OpdPage = lazy(() => import('../modules/opd/pages/OpdPage.jsx'));
 
 /** Screen key -> page component. The admin dashboard is the role home until Phase 1 fills it. */
 export const PAGES = {
@@ -41,6 +43,8 @@ export const PAGES = {
   BillDetail: BillDetailPage,
   BillShift: ShiftPage,
   Subscription: SubscriptionPage,
+  // OPD and front office
+  Opd: OpdPage,
 };
 
 /** Screens served outside the signed-in shell. */

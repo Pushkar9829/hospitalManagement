@@ -3,7 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { Button, Dialog, FormField, Select, Input, useToast } from '@hms/ui';
 import { FormDialog } from '../../dx-kit/FormDialog.jsx';
-import { useBlockDatesMutation, useBulkMoveAppointmentsMutation, useOpdDoctorsQuery } from '../api.js';
+import {
+  useBlockDatesMutation,
+  useBulkMoveAppointmentsMutation,
+  useOpdDoctorsQuery,
+} from '../api.js';
 import { todayIST } from '../opd.js';
 
 const blockSchema = (t) =>

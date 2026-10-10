@@ -5,6 +5,7 @@ import { addPatientsStrings, patientsEn, patientsHi } from './patients.js';
 import { addBillingStrings, billingEn, billingHi } from './billing.js';
 import { addSubscriptionStrings, subscriptionEn, subscriptionHi } from './subscription.js';
 import { addSignupStrings, signupEn, signupHi } from './signup.js';
+import { addOpdStrings, opdEn, opdHi } from './opd.js';
 import { addDxkitStrings, dxkitEn, dxkitHi } from './dxkit.js';
 
 /** Lazily loaded screen bundles: [name, English, Hindi, add function, a key, its Hindi]. */
@@ -27,6 +28,7 @@ const BUNDLES = [
     'सब्सक्रिप्शन',
   ],
   ['signup', signupEn, signupHi, addSignupStrings, 'signup.nav.pricing', 'कीमतें'],
+  ['opd', opdEn, opdHi, addOpdStrings, 'opd.tabs.calendar', 'अपॉइंटमेंट कैलेंडर'],
   ['dxkit', dxkitEn, dxkitHi, addDxkitStrings, 'dxkit.choose', 'चुनें…'],
 ];
 

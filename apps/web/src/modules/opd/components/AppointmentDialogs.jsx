@@ -57,7 +57,13 @@ export function RescheduleDialog({ appointment, open, onOpenChange, onDone }) {
           required: true,
           onChange: setDoctorId,
         },
-        { name: 'date', label: t('opd.appt.date'), type: 'date', required: true, onChange: setDate },
+        {
+          name: 'date',
+          label: t('opd.appt.date'),
+          type: 'date',
+          required: true,
+          onChange: setDate,
+        },
         {
           name: 'time',
           label: t('opd.book.slot'),

@@ -33,7 +33,11 @@ export function DoctorSchedulesTab() {
   const columns = useMemo(
     () => [
       { id: 'doctor', header: t('opd.sched.doctor'), cell: ({ row }) => row.original.doctor.name },
-      { id: 'days', header: t('opd.sched.days'), cell: ({ row }) => daysText(t, row.original.week) },
+      {
+        id: 'days',
+        header: t('opd.sched.days'),
+        cell: ({ row }) => daysText(t, row.original.week),
+      },
       {
         id: 'session',
         header: t('opd.sched.session'),
@@ -129,7 +133,11 @@ export function CheckupsTab() {
   const [importCheckups] = useImportCheckupsMutation();
   const columns = useMemo(
     () => [
-      { id: 'person', header: t('opd.checkup.person'), cell: ({ row }) => row.original.patient.name },
+      {
+        id: 'person',
+        header: t('opd.checkup.person'),
+        cell: ({ row }) => row.original.patient.name,
+      },
       { accessorKey: 'package', header: t('opd.checkup.package') },
       {
         id: 'company',
@@ -228,7 +236,12 @@ export function CheckupsTab() {
   );
 }
 
-const TELE_TONE = { WAITING_ROOM: 'info', SCHEDULED: 'neutral', IN_CALL: 'warning', DONE: 'success' };
+const TELE_TONE = {
+  WAITING_ROOM: 'info',
+  SCHEDULED: 'neutral',
+  IN_CALL: 'warning',
+  DONE: 'success',
+};
 
 /** Tele-consultations booked for today, with the paid fee, the stored consent and the status. */
 export function TeleTab() {
@@ -241,7 +254,11 @@ export function TeleTab() {
   const columns = useMemo(
     () => [
       { accessorKey: 'time', header: t('opd.tele.time'), meta: { mono: true } },
-      { id: 'patient', header: t('opd.book.patient'), cell: ({ row }) => row.original.patient.name },
+      {
+        id: 'patient',
+        header: t('opd.book.patient'),
+        cell: ({ row }) => row.original.patient.name,
+      },
       { id: 'doctor', header: t('opd.book.doctor'), cell: ({ row }) => row.original.doctor.name },
       {
         id: 'paid',
@@ -334,7 +351,11 @@ export function PlansTab() {
   const [add] = useAddTreatmentPlanMutation();
   const columns = useMemo(
     () => [
-      { id: 'patient', header: t('opd.book.patient'), cell: ({ row }) => row.original.patient.name },
+      {
+        id: 'patient',
+        header: t('opd.book.patient'),
+        cell: ({ row }) => row.original.patient.name,
+      },
       { accessorKey: 'plan', header: t('opd.plan.plan') },
       { accessorKey: 'sessions', header: t('opd.plan.sessions'), meta: { align: 'right' } },
       { accessorKey: 'done', header: t('opd.plan.done'), meta: { align: 'right' } },
@@ -441,7 +462,11 @@ export function ResourcesTab() {
   const columns = useMemo(
     () => [
       { accessorKey: 'name', header: t('opd.res.name') },
-      { id: 'type', header: t('opd.res.type'), cell: ({ row }) => t(`opd.res.types.${row.original.type}`) },
+      {
+        id: 'type',
+        header: t('opd.res.type'),
+        cell: ({ row }) => t(`opd.res.types.${row.original.type}`),
+      },
       { accessorKey: 'bookableFor', header: t('opd.res.for') },
       {
         id: 'booked',

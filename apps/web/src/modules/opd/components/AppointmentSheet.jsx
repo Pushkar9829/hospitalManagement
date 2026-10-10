@@ -4,10 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { Button, ConfirmDialog, PatientBanner, Sheet, StatusBadge, useToast } from '@hms/ui';
 import { QueryView } from '../../dx-kit/QueryView.jsx';
 import { fmtDate } from '../../dx-kit/format.js';
-import { inr } from '../../../lib/money.js';
 import { useCan } from '../../../lib/useCan.js';
 import { useMarkNoShowMutation, useOpdAppointmentQuery } from '../api.js';
-import { APPT_TONE, ymdInstant } from '../opd.js';
+import { APPT_TONE, feeText, ymdInstant } from '../opd.js';
 import { CancelDialog, RescheduleDialog } from './AppointmentDialogs.jsx';
 
 /** One field of a details list. */
@@ -18,18 +17,6 @@ export function Detail({ label, children, mono = false }) {
       <dd className={mono ? 'font-mono text-base text-ink' : 'text-base text-ink'}>{children}</dd>
     </div>
   );
-}
-
-/** The fee line: free follow-up (day n of the window), paid online, or due at the counter. */
-export function feeText(t, fee) {
-  if (!fee) return '';
-  if (fee.amount === 0)
-    return fee.freeDay
-      ? t('opd.fee.freeDay', { day: fee.freeDay, window: fee.window })
-      : t('opd.fee.free');
-  if (fee.prepaid) return t('opd.fee.prepaid', { amount: inr(fee.amount) });
-  if (fee.paid) return t('opd.fee.paid', { amount: inr(fee.amount) });
-  return t('opd.fee.due', { amount: inr(fee.amount) });
 }
 
 /**

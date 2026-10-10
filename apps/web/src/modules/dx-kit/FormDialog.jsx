@@ -87,7 +87,8 @@ export function FormDialog({
   };
   const formId = `dx-form-${title.replace(/\W+/g, '-').toLowerCase()}`;
   // A field's own onChange(value) lets the caller update dependent options (e.g. free slots).
-  const fieldOpts = (f) => (f.onChange ? { onChange: (e) => f.onChange(e.target.value) } : undefined);
+  const fieldOpts = (f) =>
+    f.onChange ? { onChange: (e) => f.onChange(e.target.value) } : undefined;
 
   return (
     <Dialog
@@ -165,7 +166,11 @@ export function FormDialog({
                     placeholder={f.placeholder ?? t('dxkit.choose')}
                   />
                 ) : f.type === 'textarea' ? (
-                  <Textarea {...register(f.name, fieldOpts(f))} rows={f.rows ?? 3} placeholder={f.placeholder} />
+                  <Textarea
+                    {...register(f.name, fieldOpts(f))}
+                    rows={f.rows ?? 3}
+                    placeholder={f.placeholder}
+                  />
                 ) : (
                   <Input
                     {...register(f.name, fieldOpts(f))}

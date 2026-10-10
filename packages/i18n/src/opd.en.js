@@ -93,7 +93,8 @@ export const opdEn = {
     appt: {
       errors: { date: 'Pick a date.', reason: 'Give the reason (at least 3 letters).' },
       rescheduleTitle: 'Reschedule {{name}}',
-      rescheduleHint: 'The old slot is released and offered to the waitlist. The patient gets an SMS.',
+      rescheduleHint:
+        'The old slot is released and offered to the waitlist. The patient gets an SMS.',
       date: 'Date',
       reason: 'Reason',
       reschedule: 'Reschedule',
