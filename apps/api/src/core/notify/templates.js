@@ -3,6 +3,13 @@
  * filled per hospital when its templates are approved (go-live checklist).
  */
 export const SMS_TEMPLATES = Object.freeze({
+  PATIENT_WELCOME: {
+    dltId: '',
+    text: {
+      en: 'Welcome to {hospital}. Your patient ID (UHID) is {uhid}. Please quote it at every visit.',
+      hi: '{hospital} में आपका स्वागत है। आपकी पेशेंट आईडी (UHID) {uhid} है। हर बार आते समय इसे बताएँ।',
+    },
+  },
   USER_INVITE: {
     dltId: '',
     text: {

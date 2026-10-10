@@ -9,3 +9,4 @@ export * from './enums/patient.js';
 export * from './approvals.js';
 export * from './grants.js';
 export * from './permission-catalog.js';
+export * from './patients.js';

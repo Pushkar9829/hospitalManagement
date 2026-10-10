@@ -16,6 +16,7 @@ export const AUDIT_ACTIONS = Object.freeze([
   'PASSWORD_CHANGED',
   'TWO_FACTOR_ENABLED',
   'SESSION_REUSE_DETECTED',
+  'VIEW',
   'ACCESS_DENIED',
 ]);
 
