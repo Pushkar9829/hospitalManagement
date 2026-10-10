@@ -11,9 +11,21 @@ const jsonSchema = (schema) => {
   }
 };
 
-export function buildOpenApi({ title = 'Hospital Management System API', version = '1.0.0' } = {}) {
+/** One document per mount point: /api/v1 (hospital), /api/public (signup), /api/platform (console). */
+export const API_DOCS = Object.freeze({
+  v1: { mount: '/api/v1', title: 'Hospital Management System API' },
+  public: { mount: '/api/public', title: 'Public signup API' },
+  platform: { mount: '/api/platform', title: 'Platform console API' },
+});
+
+export function buildOpenApi({
+  mount = '/api/v1',
+  title = 'Hospital Management System API',
+  version = '1.0.0',
+} = {}) {
   const paths = {};
   for (const r of routeRegistry) {
+    if ((r.mount ?? '/api/v1') !== mount) continue;
     const path = r.fullPath.replace(/:(\w+)/g, '{$1}');
     const params = [];
     for (const [where, schema] of [
@@ -68,7 +80,7 @@ export function buildOpenApi({ title = 'Hospital Management System API', version
   return {
     openapi: '3.1.0',
     info: { title, version },
-    servers: [{ url: '/api/v1' }],
+    servers: [{ url: mount }],
     paths,
     components: {
       schemas: {

@@ -150,7 +150,9 @@ describe('tenant isolation', () => {
     expect(write.body.error.code).toBe('TENANT_READ_ONLY');
     await Tenant.updateOne({ _id: t.tenant._id }, { $set: { status: 'SUSPENDED' } });
     await tenantRegistry.invalidate(t.tenant);
-    expect((await c.get('/auth/me')).body.error.code).toBe('TENANT_SUSPENDED');
+    expect((await c.get('/audit')).body.error.code).toBe('TENANT_SUSPENDED');
+    // Staff can still sign in, so the Super Admin can reach the subscription page and pay.
+    expect((await c.get('/auth/me')).status).toBe(200);
   });
 });
 

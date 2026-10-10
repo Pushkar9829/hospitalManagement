@@ -3,6 +3,13 @@
  * filled per hospital when its templates are approved (go-live checklist).
  */
 export const SMS_TEMPLATES = Object.freeze({
+  SIGNUP_OTP: {
+    dltId: '',
+    text: {
+      en: '{code} is your code to start a free trial of HMS Cloud. It expires in 5 minutes.',
+      hi: 'HMS Cloud का मुफ़्त ट्रायल शुरू करने के लिए आपका कोड {code} है। यह 5 मिनट में समाप्त होगा।',
+    },
+  },
   PATIENT_WELCOME: {
     dltId: '',
     text: {

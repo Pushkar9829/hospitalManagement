@@ -17,9 +17,10 @@ const METHODS = new Set(['get', 'post', 'put', 'patch', 'delete']);
  *   audit       the audit action this route performs, or null for reads
  *   summary     one line for the API docs
  * Optional: idempotent ('required' | 'optional') for money and stock writes; status (default 200).
+ * `mount` is where the router is mounted (default /api/v1); it picks the OpenAPI document.
  * A route missing any of these fails at startup, and the contract test fails CI.
  */
-export function defineRoutes({ module, basePath = '', routes }) {
+export function defineRoutes({ module, basePath = '', mount = '/api/v1', routes }) {
   if (!isModuleCode(module)) throw new Error(`defineRoutes: unknown module ${module}`);
   const router = Router();
   for (const r of routes) {
@@ -61,6 +62,7 @@ export function defineRoutes({ module, basePath = '', routes }) {
       permission: perms,
       schema: r.schema ?? {},
       fullPath: `${basePath}${r.path}`,
+      mount,
     });
   }
   return router;

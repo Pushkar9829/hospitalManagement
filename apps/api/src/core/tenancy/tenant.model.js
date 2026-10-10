@@ -24,6 +24,19 @@ const schema = new Schema({
   domains: { type: [String], default: [] },
   status: { type: String, enum: Object.keys(TENANT_STATUS), default: 'TRIAL' },
   plan: { type: String, default: 'trial' },
+  trialEndsAt: Date,
+  /** When the lifecycle state last changed (drives 7 / 15 / 90-day steps, spec 2.4). */
+  statusChangedAt: { type: Date, default: Date.now },
+  statusReason: String,
+  billing: {
+    contactName: String,
+    email: String,
+    mobile: String,
+    gstin: String,
+    legalName: String,
+    city: String,
+  },
+  signup: { acceptedTermsVersion: String, ip: String, at: Date, beds: Number },
   modules: { type: [moduleSub], default: [] },
   limits: {
     users: { type: Number, default: 25 },

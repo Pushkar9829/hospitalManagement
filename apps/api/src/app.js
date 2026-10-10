@@ -11,12 +11,18 @@ import { authenticate } from './core/auth/authenticate.js';
 import { authPublicRoutes, authRoutes } from './core/auth/auth.routes.js';
 import { approvalRoutes, approvalRuleRoutes } from './core/approvals/approval.routes.js';
 import { auditRoutes } from './core/audit/audit.routes.js';
-import { apiLimiter, loginLimiters } from './core/security/rateLimit.js';
-import { buildOpenApi } from './core/http/openapi.js';
+import { apiLimiter, loginLimiters, signupLimiter } from './core/security/rateLimit.js';
+import { API_DOCS, buildOpenApi } from './core/http/openapi.js';
 import { redis } from './core/cache/redis.js';
 import { mountModules, mountPublicModules } from './modules/index.js';
 import { fileRoutes, localStorageRouter } from './core/files/files.routes.js';
 import { storage } from './core/files/storage.js';
+import {
+  consoleRouter,
+  hospitalSubscriptionRoutes,
+  publicRouter,
+  webhookRouter,
+} from './platform/routes.js';
 
 /**
  * Middleware chain from the spec, section "Request lifecycle".
@@ -33,6 +39,8 @@ export function createApp({ extraRouters = [] } = {}) {
   app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false })); // API returns JSON only
   // Local file storage (development) streams raw bytes, so it sits before the JSON parser.
   if (storage().name === 'local') app.use(localStorageRouter());
+  // Gateway webhooks are signed over the raw body.
+  app.use('/api/webhooks', webhookRouter());
   app.use(express.json({ limit: '1mb' }));
   app.use(cookieParser());
 
@@ -50,12 +58,27 @@ export function createApp({ extraRouters = [] } = {}) {
 
   if (env.ENABLE_API_DOCS) {
     app.get('/api/docs/openapi.json', (_req, res) => res.json(buildOpenApi()));
+    for (const [name, doc] of Object.entries(API_DOCS))
+      app.get(`/api/docs/${name}.json`, (_req, res) => res.json(buildOpenApi(doc)));
     app.use(
       '/api/docs',
       swaggerUi.serve,
-      swaggerUi.setup(null, { swaggerOptions: { url: '/api/docs/openapi.json' } }),
+      swaggerUi.setup(null, {
+        swaggerOptions: {
+          urls: Object.entries(API_DOCS).map(([name, d]) => ({
+            name: d.title,
+            url: `/api/docs/${name}.json`,
+          })),
+        },
+      }),
     );
   }
+
+  // SaaS platform: public signup (marketing site) and the operator console.
+  app.use('/api/public', signupLimiter(), publicRouter());
+  app.use('/api/platform/auth/login', loginLimiters());
+  app.use('/api/platform/auth/2fa/verify', loginLimiters());
+  app.use('/api/platform', consoleRouter());
 
   const v1 = express.Router();
   v1.use(tenantResolver);
@@ -78,6 +101,7 @@ export function createApp({ extraRouters = [] } = {}) {
   v1.use(approvalRuleRoutes);
   v1.use(auditRoutes);
   v1.use(fileRoutes);
+  v1.use(hospitalSubscriptionRoutes);
   v1.use(mountModules());
   for (const r of extraRouters) v1.use(r);
   app.use('/api/v1', v1);

@@ -20,7 +20,7 @@ export default defineConfig({
         test: {
           name: 'integration',
           include: ['test/int/**/*.test.js'],
-          env,
+          env: { ...env, RAZORPAY_WEBHOOK_SECRET: 'test-webhook-secret' },
           globalSetup: ['test/helpers/global-int.js'],
           setupFiles: ['test/helpers/setup-int.js'],
           testTimeout: 30_000,

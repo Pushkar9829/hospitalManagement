@@ -33,6 +33,7 @@ export const APPROVAL_STATUS = freeze({
 export const TENANT_STATUS = freeze({
   TRIAL: { label: 'Trial', tone: 'info' },
   ACTIVE: { label: 'Active', tone: 'success' },
+  PAST_DUE: { label: 'Payment due', tone: 'warning' },
   READ_ONLY: { label: 'Read-only', tone: 'warning' },
   SUSPENDED: { label: 'Suspended', tone: 'critical' },
   CLOSED: { label: 'Closed', tone: 'neutral' },

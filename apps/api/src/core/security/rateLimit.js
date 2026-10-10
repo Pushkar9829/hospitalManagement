@@ -37,7 +37,7 @@ export const loginLimiters = () => [
     handler,
     keyGenerator: (req) =>
       `${maybeCurrent()?.tenantId}:${ipKeyGenerator(req.ip)}:${String(
-        req.body?.username ?? req.body?.mobile ?? req.body?.challengeId ?? '',
+        req.body?.username ?? req.body?.email ?? req.body?.mobile ?? req.body?.challengeId ?? '',
       )
         .toLowerCase()
         .slice(0, 80)}`,
@@ -55,4 +55,16 @@ export const apiLimiter = () =>
     handler,
     keyGenerator: (req) =>
       `${maybeCurrent()?.tenantId}:${maybeCurrent()?.userId ?? ipKeyGenerator(req.ip)}`,
+  });
+
+/** Public signup pages (no account yet): 30/min per IP; OTP sends are also capped per mobile. */
+export const signupLimiter = () =>
+  rateLimit({
+    windowMs: 60_000,
+    limit: 30,
+    standardHeaders: 'draft-7',
+    legacyHeaders: false,
+    store: store('signup'),
+    handler,
+    keyGenerator: (req) => ipKeyGenerator(req.ip),
   });

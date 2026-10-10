@@ -6,6 +6,7 @@ import { Branch } from './branch.model.js';
 import { Role } from '../auth/models/role.model.js';
 import { User } from '../auth/models/user.model.js';
 import { hashPassword } from '../auth/password.js';
+import { randomToken, sha256 } from '../security/crypto.js';
 import { withTransaction } from '../db/model.js';
 import { seedApprovalRules } from '../approvals/approval.service.js';
 
@@ -62,7 +63,9 @@ export async function provisionTenant({
   branch = { name: 'Main Branch', code: 'MAIN' },
   admin,
 }) {
-  const passwordHash = admin ? await hashPassword(admin.password) : undefined;
+  const passwordHash = admin?.password ? await hashPassword(admin.password) : undefined;
+  // Self-service signup: no password yet; the first Super Admin sets it from a one-time link.
+  const inviteToken = admin && !admin.password ? randomToken(32) : undefined;
   return withTransaction(async () => {
     const [tenant] = await Tenant.create([
       { name, subdomain, status, modules: modules.map((code) => ({ code })), settings },
@@ -82,13 +85,23 @@ export async function provisionTenant({
             email: admin.email,
             designation: 'Super Admin',
             passwordHash,
+            ...(inviteToken
+              ? {
+                  status: 'INVITED',
+                  invite: {
+                    tokenHash: sha256(inviteToken),
+                    expiresAt: new Date(Date.now() + 72 * 3_600_000),
+                    sentAt: new Date(),
+                  },
+                }
+              : {}),
             roles: [roles.find((r) => r.code === 'superadmin')._id],
             branchIds: [mainBranch._id],
             defaultBranchId: mainBranch._id,
           },
         ]);
       }
-      return { tenant, branch: mainBranch, roles, superAdmin };
+      return { tenant, branch: mainBranch, roles, superAdmin, inviteToken };
     });
   });
 }

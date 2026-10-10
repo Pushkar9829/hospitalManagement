@@ -4,14 +4,19 @@ import { AppError } from '../errors/index.js';
 
 const READ_ONLY_OK = new Set(['GET', 'HEAD', 'OPTIONS']);
 
-/** Host header -> tenant; enforces subscription state; opens the request context. */
+/**
+ * Host header -> tenant; enforces subscription state (spec 2.4) and opens the request context.
+ * TRIAL, ACTIVE and PAST_DUE work normally; READ_ONLY allows reads; SUSPENDED allows sign-in
+ * and the subscription screen only; CLOSED answers as if the hospital did not exist.
+ */
 export async function tenantResolver(req, _res, next) {
   const tenant = await tenantRegistry.byHost(req.hostname ?? '');
   if (!tenant) return next(new AppError(404, 'TENANT_NOT_FOUND', 'Unknown hospital address'));
   const isAuthCall = req.path.startsWith('/auth/');
   if (tenant.status === 'CLOSED')
     return next(new AppError(404, 'TENANT_NOT_FOUND', 'Unknown hospital address'));
-  if (tenant.status === 'SUSPENDED' && !req.path.startsWith('/subscription')) {
+  // Suspended: staff can still sign in, and the Super Admin can pay to reactivate.
+  if (tenant.status === 'SUSPENDED' && !isAuthCall && !req.path.startsWith('/subscription')) {
     return next(new AppError(402, 'TENANT_SUSPENDED', 'This hospital’s subscription is suspended'));
   }
   if (

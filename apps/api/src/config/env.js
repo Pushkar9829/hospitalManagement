@@ -30,6 +30,11 @@ const Env = z
     IDLE_TIMEOUT_MIN: z.coerce.number().int().min(5).max(120).default(15),
     COOKIE_SECURE: bool.optional(),
     SMS_PROVIDER: z.enum(['console', 'msg91']).default('console'),
+    /** The platform company that invoices hospitals (spec 3.5: GST invoice with its GSTIN). */
+    PLATFORM_LEGAL_NAME: z.string().default('HMS Cloud Private Limited'),
+    PLATFORM_GSTIN: z.string().default(''),
+    PLATFORM_STATE: z.string().default('Maharashtra'),
+    RAZORPAY_WEBHOOK_SECRET: z.string().default(''),
     AWS_REGION: z.string().default('ap-south-1'),
     S3_DOCS_BUCKET: z.string().default(''),
     LOG_LEVEL: z
