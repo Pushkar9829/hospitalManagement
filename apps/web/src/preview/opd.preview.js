@@ -776,10 +776,13 @@ const TEMPLATES = [
     specialty: 'PAEDIATRICS',
   },
 ];
+/** Seeded templates hold compact rows; templates saved from the screen hold full lines. */
 const templateOut = (t) => ({
   ...t,
-  rx: t.rx?.map((r) => rxLine(...r)),
-  orders: t.orders?.map((c) => orderLine(c)),
+  rx: t.rx?.map((r) => (Array.isArray(r) ? rxLine(...r) : { ...r, id: nextId('pv-rx') })),
+  orders: t.orders?.map((c) =>
+    typeof c === 'string' ? orderLine(c) : { ...c, id: nextId('pv-o'), status: 'DRAFT' },
+  ),
 });
 
 // ---------------------------------------------------------------------------------------------
@@ -1468,6 +1471,9 @@ export const handlers = {
       (d) => (!query.department || d.department === query.department) && like(d.name, query.q),
     ).map((d) => ({
       ...doctorCard(d),
+      qualification: d.qualification,
+      regNo: d.regNo,
+      designation: d.designation,
       fees: d.fees,
       followUp: d.followUp,
       visiting: Boolean(d.visiting),
