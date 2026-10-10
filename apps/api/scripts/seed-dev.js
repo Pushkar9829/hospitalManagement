@@ -19,7 +19,10 @@ const PASSWORD = process.env.SEED_PASSWORD ?? 'Demo@12345';
 
 await connectDb();
 const existing = await Tenant.findOne({ subdomain: 'demo' });
+// Demo only: room for one login per panel plus the users that smoke runs create.
+const DEMO_LIMITS = { users: 500, branches: 10, beds: 500 };
 if (existing) {
+  await Tenant.updateOne({ _id: existing._id }, { $set: { limits: DEMO_LIMITS } });
   console.log('Demo hospital already exists: http://demo.localhost:5173');
 } else {
   const { tenant, branch, roles } = await provisionTenant({
@@ -51,6 +54,7 @@ if (existing) {
       password: PASSWORD,
     },
   });
+  await Tenant.updateOne({ _id: tenant._id }, { $set: { limits: DEMO_LIMITS } });
   await runAsSystem(tenant._id, async () => {
     const hash = await hashPassword(PASSWORD);
     let i = 2;
