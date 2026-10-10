@@ -1,6 +1,6 @@
 import { createHmac } from 'node:crypto';
 import { createReadStream, createWriteStream } from 'node:fs';
-import { mkdir, rename, stat, unlink } from 'node:fs/promises';
+import { mkdir, readFile, rename, stat, unlink } from 'node:fs/promises';
 import { dirname, resolve, sep } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import { fileURLToPath } from 'node:url';
@@ -50,6 +50,10 @@ function s3Driver() {
         }),
         { expiresIn: URL_TTL_SEC },
       ),
+    async read(key) {
+      const obj = await s3.send(new GetObjectCommand({ Bucket, Key: key }));
+      return Buffer.from(await obj.Body.transformToByteArray());
+    },
     async head(key) {
       try {
         const h = await s3.send(new HeadObjectCommand({ Bucket, Key: key }));
@@ -97,6 +101,7 @@ function localDriver() {
       `/api/files/local/${localToken('put', key, { mime, size })}`,
     downloadUrl: async (key, { name, mime }) =>
       `/api/files/local/${localToken('get', key, { name, mime })}`,
+    read: (key) => readFile(localPath(key)),
     async head(key) {
       try {
         return { size: (await stat(localPath(key))).size };

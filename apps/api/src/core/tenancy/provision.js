@@ -9,6 +9,17 @@ import { hashPassword } from '../auth/password.js';
 import { withTransaction } from '../db/model.js';
 import { seedApprovalRules } from '../approvals/approval.service.js';
 
+/** Module seeders run inside the provisioning transaction (default masters, numbering, ...). */
+const seeders = [];
+export function registerTenantSeeder(name, seed) {
+  if (!seeders.some((s) => s.name === name)) seeders.push({ name, seed });
+}
+
+/** Runs every module seeder for the current hospital; seeders must be idempotent. */
+export async function runTenantSeeders(ctx) {
+  for (const s of seeders) await s.seed(ctx);
+}
+
 const scopeOf = (code, panel) => (code === 'superadmin' || panel.readOnly ? 'all' : 'branch');
 
 /**
@@ -60,6 +71,7 @@ export async function provisionTenant({
       const [mainBranch] = await Branch.create([branch]);
       const roles = await syncSystemRoles();
       await seedApprovalRules();
+      await runTenantSeeders({ tenant, branch: mainBranch });
       let superAdmin = null;
       if (admin) {
         [superAdmin] = await User.create([

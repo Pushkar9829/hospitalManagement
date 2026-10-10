@@ -60,6 +60,7 @@ export const DEFAULT_APPROVAL_RULES = Object.freeze([
   rule('setup.department', 'Department create or close', [
     lvl('setup-department', 1, 'Super Admin'),
   ]),
+  rule('setup.branch', 'Branch create or close', [lvl('setup-branch', 1, 'Super Admin')]),
   rule('users.privilegedRole', 'User with a privileged role', [
     lvl('users-privileged', 1, 'Super Admin'),
   ]),

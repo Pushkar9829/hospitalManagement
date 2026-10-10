@@ -5,6 +5,7 @@
  */
 import { env } from '../src/config/env.js';
 import { connectDb, disconnectDb } from '../src/core/db/connection.js';
+import '../src/modules/index.js'; // registers module seeders
 import { closeRedis } from '../src/core/cache/redis.js';
 import { runAsSystem } from '../src/core/tenancy/context.js';
 import { Tenant } from '../src/core/tenancy/tenant.model.js';

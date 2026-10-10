@@ -54,3 +54,29 @@ export async function nextUhid() {
   const prefix = current().tenant?.settings?.uhidPrefix ?? 'CC';
   return formatUhid(prefix, await nextNumber('UHID'));
 }
+
+/** Period part of a number: "26-27" (yearly), "2610" (monthly) or none. */
+export function periodLabel(reset, date = new Date()) {
+  if (reset === 'NEVER') return null;
+  const fy = financialYear(date);
+  if (reset === 'YEARLY') return fy;
+  const ist = new Date(new Date(date).getTime() + 330 * 60_000);
+  return `${String(ist.getUTCFullYear()).slice(-2)}${String(ist.getUTCMonth() + 1).padStart(2, '0')}`;
+}
+
+/**
+ * Next number in a configured series: { prefix, reset, width, perBranch } decides the format:
+ * yearly "OP/26-27/000154", monthly "OP/2610/000154", never reset "CC0000123".
+ */
+export async function nextInSeries(
+  series,
+  { prefix, reset, width, perBranch },
+  { date = new Date() } = {},
+) {
+  const period = periodLabel(reset, date);
+  const n = await nextNumber(series, {
+    branchId: perBranch ? (current().branchId ?? null) : null,
+    fy: period,
+  });
+  return period ? formatSequence(prefix, period, n, width) : formatUhid(prefix, n, width);
+}

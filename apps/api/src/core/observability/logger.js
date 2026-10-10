@@ -17,7 +17,7 @@ function prettyTransport() {
  * be logged: these paths are redacted as a safety net.
  */
 export const logger = pino({
-  level: env.isTest ? 'silent' : env.LOG_LEVEL,
+  level: env.isTest ? (process.env.TEST_LOG ?? 'silent') : env.LOG_LEVEL,
   base: { service: 'hms-api' },
   redact: {
     paths: [

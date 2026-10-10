@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { setupModule } from './setup/index.js';
 
 /**
  * Registers every business module. Each module folder exports `{ router, subscriptions? }` from
@@ -6,7 +7,7 @@ import { Router } from 'express';
  *   Phase 1: platform, setup, users, patients, billing
  *   Phase 2: opd ...
  */
-const MODULES = [];
+const MODULES = [setupModule];
 
 export function mountModules() {
   const router = Router();

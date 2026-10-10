@@ -49,8 +49,10 @@ export function defineRoutes({ module, basePath = '', routes }) {
     chain.push(async (req, res) => {
       const result = await r.handler(req, res);
       if (res.headersSent) return;
-      if (result === undefined) return res.status(r.status ?? 204).end();
-      res.status(r.status ?? 200).json(result);
+      // A handler may set res.locals.status, e.g. 202 when a change waits for approval.
+      const status = res.locals.status ?? r.status;
+      if (result === undefined) return res.status(status ?? 204).end();
+      res.status(status ?? 200).json(result);
     });
     router[r.method](`${basePath}${r.path}`, ...chain);
     routeRegistry.push({

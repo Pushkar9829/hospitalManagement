@@ -115,3 +115,14 @@ export const dto = (f) => ({
   ownerEntity: f.ownerEntity,
   ownerId: f.ownerId,
 });
+
+/** Reads a READY file the current user may write for its purpose (imports read their own upload). */
+export async function readFileContent(id, { purpose } = {}) {
+  const file = await StoredFile.findOne({
+    _id: id,
+    status: 'READY',
+    ...(purpose ? { purpose } : {}),
+  });
+  if (!file) throw errors.notFound('File');
+  return { file: dto(file), buffer: await storage().read(file.key) };
+}

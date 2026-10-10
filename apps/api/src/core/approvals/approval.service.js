@@ -6,6 +6,20 @@ import { publish } from '../events/events.js';
 import { recordAudit } from '../audit/audit.service.js';
 import { ApprovalRequest, ApprovalRule } from './approval.model.js';
 
+/** action -> async (request, outcome) applied inside the decision's transaction. */
+const appliers = new Map();
+
+/**
+ * Modules register how an approved (or rejected) request takes effect. The handler runs in the
+ * same transaction as the final decision, so "approved" and "applied" can never disagree; on
+ * approval the request is marked APPLIED.
+ */
+export function onApprovalDecided(action, handler) {
+  if (appliers.has(action))
+    throw new Error(`An approval handler for ${action} is already registered`);
+  appliers.set(action, handler);
+}
+
 /** The hospital's rule for an action, falling back to the product default. */
 export async function ruleFor(action) {
   const own = await ApprovalRule.findOne({ action }).lean();
@@ -94,6 +108,7 @@ async function expireIfDue(req) {
   if (req.status === 'PENDING' && req.expiresAt <= new Date()) {
     req.status = 'EXPIRED';
     req.currentPermission = undefined;
+    await appliers.get(req.action)?.(req, 'EXPIRED');
     await req.save();
     await publish('approval.decided', {
       approvalId: String(req._id),
@@ -152,6 +167,14 @@ export async function decide(id, { decision, comment, version }) {
     else req.levelIndex += 1;
     req.currentPermission =
       req.status === 'PENDING' ? req.levels[req.levelIndex].permission : undefined;
+    const applier = appliers.get(req.action);
+    if (applier && req.status !== 'PENDING') {
+      await applier(req, req.status);
+      if (req.status === 'APPROVED') {
+        req.status = 'APPLIED';
+        req.appliedAt = new Date();
+      }
+    }
     await req.save();
     await recordAudit({
       action: decision === 'APPROVE' ? 'APPROVE' : 'REJECT',
@@ -188,10 +211,13 @@ export async function withdraw(id, { version }) {
       'APPROVAL_CLOSED',
       `This request is already ${req.status.toLowerCase()}`,
     );
-  req.status = 'WITHDRAWN';
-  req.currentPermission = undefined;
-  await req.save();
-  return req;
+  return withTransaction(async () => {
+    req.status = 'WITHDRAWN';
+    req.currentPermission = undefined;
+    await appliers.get(req.action)?.(req, 'WITHDRAWN');
+    await req.save();
+    return req;
+  });
 }
 
 /** Called by the owning module after it applied an approved change. */

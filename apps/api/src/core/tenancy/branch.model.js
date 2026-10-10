@@ -12,6 +12,14 @@ const schema = new Schema({
     validate: { validator: (v) => !v || isGstin(v), message: 'Invalid GSTIN' },
   },
   phone: String,
+  email: String,
+  entityId: { type: Schema.Types.ObjectId, ref: 'LegalEntity' },
+  /** Opening and closing a branch needs Super Admin approval (spec 4.6). */
+  status: {
+    type: String,
+    enum: ['PENDING_APPROVAL', 'ACTIVE', 'CLOSING', 'INACTIVE', 'REJECTED'],
+    default: 'ACTIVE',
+  },
   isActive: { type: Boolean, default: true },
 });
 schema.index({ tenantId: 1, code: 1 }, { unique: true });
