@@ -219,6 +219,92 @@ describe('masters and tariffs', () => {
     expect(svc.pendingRates).toBeUndefined();
   });
 
+  it('describes wards and beds, payers and doctors', async () => {
+    const { t, admin, sa } = await hospital();
+    const d = await admin.post('/departments').send(dept(t));
+    await approve(sa, d.body.approvalId);
+    const bedDay = await admin.post('/masters/services').send({
+      code: 'BED-GEN',
+      name: 'Bed charge, general ward',
+      category: 'BED',
+      taxCode: 'EXEMPT',
+      rates: { GENERAL: 1500 },
+    });
+    expect(
+      (
+        await admin.post('/masters/wards').send({
+          code: 'GW1',
+          name: 'General ward 1',
+          branchCode: 'MAIN',
+          category: 'GENERAL',
+          bedServiceCode: 'BED-GEN',
+        })
+      ).body.error.details[0].path,
+    ).toBe('bedServiceCode'); // the bed tariff is not approved yet
+    await approve(sa, bedDay.body.approvalId);
+    const ward = await admin.post('/masters/wards').send({
+      code: 'GW1',
+      name: 'General ward 1',
+      branchCode: 'MAIN',
+      floor: '1',
+      category: 'GENERAL',
+      gender: 'FEMALE',
+      bedServiceCode: 'BED-GEN',
+      departmentCode: 'CARD',
+    });
+    expect(ward.status).toBe(201);
+    expect(ward.body.item).toMatchObject({ branchId: String(t.branch._id), gender: 'FEMALE' });
+    for (const n of [1, 2])
+      expect(
+        (
+          await admin
+            .post('/masters/beds')
+            .send({ code: `GW1-0${n}`, name: `Bed ${n}`, wardCode: 'GW1', room: '101' })
+        ).status,
+      ).toBe(201);
+    const beds = (await admin.get(`/masters/beds?wardId=${ward.body.item.id}`)).body;
+    expect(beds.total).toBe(2);
+    expect(beds.items[0]).toMatchObject({
+      wardId: ward.body.item.id,
+      branchId: String(t.branch._id),
+    });
+
+    const payer = await admin.post('/masters/payers').send({
+      code: 'TATA',
+      name: 'Tata Motors Ltd',
+      kind: 'CORPORATE',
+      priceListCode: 'GENERAL',
+      creditLimit: 500000,
+      creditDays: 45,
+      email: 'hr@tata.example',
+    });
+    expect(payer.status).toBe(201);
+    expect(payer.body.item).toMatchObject({ creditLimit: 50000000, creditDays: 45 });
+    expect((await admin.get('/masters/payers?kind=CORPORATE')).body.total).toBe(1);
+    expect((await admin.get('/masters/payers?kind=INSURER')).body.total).toBe(0);
+
+    await makeUser(t, { username: 'drmeera', roles: ['doctor'] });
+    const doc = await admin.post('/masters/doctors').send({
+      code: 'DR-MI',
+      name: 'Dr. Meera Iyer',
+      kind: 'FULL_TIME',
+      departmentCode: 'CARD',
+      registrationNo: 'MMC-2011-04567',
+      username: 'drmeera',
+    });
+    expect(doc.status).toBe(201);
+    expect(doc.body.item.userId).toBeTruthy();
+    const unknown = await admin.post('/masters/doctors').send({
+      code: 'DR-X',
+      name: 'Dr. Unknown',
+      kind: 'VISITING',
+      departmentCode: 'CARD',
+      registrationNo: 'KMC-1',
+      username: 'nobody',
+    });
+    expect(unknown.body.error.details[0].path).toBe('username');
+  });
+
   it('imports a CSV with a preview, refuses rows with errors and saves all valid rows at once', async () => {
     const { admin } = await hospital();
     const bad =
