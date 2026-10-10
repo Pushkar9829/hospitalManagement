@@ -204,6 +204,26 @@ describe('subscription and platform invoices', () => {
     ).toBe('INVALID_STATE');
   });
 
+  it('changes modules straight away during a trial (Core is implied)', async () => {
+    const t = await makeTenant({ status: 'TRIAL', modules: ['OPD', 'NUR', 'IPD'] });
+    const admin = await signIn(ctx.app, t.host);
+    const preview = await admin
+      .post('/subscription/preview')
+      .send({ add: ['LAB'], remove: ['NUR'] });
+    expect(preview.body.blockedBy).toEqual([]);
+    expect(preview.body.effective.add).toBe('IMMEDIATE (trial)');
+    const res = await admin.post('/subscription/changes').send({ add: ['LAB'], remove: ['NUR'] });
+    expect(res.status).toBe(200);
+    expect(res.body.subscription.modules.map((m) => m.code).sort()).toEqual([
+      'CORE',
+      'IPD',
+      'LAB',
+      'OPD',
+    ]);
+    const ipd = await admin.post('/subscription/preview').send({ remove: ['IPD'] });
+    expect(ipd.body.blockedBy).toEqual([]);
+  });
+
   it('prices an added module pro rata and switches it on when paid; removals wait for renewal', async () => {
     const { t, admin, finance } = await paidHospital();
     const blocked = await admin.post('/subscription/preview').send({ add: ['NUR'] });

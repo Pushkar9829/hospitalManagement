@@ -120,7 +120,8 @@ export async function previewChange(tenantId, { add = [], remove = [] }) {
     Tenant.findById(tenantId).lean(),
     ensureSubscription(tenantId),
   ]);
-  const active = new Set(tenant.modules.map((m) => m.code));
+  // CORE is always on but is not stored on hospitals created at signup.
+  const active = new Set(['CORE', ...tenant.modules.map((m) => m.code)]);
   const target = [...new Set([...active, ...add])].filter((c) => !remove.includes(c));
   const blockedBy = [];
   for (const d of unmetDependencies(target))
@@ -176,7 +177,7 @@ export async function applyChange(tenantId, { add = [], remove = [] }, actorName
       Tenant.findById(tenantId),
       Subscription.findOne({ tenantId }),
     ]);
-    const active = tenant.modules.map((m) => m.code);
+    const active = ['CORE', ...tenant.modules.map((m) => m.code)];
     const adds = add.filter((c) => !active.includes(c));
     let invoice = null;
     if (tenant.status === 'TRIAL' || !sub.converted) {
