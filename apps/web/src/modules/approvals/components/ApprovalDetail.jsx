@@ -54,6 +54,17 @@ const FIELD_KEYS = [
   'branchIds',
 ];
 
+/** Shows a branch's name instead of its id where the request names one. */
+function withBranchNames(obj, branches) {
+  if (!obj || typeof obj !== 'object') return obj;
+  const name = (id) => branches.find((b) => b.id === id)?.name ?? id;
+  const out = { ...obj };
+  if (out.location?.branchId)
+    out.location = { ...out.location, branchId: name(out.location.branchId) };
+  if (Array.isArray(out.branchIds)) out.branchIds = out.branchIds.map(name);
+  return out;
+}
+
 /** Re-renders every `ms` so countdowns stay current. */
 function useNow(ms = 60_000) {
   const [now, setNow] = useState(() => Date.now());
@@ -86,7 +97,9 @@ export function ExpiryBadge({ expiresAt, status }) {
 export function ApprovalDetail({ id, box, onDecided }) {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
-  const me = useSelector(selectSession).data?.user.id;
+  const session = useSelector(selectSession).data;
+  const me = session?.user.id;
+  const branches = session?.branches ?? [];
   const { data: r, isLoading, isError, error, refetch } = useApprovalQuery(id, { skip: !id });
   const [decide, { isLoading: deciding }] = useDecideApprovalMutation();
   const [withdraw] = useWithdrawApprovalMutation();
@@ -106,7 +119,7 @@ export function ApprovalDetail({ id, box, onDecided }) {
         icon={Inbox}
         title={t('approvals.selectTitle')}
         description={t('approvals.selectBody')}
-        className="bg-surface"
+        className="hidden bg-surface lg:flex"
       />
     );
   if (isLoading) return <Loading rows={5} />;
@@ -202,8 +215,8 @@ export function ApprovalDetail({ id, box, onDecided }) {
             {t('approvals.changes')}
           </h3>
           <DiffTable
-            before={r.before}
-            after={r.after}
+            before={withBranchNames(r.before, branches)}
+            after={withBranchNames(r.after, branches)}
             beforeLabel={t('approvals.current')}
             afterLabel={t('approvals.proposed')}
             caption={t('approvals.changes')}

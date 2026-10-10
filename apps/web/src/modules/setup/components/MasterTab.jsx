@@ -28,6 +28,9 @@ import { MasterSheet } from './MasterSheet.jsx';
 import { ServiceSheet } from './ServiceSheet.jsx';
 import { ImportWizard } from './ImportWizard.jsx';
 
+/** Stable while the query is skipped, so memos and effects do not rerun every render. */
+const NO_BRANCHES = [];
+
 const LIMIT = 25;
 
 /** Service columns: category, current rates and rates waiting for approval, status. */
@@ -95,7 +98,9 @@ export function MasterTab({ type }) {
     page,
     limit: LIMIT,
   });
-  const { data: branches = [] } = useBranchesQuery(undefined, { skip: type !== 'holidays' });
+  const { data: branches = NO_BRANCHES } = useBranchesQuery(undefined, {
+    skip: type !== 'holidays',
+  });
   const items = data?.items ?? [];
   const record = editing?.id ? items.find((r) => r.id === editing.id) : null;
 

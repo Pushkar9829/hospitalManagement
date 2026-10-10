@@ -35,20 +35,20 @@ import {
 
 const FIELDS = ['name', 'code', 'entityId', 'address', 'gstin', 'phone', 'email', 'reason'];
 
-const toForm = (b = {}) => ({
-  name: b.name ?? '',
-  code: b.code ?? '',
-  entityId: b.entityId ?? '',
+const toForm = (b) => ({
+  name: b?.name ?? '',
+  code: b?.code ?? '',
+  entityId: b?.entityId ?? '',
   address: {
-    line1: b.address?.line1 ?? '',
-    line2: b.address?.line2 ?? '',
-    city: b.address?.city ?? '',
-    state: b.address?.state ?? '',
-    pin: b.address?.pin ?? '',
+    line1: b?.address?.line1 ?? '',
+    line2: b?.address?.line2 ?? '',
+    city: b?.address?.city ?? '',
+    state: b?.address?.state ?? '',
+    pin: b?.address?.pin ?? '',
   },
-  gstin: b.gstin ?? '',
-  phone: b.phone ?? '',
-  email: b.email ?? '',
+  gstin: b?.gstin ?? '',
+  phone: b?.phone ?? '',
+  email: b?.email ?? '',
   reason: '',
 });
 

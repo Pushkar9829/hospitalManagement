@@ -35,21 +35,21 @@ const FIELDS = [
   'letterheadFileId',
 ];
 
-const toForm = (e = {}) => ({
-  name: e.name ?? '',
-  registrationNo: e.registrationNo ?? '',
-  gstin: e.gstin ?? '',
-  pan: e.pan ?? '',
+const toForm = (e) => ({
+  name: e?.name ?? '',
+  registrationNo: e?.registrationNo ?? '',
+  gstin: e?.gstin ?? '',
+  pan: e?.pan ?? '',
   address: {
-    line1: e.address?.line1 ?? '',
-    line2: e.address?.line2 ?? '',
-    city: e.address?.city ?? '',
-    state: e.address?.state ?? '',
-    pin: e.address?.pin ?? '',
+    line1: e?.address?.line1 ?? '',
+    line2: e?.address?.line2 ?? '',
+    city: e?.address?.city ?? '',
+    state: e?.address?.state ?? '',
+    pin: e?.address?.pin ?? '',
   },
-  signatory: e.signatory ?? '',
-  logoFileId: e.logoFileId ?? undefined,
-  letterheadFileId: e.letterheadFileId ?? undefined,
+  signatory: e?.signatory ?? '',
+  logoFileId: e?.logoFileId ?? undefined,
+  letterheadFileId: e?.letterheadFileId ?? undefined,
 });
 
 function EntitySheet({ entity, open, onOpenChange, onReload }) {

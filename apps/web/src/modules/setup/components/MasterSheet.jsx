@@ -11,6 +11,9 @@ import { CheckboxList } from '../../../components/CheckboxList.jsx';
 import { useBranchesQuery, useSaveMasterMutation } from '../api.js';
 import { cleanResolver, masterFields, toDateInput, useMasterLabels } from '../masters.js';
 
+/** Stable while the query is skipped, so memos and effects do not rerun every render. */
+const NO_BRANCHES = [];
+
 /** Record → form values for the generated fields. */
 function toForm(fields, record, branchCodeById) {
   const out = {};
@@ -39,7 +42,9 @@ export function MasterSheet({ type, record, open, onOpenChange, onDone, onReload
   const canWrite = record ? can('settings:master:update') : can('settings:master:create');
   const fields = useMemo(() => masterFields(type), [type]);
   const labels = useMasterLabels(type);
-  const { data: branches = [] } = useBranchesQuery(undefined, { skip: type !== 'holidays' });
+  const { data: branches = NO_BRANCHES } = useBranchesQuery(undefined, {
+    skip: type !== 'holidays',
+  });
   const branchCodeById = useMemo(() => new Map(branches.map((b) => [b.id, b.code])), [branches]);
   const [save] = useSaveMasterMutation();
   const [failure, setFailure] = useState(null);

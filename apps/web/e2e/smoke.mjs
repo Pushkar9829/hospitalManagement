@@ -637,7 +637,7 @@ async function fixtureSteps(browser, step, users) {
       // Branch switch (2 branches).
       await page.getByRole('button', { name: /Switch branch/ }).click();
       await page.getByRole('menuitemradio', { name: 'City Branch' }).click();
-      await page.getByText('Now working in City Branch').waitFor();
+      await page.getByText('Now working in City Branch', { exact: true }).first().waitFor();
 
       // Unsubscribed module by direct link.
       await page.goto(`${ORIGIN}/pharmacy`);

@@ -110,7 +110,7 @@ function SeriesRow({ series, canEdit }) {
           form={formId}
           aria-live="polite"
           className={cn(
-            'inline-flex min-h-tap items-center font-mono text-sm',
+            'inline-flex min-h-tap items-center font-mono text-sm whitespace-nowrap',
             isDirty ? 'text-ink' : 'text-muted',
           )}
         >

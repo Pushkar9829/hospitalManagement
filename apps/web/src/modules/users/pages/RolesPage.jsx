@@ -34,7 +34,7 @@ export default function RolesPage() {
   const { data: roles = [], isLoading, isError, error, refetch } = useRolesQuery();
   const { data: catalog = [], isLoading: loadingCatalog } = usePermissionCatalogQuery();
   const [selected, setSelected] = useUrlState('role', '');
-  const [from, setFrom] = useUrlState('from', '');
+  const [from] = useUrlState('from', '');
   const [notice, setNotice] = useState(null);
   const systemRoles = roles.filter((r) => r.isSystem);
   const isNew = selected === 'new';
@@ -49,16 +49,10 @@ export default function RolesPage() {
         title: t(deactivated ? 'roles.deactivated' : 'roles.saved', { name }),
         tone: 'success',
       });
-    if (created && id) {
-      setFrom('');
-      setSelected(id);
-    }
+    if (created && id) setSelected(id, { reset: ['from'] });
   };
 
-  const copy = (r) => {
-    setFrom(r.code);
-    setSelected('new');
-  };
+  const copy = (r) => setSelected('new', { set: { from: r.code } });
 
   if (isError)
     return (
@@ -81,7 +75,7 @@ export default function RolesPage() {
             <Button
               variant="secondary"
               icon={<Plus size={16} aria-hidden="true" />}
-              onClick={() => (setFrom(''), setSelected('new'))}
+              onClick={() => setSelected('new', { reset: ['from'] })}
             >
               {t('roles.new')}
             </Button>
@@ -110,7 +104,7 @@ export default function RolesPage() {
                       <button
                         type="button"
                         aria-current={active ? 'true' : undefined}
-                        onClick={() => (setFrom(''), setSelected(r.id))}
+                        onClick={() => setSelected(r.id, { reset: ['from'] })}
                         className={cn(
                           'flex w-full cursor-pointer items-center justify-between gap-2 rounded-control px-3 py-2 text-left',
                           active ? 'bg-info-bg font-semibold' : 'hover:bg-surface-2',

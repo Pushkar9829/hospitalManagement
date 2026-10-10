@@ -29,7 +29,11 @@ export function ToastProvider({ duration = 5000, children }) {
 
   return (
     <ToastContext.Provider value={value}>
-      <RadixToast.Provider duration={duration} swipeDirection="right" label={t('toast.region')}>
+      <RadixToast.Provider
+        duration={duration}
+        swipeDirection="right"
+        label={t('toast.region', { hotkey: 'F8' })}
+      >
         {children}
         {items.map((item) => (
           <RadixToast.Root

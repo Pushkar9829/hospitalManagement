@@ -13,11 +13,22 @@ import { Providers } from '../app/providers.jsx';
  */
 export function mockApi(handlers) {
   const fetchMock = vi.fn(async (input, init) => {
-    const req = input instanceof Request ? input : new Request(input, init);
+    let req;
+    try {
+      req = input instanceof Request ? input : new Request(input, init);
+    } catch {
+      // A jsdom File as the body (an upload PUT) is not a body Node's Request accepts.
+      req = new Request(input, { ...init, body: undefined });
+    }
     const url = new URL(req.url);
     const key = `${req.method} ${url.pathname.replace(/^\/api\/v1/, '')}`;
     const text = await req.text();
-    const body = text ? JSON.parse(text) : undefined;
+    let body;
+    try {
+      body = text ? JSON.parse(text) : undefined;
+    } catch {
+      body = text;
+    }
     const handler = handlers[key];
     const [status, json] = handler
       ? await handler(req, body)

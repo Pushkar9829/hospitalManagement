@@ -1,6 +1,10 @@
 import '@testing-library/jest-dom/vitest';
 import { afterEach, vi } from 'vitest';
-import { cleanup } from '@testing-library/react';
+import { cleanup, configure } from '@testing-library/react';
+
+// Pages are lazy chunks: the first test in a file waits for the import, which under a full
+// parallel run can take longer than the 1 s default.
+configure({ asyncUtilTimeout: 5000 });
 
 // jsdom gaps used by Radix and cmdk.
 globalThis.ResizeObserver ??= class {
