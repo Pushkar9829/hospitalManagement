@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { setupModule } from './setup/index.js';
+import { usersModule } from './users/index.js';
 
 /**
  * Registers every business module. Each module folder exports `{ router, subscriptions? }` from
@@ -7,11 +8,18 @@ import { setupModule } from './setup/index.js';
  *   Phase 1: platform, setup, users, patients, billing
  *   Phase 2: opd ...
  */
-const MODULES = [setupModule];
+const MODULES = [setupModule, usersModule];
 
 export function mountModules() {
   const router = Router();
   for (const m of MODULES) router.use(m.router);
+  return router;
+}
+
+/** Routes a module serves before sign-in (e.g. accepting an invitation). */
+export function mountPublicModules() {
+  const router = Router();
+  for (const m of MODULES) if (m.publicRouter) router.use(m.publicRouter);
   return router;
 }
 

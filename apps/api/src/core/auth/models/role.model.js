@@ -29,6 +29,13 @@ const schema = new Schema({
   /** Custom roles start as a copy of a system role. */
   clonedFrom: String,
   isActive: { type: Boolean, default: true },
+  /** Custom role lifecycle; a permission change waits for Super Admin approval. */
+  status: {
+    type: String,
+    enum: ['PENDING_APPROVAL', 'ACTIVE', 'REJECTED', 'INACTIVE'],
+    default: 'ACTIVE',
+  },
+  pendingPermissions: { type: [String], default: undefined },
   isSystem: { type: Boolean, default: false },
 });
 schema.index({ tenantId: 1, code: 1 }, { unique: true });

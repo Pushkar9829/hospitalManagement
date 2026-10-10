@@ -13,6 +13,8 @@ const Env = z
     MONGO_URI: z.string().min(1, 'MONGO_URI is required'),
     REDIS_URL: z.string().min(1, 'REDIS_URL is required'),
     ROOT_DOMAIN: z.string().default('localhost'),
+    /** Web address of a hospital for links in SMS and e-mail; {subdomain} is replaced. */
+    WEB_URL_TEMPLATE: z.string().default('http://{subdomain}.localhost:5173'),
     /**
      * Proxy hops in front of the API. Production (CloudFront -> ALB) is 2, so req.ip is the real
      * client; 0 locally so a spoofed X-Forwarded-For cannot dodge rate limits.

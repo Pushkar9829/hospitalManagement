@@ -14,7 +14,7 @@ import { auditRoutes } from './core/audit/audit.routes.js';
 import { apiLimiter, loginLimiters } from './core/security/rateLimit.js';
 import { buildOpenApi } from './core/http/openapi.js';
 import { redis } from './core/cache/redis.js';
-import { mountModules } from './modules/index.js';
+import { mountModules, mountPublicModules } from './modules/index.js';
 import { fileRoutes, localStorageRouter } from './core/files/files.routes.js';
 import { storage } from './core/files/storage.js';
 
@@ -66,9 +66,11 @@ export function createApp({ extraRouters = [] } = {}) {
     '/auth/otp/verify',
     '/auth/password/forgot',
     '/auth/password/reset',
+    '/auth/invite/accept',
   ])
     v1.use(path, loginLimiters());
   v1.use(authPublicRoutes);
+  v1.use(mountPublicModules());
   v1.use(authenticate);
   v1.use(apiLimiter());
   v1.use(authRoutes);

@@ -20,7 +20,11 @@ const schema = new Schema({
   passwordHistory: { type: [String], select: false, default: [] },
   /** Set by an admin reset: every call except changing the password answers 403. */
   mustChangePassword: { type: Boolean, default: false },
+  /** One-time invitation (72 h); only the hash is stored. */
+  invite: { tokenHash: { type: String, select: false }, expiresAt: Date, sentAt: Date },
   departmentIds: [{ type: Schema.Types.ObjectId, ref: 'Department' }],
+  /** Roles requested but waiting for Super Admin approval. */
+  pendingRoleCodes: { type: [String], default: undefined },
   employeeId: { type: Schema.Types.ObjectId, ref: 'Employee' },
   roles: [{ type: Schema.Types.ObjectId, ref: 'Role' }],
   branchIds: [{ type: Schema.Types.ObjectId, ref: 'Branch' }],

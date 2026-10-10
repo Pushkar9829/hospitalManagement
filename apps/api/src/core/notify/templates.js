@@ -3,6 +3,13 @@
  * filled per hospital when its templates are approved (go-live checklist).
  */
 export const SMS_TEMPLATES = Object.freeze({
+  USER_INVITE: {
+    dltId: '',
+    text: {
+      en: '{hospital} has created your staff login ({username}). Set your password within 72 hours: {link}',
+      hi: '{hospital} ने आपका स्टाफ़ लॉगिन ({username}) बनाया है। 72 घंटे के अंदर पासवर्ड सेट करें: {link}',
+    },
+  },
   PASSWORD_RESET_OTP: {
     dltId: '',
     text: {

@@ -38,6 +38,7 @@ export const TENANT_STATUS = freeze({
 });
 
 export const USER_STATUS = freeze({
+  PENDING_APPROVAL: { label: 'Pending approval', tone: 'warning' },
   ACTIVE: { label: 'Active', tone: 'success' },
   INVITED: { label: 'Invited', tone: 'info' },
   LOCKED: { label: 'Locked', tone: 'warning' },

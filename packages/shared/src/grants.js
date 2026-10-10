@@ -11,7 +11,7 @@ export const ROLE_GRANTS = Object.freeze({
     'settings:department:*',
     'settings:master:*',
     'settings:user:*',
-    'settings:role:read',
+    'settings:role:*',
     'settings:hospital:*',
     'settings:approval:read',
     'patients:*',
